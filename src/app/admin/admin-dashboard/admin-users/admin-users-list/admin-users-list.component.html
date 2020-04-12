@@ -1,0 +1,63 @@
+<!-- ALERT -->
+<div class="alert mt-4" *ngIf="alertMsg" [ngClass]="alertMsg.color">
+  {{ alertMsg.message }}
+</div>
+
+<!-- LIST OF USERS -->
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Admin</th>
+      <th>Disabled</th>
+      <th>UID</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="!loading">
+    <tr
+      *ngFor="let user of users$ | async"
+      [ngClass]="{ 'table-danger': user.disabled }"
+    >
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.admin }}</td>
+      <td>{{ user.disabled }}</td>
+      <td>{{ user.uid }}</td>
+      <td>
+        <span>
+          <i
+            class="fa fa-edit"
+            (click)="onOpenEditModal(user)"
+            style="cursor: pointer;"
+          ></i>
+          <i
+            class="fa fa-address-card ml-3"
+            (click)="onOpenInfoModal(user)"
+            style="cursor: pointer;"
+          ></i>
+          <div ngbDropdown class="d-inline-block">
+            <i
+              class="fa fa-ellipsis-v ml-3 dropdown-toggle"
+              id="dropdown1"
+              ngbDropdownToggle
+            ></i>
+            <div ngbDropdownMenu aria-labelledby="dropdown1">
+              <a ngbDropdownItem (click)="onDisableUser(user)" style="cursor: pointer;">
+                {{ user.disabled ? 'Enable Account' : 'Disable Account' }}
+              </a>
+              <a ngbDropdownItem (click)="onDeleteUser(user)" style="cursor: pointer;">Delete Account</a>
+            </div>
+          </div>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<!-- LOADING SPINNER -->
+<div class="d-flex justify-content-center" *ngIf="loading">
+  <div class="spinner-border text-primary" role="status" style="height: 5rem; width: 5rem">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>

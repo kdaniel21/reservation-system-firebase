@@ -1,0 +1,13 @@
+<div class="current-reservation" *ngIf="currentReservation">
+  <div class="card-title">Current Reservation:</div>
+  <h6>{{ currentReservation.name }}</h6>
+  <p class="card-text">{{ currentReservation.start }} - {{ currentReservation.end }}</p>
+  <p class="card-text">
+    Created by:
+    {{ currentReservation.createdBy }}
+  </p>
+</div>
+
+<div class="no-current-reservation" *ngIf="!currentReservation">
+  <div class="card-title">Currently there is no reservation!</div>
+</div>

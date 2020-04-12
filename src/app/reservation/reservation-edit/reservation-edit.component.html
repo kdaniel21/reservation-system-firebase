@@ -1,0 +1,90 @@
+<div class="edit-state">
+  <div class="card" style="width: 50rem">
+    <div class="card-header">
+      <span class="card-title">
+        <i class="fa fa-arrow-circle-left mr-3" (click)="onBackClicked()" style="cursor: pointer;"></i>
+        <p class="h6">Edit Reservation</p>
+      </span>
+    </div>
+    <div class="card-body">
+      <!-- EDIT STATE FORM-->
+      <form [formGroup]="editForm" (ngSubmit)="onSubmitForm()">
+        <div class="form-group">
+          <label for="reservation-name">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="reservation-name"
+            formControlName="reservation-name"
+          />
+        </div>
+        <div formGroupName="reservation-full-date">
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                id="reservation-date"
+                formControlName="reservation-date"
+                ngbDatepicker
+                #d="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-outline-secondary calendar"
+                  (click)="d.toggle()"
+                  type="button"
+                ></button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reservation-starting-time">Start Time</label>
+            <ngb-timepicker
+              formControlName="reservation-start-time"
+              id="reservation-start-time"
+            ></ngb-timepicker>
+          </div>
+          <div class="form-group">
+            <label for="reservation-length">Length</label>
+            <ngb-timepicker
+              formControlName="reservation-length"
+              id="reservation-length"
+            ></ngb-timepicker>
+          </div>
+        </div>
+        <!-- BOTTOM BUTTONS -->
+        <p class="text-right time-pending" *ngIf="editForm.pending">
+          Checking availability...
+        </p>
+        <p
+          class="text-right time-not-available"
+          *ngIf="editForm.controls['reservation-full-date'].invalid"
+        >
+          Time is not available! Please choose another!
+        </p>
+        <p
+          class="text-right time-available"
+          *ngIf="editForm.controls['reservation-full-date'].valid"
+        >
+          Time available!
+        </p>
+        <button
+          type="submit"
+          class="btn btn-primary float-right"
+          [disabled]="!editForm.valid"
+        >
+          {{ editMode ? 'Save Changes' : 'Create' }}
+        </button>
+        <button
+          type="button"
+          *ngIf="editMode && editedItem.id"
+          class="btn btn-danger float-right mr-3"
+          (click)="onDeleteReservation()"
+        >
+          Delete Reservation
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

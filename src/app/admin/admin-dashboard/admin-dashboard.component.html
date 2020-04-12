@@ -1,0 +1,37 @@
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li
+        class="nav-item nav-link"
+        [routerLink]="['overview']"
+        routerLinkActive="active"
+      >
+        Overview
+      </li>
+      <li
+        class="nav-item nav-link"
+        [routerLink]="['users']"
+        routerLinkActive="active"
+      >
+        Users
+      </li>
+      <li
+        class="nav-item nav-link"
+        [routerLink]="['stats']"
+        routerLinkActive="active"
+      >
+        Statistics
+      </li>
+      <li
+        class="nav-item nav-link"
+        [routerLink]="['blog']"
+        routerLinkActive="active"
+      >
+        Blog
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <router-outlet></router-outlet>
+  </div>
+</div>

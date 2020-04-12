@@ -1,0 +1,8 @@
+<div class="event" *ngFor="let reservation of dailyReservations">
+  <!-- {{ reservation.name }}
+  <br>
+  {{ reservation.startTime }} -->
+  <div class="d-flex flex-column row-hl reservation-item" (click)="onEditReservation(reservation.id)">
+    <div class="p-2 item-hl">{{ reservation.name }}</div>
+  </div>
+</div>

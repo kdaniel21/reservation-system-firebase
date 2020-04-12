@@ -1,0 +1,7 @@
+.time-available {
+  color: green;
+} .time-not-available {
+  color: red;
+} .time-pending {
+  color: orange;
+}
