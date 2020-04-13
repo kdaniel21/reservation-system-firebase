@@ -1,23 +1,68 @@
-<div class="wrapper">
-  <nav id="sidebar">
-    <div class="sidebar-header">
-      <h3>Bootstrap Sidebar</h3>
+<!-- SIDENAV CONTAINER -->
+<mat-sidenav-container>
+  <!-- SIDENAV -->
+  <mat-sidenav
+    #sidenav
+    [mode]="screenWidth > 840 ? 'side' : 'over'"
+    [opened]="screenWidth > 840"
+    class="example-sidenav"
+    fixedInViewport="true"
+    color="accent"
+  >
+    <!-- USER PROFILE -->
+    <div class="user-profile">
+      <mat-icon id="user-profile-icon">account_circle</mat-icon>
+      <div class="mat-subheading-2 user-text">
+        Welcome back<br>
+        Daniel Kiss
+      </div>
     </div>
-
-    <ul class="list-unstyled comoponents">
-      <p>Dummy Title</p>
-      <li>
-        <a [routerLink]='[""]'>Home</a>
-      </li>
-      <li class="active">
-        <a [routerLink]='["../calendar/view"]'>Calendar</a>
-      </li>
-      <li>
-        <a [routerLink]='["../admin/dashboard"]'>Admin</a>
-      </li>
-      <li>
-        <a (click)="onLogout()" style="cursor: pointer;">Logout</a>
-      </li>
-    </ul>
-  </nav>
-</div>
+    <!-- NAVIGATION LIST -->
+    <mat-nav-list>
+      <div class="top-action">
+        <mat-list-item>
+          <mat-icon matListIcon>home</mat-icon>
+          <a matLine [routerLink]="['']">Home</a>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListIcon>calendar_today</mat-icon>
+          <a matLine [routerLink]="['../calendar/view']">Reservation Calendar</a>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListIcon>work</mat-icon>
+          <a matLine [routerLink]="['../admin/dashboard']">Admin Panel</a>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListIcon>help</mat-icon>
+          <a matLine [routerLink]="['../admin/dashboard']">How does it work?</a>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListIcon>mail</mat-icon>
+          <a matLine [routerLink]="['../admin/dashboard']">Contact Us</a>
+        </mat-list-item>
+      </div>
+      <!-- BOTTOM  BUTTON -->
+      <div class="bottom-action">
+        <mat-list-item>
+          <mat-icon matListIcon>exit_to_app</mat-icon>
+          <a matLine>Sign Out</a>
+        </mat-list-item>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- TOOLBAR -->
+    <mat-toolbar color="primary">
+      <div [ngStyle]="{ display: screenWidth > 840 ? 'none' : 'block' }">
+        <button type="button" mat-button (click)="sidenav.open()">
+          <span class="material-icons">
+            menu
+          </span>
+        </button>
+      </div>
+      <span>Reservation System</span>
+    </mat-toolbar>
+    <!-- ROUTER OUTLET -->
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

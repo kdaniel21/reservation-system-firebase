@@ -4,6 +4,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { RouterModule } from '@angular/router';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { InfoModalComponent } from './info-modal/info-modal.component';
+import { SharedMaterialModule } from './shared-material.module';
 
 
 
@@ -15,7 +16,8 @@ import { InfoModalComponent } from './info-modal/info-modal.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    SharedMaterialModule
   ],
   exports: [
     SidebarComponent,

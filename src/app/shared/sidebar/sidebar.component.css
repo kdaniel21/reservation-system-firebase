@@ -1,16 +1,12 @@
-.wrapper {
-  display: flex;
+#user-profile-icon {
+  font-size: 70px;
+  margin-left: 5rem
+}
+.bottom-action {
+  position: absolute;
+  bottom: 0;
   width: 100%;
 }
-
-#sidebar {
-  width: 250px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  z-index: 999;
-  background: #7386D5;
-  color: #fff;
-  transition: all 0.3;
+.user-text {
+  text-align: center;
 }
