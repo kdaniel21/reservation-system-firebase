@@ -4,9 +4,21 @@ import { AppState } from '../store/app.reducer';
 
 import * as AuthActions from './store/auth.actions';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { of } from 'rxjs';
+
+interface UserData {
+  admin: boolean;
+  deleted: boolean;
+  disabled: boolean;
+  email: string;
+  name: string;
+  registered: Date;
+  registeredBy: string;
+  reservations: Array<string>;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -67,44 +79,54 @@ export class AuthService {
     const user = { ...userData };
 
     // Create user in the auth
-    return this.afFunctions
-      .httpsCallable('createUser')({
-        email: user.invitation.email,
-        password: user.password,
-      })
-      .toPromise()
-      .then((userRecord) => {
-        // Create user record in Firestore
-        return this.afStore.collection('users').doc(userRecord.user.uid).set({
-          admin: false,
-          disabled: false,
-          deleted: false,
-          email: userRecord.user.email,
-          name: user.name,
-          registered: new Date(),
-          registeredBy: user.invitation.invitedBy,
-          reservations: [],
-        });
-      })
-      .then((newRes) => {
-        // Invalidate invitation
-        return this.afStore
-          .collection('invitations')
-          .doc(user.invitation.id)
-          .update({
-            valid: false,
+    return (
+      this.afFunctions
+        .httpsCallable('createUser')({
+          email: user.invitation.email,
+          password: user.password,
+        })
+        .toPromise()
+        .then((userRecord) => {
+          // Create user record in Firestore
+          return this.afStore.collection('users').doc(userRecord.user.uid).set({
+            admin: false,
+            disabled: false,
+            deleted: false,
+            email: userRecord.user.email,
+            name: user.name,
+            registered: new Date(),
+            registeredBy: user.invitation.invitedBy,
+            reservations: [],
           });
-      })
-      // .then((finalRes) => {
-      //   return 'User registered successfully!';
-      // })
-      .catch((err) => {
-        console.log('ERROR', err);
-        return err;
-      });
+        })
+        .then((newRes) => {
+          // Invalidate invitation
+          return this.afStore
+            .collection('invitations')
+            .doc(user.invitation.id)
+            .update({
+              valid: false,
+            });
+        })
+        // .then((finalRes) => {
+        //   return 'User registered successfully!';
+        // })
+        .catch((err) => {
+          console.log('ERROR', err);
+          return err;
+        })
+    );
   }
 
   sendPasswordResetEmail(email: string) {
     return this.afAuth.sendPasswordResetEmail(email);
+  }
+
+  getDisplayName(userId: string) {
+    return this.afStore
+      .collection<UserData>('users')
+      .doc(userId)
+      .get()
+      .pipe(map((userData) => userData.data().name));
   }
 }

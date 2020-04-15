@@ -1,21 +1,28 @@
 import { Actions, Effect, ofType } from '@ngrx/effects/';
 import { Injectable } from '@angular/core';
-import { map, switchMap, catchError, tap } from 'rxjs/operators';
+import {
+  map,
+  switchMap,
+  catchError,
+  tap,
+  withLatestFrom,
+  mergeMap,
+} from 'rxjs/operators';
 
 import * as AuthActions from './auth.actions';
 import { User } from '../user.model';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { of, from } from 'rxjs';
+import { of, from, forkJoin } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class AuthEffects {
   constructor(
     private actions$: Actions,
     private afAuth: AngularFireAuth,
-    private afStore: AngularFirestore,
-    private afFunctions: AngularFireFunctions
+    private authService: AuthService
   ) {}
 
   @Effect()
@@ -24,15 +31,16 @@ export class AuthEffects {
     switchMap(() => this.afAuth.authState),
     switchMap((authData) => {
       if (authData) {
-        return from(authData.getIdTokenResult()).pipe(
-          map((idTokenResult) => {
+        const idTokenResult = authData.getIdTokenResult();
+        const displayName = this.authService.getDisplayName(authData.uid);
+        return forkJoin([displayName, idTokenResult]).pipe(
+          map(([displayName, idTokenResult]) => {
             const user = new User(
               authData.uid,
               authData.email,
-              authData.displayName,
-              idTokenResult.claims.admin ? idTokenResult.claims.admin : false
+              displayName,
+              idTokenResult.claims.admin
             );
-
             return new AuthActions.Authenticated(user);
           })
         );

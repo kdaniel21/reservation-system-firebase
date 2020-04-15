@@ -5,7 +5,6 @@ import { from } from 'rxjs';
 import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
 import { User } from 'src/app/auth/user.model';
 
 @Injectable({ providedIn: 'root' })

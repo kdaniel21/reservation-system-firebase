@@ -9,32 +9,39 @@
     fixedInViewport="true"
     color="accent"
   >
+    <!-- IF USER IS AUTHENTICATED -->
     <!-- USER PROFILE -->
-    <div class="user-profile">
+    <div class="user-profile" *ngIf="currentUser">
       <mat-icon id="user-profile-icon">account_circle</mat-icon>
       <div class="mat-subheading-2 user-text">
-        Welcome back<br>
-        Daniel Kiss
+        Welcome back<br />
+        {{ currentUser.name }}
       </div>
     </div>
     <!-- NAVIGATION LIST -->
     <mat-nav-list>
       <div class="top-action">
-        <mat-list-item>
+        <mat-list-item *ngIf="currentUser">
           <mat-icon matListIcon>home</mat-icon>
           <a matLine [routerLink]="['']">Home</a>
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item *ngIf="currentUser">
           <mat-icon matListIcon>calendar_today</mat-icon>
-          <a matLine [routerLink]="['../calendar/view']">Reservation Calendar</a>
+          <a matLine [routerLink]="['../calendar/view']"
+            >Reservation Calendar</a
+          >
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item *ngIf="currentUser && currentUser.admin">
           <mat-icon matListIcon>work</mat-icon>
           <a matLine [routerLink]="['../admin/dashboard']">Admin Panel</a>
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item *ngIf="currentUser">
           <mat-icon matListIcon>help</mat-icon>
           <a matLine [routerLink]="['../admin/dashboard']">How does it work?</a>
+        </mat-list-item>
+        <mat-list-item *ngIf="!currentUser">
+          <mat-icon matListIcon>vpn_key</mat-icon>
+          <a matLine [routerLink]="['../auth/login']">Login</a>
         </mat-list-item>
         <mat-list-item>
           <mat-icon matListIcon>mail</mat-icon>
@@ -42,10 +49,10 @@
         </mat-list-item>
       </div>
       <!-- BOTTOM  BUTTON -->
-      <div class="bottom-action">
+      <div class="bottom-action" *ngIf="currentUser">
         <mat-list-item>
           <mat-icon matListIcon>exit_to_app</mat-icon>
-          <a matLine>Sign Out</a>
+          <a matLine (click)="onLogout()">Sign Out</a>
         </mat-list-item>
       </div>
     </mat-nav-list>

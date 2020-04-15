@@ -2,8 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { User } from 'src/app/auth/user.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
 import { AdminUsersService } from '../admin-users.service';
 
 @Component({
