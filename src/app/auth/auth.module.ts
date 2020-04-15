@@ -7,6 +7,7 @@ import { AuthRegisterUserComponent } from './register-user/auth-register-user.co
 import { SharedModule } from '../shared/shared.module';
 import { InfoModalComponent } from '../shared/info-modal/info-modal.component';
 import { AuthForgottenPasswordComponent } from './forgotten-password/auth-forgotten-password.component';
+import { AuthMaterialModule } from './auth-material.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { AuthForgottenPasswordComponent } from './forgotten-password/auth-forgot
     FormsModule,
     ReactiveFormsModule,
     AuthRoutingModule,
-    SharedModule
+    SharedModule,
+    AuthMaterialModule
   ],
   exports: [],
   entryComponents: [InfoModalComponent]

@@ -3,9 +3,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducer';
 import * as AuthActions from 'src/app/auth/store/auth.actions';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Subscription, Observable } from 'rxjs';
-import { State } from 'src/app/auth/store/auth.reducer';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 
 @Component({
@@ -31,7 +29,6 @@ export class SidebarComponent implements OnInit {
     // Get current user
     this.currentUserSub = this.store.select('auth').subscribe((authState) => {
       this.currentUser = authState.user;
-      console.log(this.currentUser);
     });
   }
 
