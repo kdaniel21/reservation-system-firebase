@@ -1,68 +1,40 @@
-<div class="container">
-  <!-- ERROR -->
-  <div class="alert alert-danger d-flex align-items-center" *ngIf="error">
-    {{ error }}
-  </div>
-
-  <!-- LOADING SPINNER -->
-  <div class="d-flex justify-content-center" *ngIf="loading">
-    <div class="spinner-border text-primary" role="status" style="height: 5rem; width: 5rem">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
-  <!-- REGISTRATION FORM -->
-  <div class="card mx-auto" style="width: 35rem;" *ngIf="!loading && !error">
-    <div class="card-header">
-      <h4 class="card-title">Register</h4>
-    </div>
-    <div class="card-body">
-      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            placeholder="Email"
-            id="email"
-            formControlName="email"
-            class="form-control"
-          />
-        </div>
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input
-            type="text"
-            placeholder="Name"
-            id="name"
-            formControlName="name"
-            class="form-control"
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            placeholder="Password"
-            id="password"
-            formControlName="password"
-            class="form-control"
-          />
-        </div>
-        <div class="form-group">
-          <label for="eula"
-            ><input type="checkbox" id="eula" formControlName="eula" /> By registering I accept the
-            terms of use.</label
-          >
-        </div>
-
-        <!-- BUTTONS -->
-        <button
-          type="submit"
-          class="btn btn-primary pull-right"
-          [disabled]="registerForm.invalid"
-        >
-          Register
-        </button>
-      </form>
-    </div>
-  </div>
-</div>
+<!-- LOADING SPINNER -->
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<!-- CARD -->
+<mat-card class="register-card" *ngIf="!loading && !error">
+  <mat-card-title class="register-header">Register</mat-card-title>
+  <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <mat-label>Email</mat-label>
+        <input
+          type="text"
+          matInput
+          placeholder="Email address"
+          formControlName="email"
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput placeholder="Name" formControlName="name" />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          type="password"
+          matInput
+          placeholder="Password"
+          formControlName="password"
+        />
+      </mat-form-field>
+      <mat-checkbox formControlName="eula">
+        By registering I accept the terms of use.
+      </mat-checkbox>
+    </mat-card-content>
+    <mat-card-footer>
+      <button type="submit" [disabled]="registerForm.invalid" mat-flat-button color="primary" class="register-button">
+        Register
+      </button>
+    </mat-card-footer>
+  </form>
+</mat-card>

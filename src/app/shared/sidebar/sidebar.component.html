@@ -38,7 +38,7 @@
         </mat-list-item>
         <mat-list-item *ngIf="currentUser">
           <mat-icon matListIcon>help</mat-icon>
-          <a matLine [routerLink]="['../admin/dashboard']">How does it work?</a>
+          <a matLine [routerLink]="['']">How does it work?</a>
         </mat-list-item>
         <mat-list-item *ngIf="!currentUser">
           <mat-icon matListIcon>vpn_key</mat-icon>
@@ -46,14 +46,14 @@
         </mat-list-item>
         <mat-list-item>
           <mat-icon matListIcon>mail</mat-icon>
-          <a matLine [routerLink]="['../admin/dashboard']">Contact Us</a>
+          <a matLine [routerLink]="['']">Contact Us</a>
         </mat-list-item>
       </div>
       <!-- BOTTOM  BUTTON -->
       <div class="bottom-action" *ngIf="currentUser">
-        <mat-list-item>
+        <mat-list-item (click)="onLogout()">
           <mat-icon matListIcon>exit_to_app</mat-icon>
-          <a matLine (click)="onLogout()">Sign Out</a>
+          <a matLine>Sign Out</a>
         </mat-list-item>
       </div>
     </mat-nav-list>

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { InfoModalComponent } from './info-modal/info-modal.component';
 import { SharedMaterialModule } from './shared-material.module';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 
 
@@ -12,7 +13,8 @@ import { SharedMaterialModule } from './shared-material.module';
   declarations: [
     SidebarComponent,
     ConfirmationModalComponent,
-    InfoModalComponent
+    InfoModalComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +24,8 @@ import { SharedMaterialModule } from './shared-material.module';
   exports: [
     SidebarComponent,
     ConfirmationModalComponent,
-    InfoModalComponent
+    InfoModalComponent,
+    LoadingSpinnerComponent
   ],
   entryComponents: [InfoModalComponent]
 })

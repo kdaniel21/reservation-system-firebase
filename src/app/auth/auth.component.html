@@ -1,4 +1,7 @@
-<mat-card class="login-card">
+<!-- LOADING SPINNER -->
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<!-- LOGIN CARD -->
+<mat-card class="login-card" *ngIf="!loading">
   <mat-card-title class="login-card-header">Login</mat-card-title>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <mat-card-content>

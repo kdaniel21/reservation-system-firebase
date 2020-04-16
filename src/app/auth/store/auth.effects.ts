@@ -4,17 +4,13 @@ import {
   map,
   switchMap,
   catchError,
-  tap,
-  withLatestFrom,
-  mergeMap,
+  take,
 } from 'rxjs/operators';
 
 import * as AuthActions from './auth.actions';
 import { User } from '../user.model';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { of, from, forkJoin } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { of } from 'rxjs';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -31,15 +27,14 @@ export class AuthEffects {
     switchMap(() => this.afAuth.authState),
     switchMap((authData) => {
       if (authData) {
-        const idTokenResult = authData.getIdTokenResult();
-        const displayName = this.authService.getDisplayName(authData.uid);
-        return forkJoin([displayName, idTokenResult]).pipe(
-          map(([displayName, idTokenResult]) => {
+        return this.authService.getUserInfo(authData.uid).pipe(
+          take(1),
+          map((userData) => {
             const user = new User(
               authData.uid,
               authData.email,
-              displayName,
-              idTokenResult.claims.admin
+              userData.name,
+              userData.admin
             );
             return new AuthActions.Authenticated(user);
           })
@@ -62,20 +57,5 @@ export class AuthEffects {
     map(() => {
       return new AuthActions.NotAuthenticated();
     })
-  );
-
-  @Effect()
-  login = this.actions$.pipe(
-    ofType(AuthActions.LOGIN),
-    map((action: AuthActions.Login) => action.payload),
-    switchMap((loginData) => {
-      return of(
-        this.afAuth.signInWithEmailAndPassword(
-          loginData.email,
-          loginData.password
-        )
-      );
-    }),
-    map(() => new AuthActions.GetUser())
   );
 }

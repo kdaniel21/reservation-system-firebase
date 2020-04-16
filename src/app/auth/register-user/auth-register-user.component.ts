@@ -4,22 +4,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfoModalComponent } from 'src/app/shared/info-modal/info-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth-register-user',
   templateUrl: './auth-register-user.component.html',
+  styleUrls: ['./auth-register-user.component.css'],
 })
 export class AuthRegisterUserComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private modalService: NgbModal,
-    private router: Router
+    private dialog: MatDialog,
+    private router: Router,
+    private snackbar: MatSnackBar
   ) {}
 
-  loading;
-  error;
+  loading: boolean;
+  error: boolean;
   invitation;
   registerForm: FormGroup;
 
@@ -40,19 +45,34 @@ export class AuthRegisterUserComponent implements OnInit {
           this.registerForm = this.fb.group({
             email: this.fb.control({ value: invitation.email, disabled: true }),
             name: this.fb.control(invitation.name, Validators.required),
-            password: this.fb.control(null, [Validators.required, Validators.min(6)]),
+            password: this.fb.control(null, [
+              Validators.required,
+              Validators.min(6),
+            ]),
             eula: this.fb.control(false, Validators.requiredTrue),
           });
         },
         (error) => {
           this.loading = false;
-          this.error = error;
+          this.error = true;
+          this.showError(error);
         }
       );
     } else {
-      this.error =
-        'No invitation found! Please try again with a new invitation link.';
+      this.error = true;
+      this.showError(
+        'No invitation found! Please try again with a new invitation link.'
+      );
     }
+  }
+
+  showError(msg: string) {
+    const snackBarRef = this.snackbar.open(msg, 'OKAY');
+
+    snackBarRef
+      .afterDismissed()
+      .pipe(take(1))
+      .subscribe(() => this.router.navigate(['/auth/login']));
   }
 
   onRegister() {
@@ -67,16 +87,16 @@ export class AuthRegisterUserComponent implements OnInit {
         this.loading = false;
 
         // Show success modal
-        const elementRef = this.modalService.open(InfoModalComponent, {
-          size: 'sm',
+        const dialogRef = this.dialog.open(InfoModalComponent, {
+          data: {
+            title: 'User Created',
+            message:
+              'Your user profile has been created successfully! Now you can log in.',
+          },
         });
-        elementRef.componentInstance.title = 'User Created';
-        elementRef.componentInstance.message =
-          'Your user profile has been created successfully! Now you can log in.';
-
-        elementRef.result
-          .then(() => this.router.navigate(['/auth/login']))
-          .catch(() => this.router.navigate(['/auth/login']));
+        dialogRef
+          .afterClosed()
+          .subscribe(() => this.router.navigate(['/auth/login']));
       });
   }
 }

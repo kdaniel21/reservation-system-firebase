@@ -33,6 +33,7 @@ export class SidebarComponent implements OnInit {
   }
 
   onLogout() {
+    console.log('LOGGED OUT!');
     this.afAuth.signOut();
     this.store.dispatch(new AuthActions.Logout());
   }

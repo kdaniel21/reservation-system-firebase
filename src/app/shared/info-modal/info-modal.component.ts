@@ -1,18 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, OnInit, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-info-modal',
-  templateUrl: './info-modal.component.html'
+  templateUrl: './info-modal.component.html',
 })
-export class InfoModalComponent implements OnInit {
-  @Input() title;
-  @Input() message;
+export class InfoModalComponent {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<InfoModalComponent>
+  ) {}
 
-  constructor(public activeModal: NgbActiveModal) {}
-  ngOnInit() {
-    console.log('TITLE: ', this.title);
-    console.log('MESSAGE: ', this.message);
+  onClose() {
+    this.dialogRef.close();
   }
-
 }

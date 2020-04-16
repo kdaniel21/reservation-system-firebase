@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../store/app.reducer';
 
-import * as AuthActions from './store/auth.actions';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { of } from 'rxjs';
 
 interface UserData {
   admin: boolean;
@@ -30,24 +28,6 @@ export class AuthService {
     private afFunctions: AngularFireFunctions,
     private afAuth: AngularFireAuth
   ) {}
-
-  startExpirationTimer(expirationSeconds: number) {
-    this.expirationTimer = setTimeout(() => {
-      // log out user
-      this.store.dispatch(new AuthActions.Logout());
-      console.log('Logging out...');
-
-      // destroy the timer
-      this.deleteExpirationTimer();
-    }, expirationSeconds * 1000);
-  }
-
-  deleteExpirationTimer() {
-    if (this.expirationTimer) {
-      clearTimeout(this.expirationTimer);
-    }
-    this.expirationTimer = null;
-  }
 
   getInvitationData(id: string) {
     return this.afStore
@@ -99,7 +79,7 @@ export class AuthService {
             reservations: [],
           });
         })
-        .then((newRes) => {
+        .then(() => {
           // Invalidate invitation
           return this.afStore
             .collection('invitations')
@@ -108,9 +88,6 @@ export class AuthService {
               valid: false,
             });
         })
-        // .then((finalRes) => {
-        //   return 'User registered successfully!';
-        // })
         .catch((err) => {
           console.log('ERROR', err);
           return err;
@@ -118,8 +95,20 @@ export class AuthService {
     );
   }
 
+  loginUser(email: string, password: string) {
+    return this.afAuth.signInWithEmailAndPassword(email, password);
+  }
+
   sendPasswordResetEmail(email: string) {
     return this.afAuth.sendPasswordResetEmail(email);
+  }
+
+  getUserInfo(userId: string) {
+    return this.afStore
+      .collection<UserData>('users')
+      .doc(userId)
+      .get()
+      .pipe(map((userData) => userData.data()));
   }
 
   getDisplayName(userId: string) {
