@@ -1,4 +1,4 @@
-<h5 class="week-date">
+<!-- <h5 class="week-date">
   {{ resService.formatDateToString(startingDayOfWeek) }} -
   {{ resService.formatDateToString(endingDayOfWeek) }}
 </h5>
@@ -29,4 +29,20 @@
     >
     <i class="fa fa-plus"></i> Create Reservation
   </button>
+</div> -->
+<div class="container">
+  <div class="info"></div>
+  <div class="calendar">
+    <div class="reservation-list">
+      <mat-grid-list cols="7" rowHeight="fit" style="height: 100%;">
+        <mat-grid-tile
+          *ngFor="let day of daysOfWeek; let i = index"
+          class="day"
+        >
+          <mat-grid-tile-header>{{ day }}</mat-grid-tile-header>
+          <app-reservation-dayview [day]="i+1"></app-reservation-dayview>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
 </div>

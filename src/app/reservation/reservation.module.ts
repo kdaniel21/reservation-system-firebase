@@ -9,6 +9,7 @@ import { ReservationRoutingModule } from './reservation-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../shared/shared.module';
+import { ReservationMaterialModule } from './reservation-material.module';
 
 @NgModule({
   declarations: [
@@ -21,10 +22,10 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     ReservationRoutingModule,
-    FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    SharedModule
+    SharedModule,
+    ReservationMaterialModule
   ],
   exports: [
     ReservationComponent

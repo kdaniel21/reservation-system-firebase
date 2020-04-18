@@ -1,15 +1,14 @@
+.container {
+  padding-top: 10%;
+}
 .login-card {
   max-width: 30rem;
   margin: auto;
-  margin-top: 10%;
   text-align: center;
 }
 .login-card-header {
-  /* text-align: left; */
-  /* background-color: primary; */
   padding-top: 5%;
   padding-bottom: 5%;
-  /* text-align: center; */
 }
 .login-card-button {
   width: 90%!important;

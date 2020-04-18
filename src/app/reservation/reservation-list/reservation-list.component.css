@@ -1,12 +1,26 @@
-div.day {
+.container {
+  width: 100%;
+  height: 100%;
+}
+.info {
+  height: 10%;
+}
+.calendar {
+  height: 90%;
+}
+.reservation-list {
+  height: 100%;
+}
+.reservations {
+}
+.reservation {
+  background-color: red;
+}
+example-viewport {
+  height: 20rem;
+  width: 100%;
   border: 1px solid black;
-  height: 35rem;
-} .change-week {
-  height: 10rem;
-  align-self: center;
-} .week-date {
-  text-align: center;
-} .add-btn-wrapper {
-  text-align: center;
-  margin-top: 1rem;
+}
+mat-grid-tile.day {
+  background: lightblue;
 }

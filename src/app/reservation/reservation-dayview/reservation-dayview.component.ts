@@ -35,6 +35,7 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
           }
         );
       }
+      console.log(this.dailyReservations);
     });
   }
 

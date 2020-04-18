@@ -22,31 +22,32 @@
     <!-- NAVIGATION LIST -->
     <mat-nav-list>
       <div class="top-action">
-        <mat-list-item *ngIf="currentUser">
+        <mat-list-item *ngIf="currentUser" [routerLink]="['']">
           <mat-icon matListIcon>home</mat-icon>
-          <a matLine [routerLink]="['']">Home</a>
+          <a matLine>Home</a>
         </mat-list-item>
-        <mat-list-item *ngIf="currentUser">
+        <mat-list-item *ngIf="currentUser" [routerLink]="['../calendar/view']">
           <mat-icon matListIcon>calendar_today</mat-icon>
-          <a matLine [routerLink]="['../calendar/view']"
-            >Reservation Calendar</a
-          >
+          <a matLine>Reservation Calendar</a>
         </mat-list-item>
-        <mat-list-item *ngIf="currentUser && currentUser.admin">
+        <mat-list-item
+          *ngIf="currentUser && currentUser.admin"
+          [routerLink]="['../admin/dashboard']"
+        >
           <mat-icon matListIcon>work</mat-icon>
-          <a matLine [routerLink]="['../admin/dashboard']">Admin Panel</a>
+          <a matLine>Admin Panel</a>
         </mat-list-item>
-        <mat-list-item *ngIf="currentUser">
+        <mat-list-item *ngIf="currentUser" [routerLink]="['']">
           <mat-icon matListIcon>help</mat-icon>
-          <a matLine [routerLink]="['']">How does it work?</a>
+          <a matLine>How does it work?</a>
         </mat-list-item>
-        <mat-list-item *ngIf="!currentUser">
+        <mat-list-item *ngIf="!currentUser" [routerLink]="['../auth/login']">
           <mat-icon matListIcon>vpn_key</mat-icon>
-          <a matLine [routerLink]="['../auth/login']">Login</a>
+          <a matLine>Login</a>
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item [routerLink]="['']">
           <mat-icon matListIcon>mail</mat-icon>
-          <a matLine [routerLink]="['']">Contact Us</a>
+          <a matLine>Contact Us</a>
         </mat-list-item>
       </div>
       <!-- BOTTOM  BUTTON -->
@@ -60,7 +61,7 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <!-- TOOLBAR -->
-    <mat-toolbar color="primary">
+    <mat-toolbar color="primary" style="position: fixed; z-index: 9;">
       <div [ngStyle]="{ display: screenWidth > 840 ? 'none' : 'block' }">
         <button type="button" mat-button (click)="sidenav.open()">
           <span class="material-icons">
@@ -71,6 +72,8 @@
       <span>Reservation System</span>
     </mat-toolbar>
     <!-- ROUTER OUTLET -->
-    <router-outlet></router-outlet>
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

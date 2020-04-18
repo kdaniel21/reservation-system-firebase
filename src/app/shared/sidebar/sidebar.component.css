@@ -1,12 +1,16 @@
 #user-profile-icon {
+  margin-right: 2.5rem;
   font-size: 70px;
-  margin-left: 5rem
 }
 .bottom-action {
   position: absolute;
   bottom: 0;
   width: 100%;
 }
-.user-text {
+.user-profile {
   text-align: center;
+}
+.container {
+  margin-top: 64px;
+  height: calc(100vh - 64px);
 }
