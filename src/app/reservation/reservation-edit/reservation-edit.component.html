@@ -1,4 +1,4 @@
-<div class="edit-state">
+<!-- <div class="edit-state">
   <div class="card" style="width: 50rem">
     <div class="card-header">
       <span class="card-title">
@@ -7,7 +7,7 @@
       </span>
     </div>
     <div class="card-body">
-      <!-- EDIT STATE FORM-->
+      <!-- EDIT STATE FORM
       <form [formGroup]="editForm" (ngSubmit)="onSubmitForm()">
         <div class="form-group">
           <label for="reservation-name">Name</label>
@@ -53,7 +53,7 @@
             ></ngb-timepicker>
           </div>
         </div>
-        <!-- BOTTOM BUTTONS -->
+        <!-- BOTTOM BUTTONS
         <p class="text-right time-pending" *ngIf="editForm.pending">
           Checking availability...
         </p>
@@ -87,4 +87,105 @@
       </form>
     </div>
   </div>
+</div> -->
+<div class="container">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <mat-card class="edit-card" *ngIf="!loading">
+    <mat-card-title class="edit-card-title">Edit Reservation</mat-card-title>
+    <form [formGroup]="editForm" (ngSubmit)="onSubmitForm()">
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input type="text" matInput formControlName="reservation-name" />
+        </mat-form-field>
+        <div formGroupName="reservation-full-date">
+          <mat-form-field>
+            <mat-label>Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="date"
+              formControlName="reservation-date"
+            />
+            <mat-datepicker-toggle
+              [for]="date"
+              matSuffix
+            ></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker> </mat-form-field
+          ><br />
+          <mat-form-field>
+            <mat-label>Start Time</mat-label>
+            <input
+              matInput
+              [format]="24"
+              readonly
+              [ngxTimepicker]="startTime"
+              formControlName="reservation-start-time"
+            />
+            <ngx-material-timepicker-toggle
+              [for]="startTime"
+              matSuffix
+            ></ngx-material-timepicker-toggle>
+            <ngx-material-timepicker
+              [minutesGap]="5"
+              #startTime
+            ></ngx-material-timepicker> </mat-form-field
+          ><br />
+          <mat-form-field>
+            <mat-label>Length</mat-label>
+            <input
+              matInput
+              [format]="24"
+              readonly
+              [ngxTimepicker]="length"
+              formControlName="reservation-length"
+            />
+            <ngx-material-timepicker-toggle
+              [for]="length"
+              matSuffix
+            ></ngx-material-timepicker-toggle>
+            <ngx-material-timepicker
+              #length
+              [minutesGap]="5"
+            ></ngx-material-timepicker>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <!-- BUTTONS -->
+      <mat-card-actions align="right">
+        <p class="text-right time-pending" *ngIf="editForm.pending">
+          Checking availability...
+        </p>
+        <p
+          class="text-right time-not-available"
+          *ngIf="editForm.controls['reservation-full-date'].invalid"
+        >
+          Time is not available! Please choose another!
+        </p>
+        <p
+          class="text-right time-available"
+          *ngIf="editForm.controls['reservation-full-date'].valid"
+        >
+          Time available!
+        </p>
+        <button
+          mat-flat-button
+          color="warn"
+          type="button"
+          *ngIf="editMode && editedItem.id"
+          style="margin-right: 0.5rem;"
+          (click)="onDeleteReservation()"
+        >
+          Delete Reservation
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!editForm.valid"
+        >
+          {{ editMode ? 'Save Changes' : 'Create' }}
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
 </div>

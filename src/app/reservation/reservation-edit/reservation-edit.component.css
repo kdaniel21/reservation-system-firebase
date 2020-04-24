@@ -5,3 +5,19 @@
 } .time-pending {
   color: orange;
 }
+
+.container {
+  padding-top: 10%;
+}
+.edit-card {
+  margin: auto;
+  max-width: 60%;
+}
+.edit-card-title {
+  padding-top: 2%;
+  padding-bottom: 2%;
+}
+mat-form-field {
+  font-size: 17px;
+  width: 50%;
+}

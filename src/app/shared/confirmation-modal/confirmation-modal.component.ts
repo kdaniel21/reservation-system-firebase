@@ -1,15 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+interface dialogData {
+  title: string;
+  message: string;
+  submitBtnText: string;
+}
 
 @Component({
   selector: 'app-confirmation-modal',
-  templateUrl: './confirmation-modal.component.html'
+  templateUrl: './confirmation-modal.component.html',
 })
 export class ConfirmationModalComponent {
-  //@Input() color: string;
-  @Input() title: string;
-  @Input() message: string;
-  @Input() submitBtnText: string;
-
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmationModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: dialogData
+  ) {}
 }

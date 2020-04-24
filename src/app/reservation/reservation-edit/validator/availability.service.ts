@@ -41,12 +41,23 @@ export class AvailabilityService {
         map(([reservations, resState]: [Reservation[], State]) => {
           let available = true;
           reservations.forEach((res) => {
-            if (
-              res.startTime.getTime() <= startTime.getTime() &&
-              res.endTime.getTime() >= endTime.getTime() &&
-              res.id !== resState.editedReservation.id
-            ) {
-              available = false;
+            const editedId = resState.editedReservation
+              ? resState.editedReservation.id
+              : true;
+
+            if (editedId === true || res.id !== editedId) {
+              // to not compare milliseconds
+              const start1 = Math.floor(startTime.getTime() / 1000);
+              const start2 = Math.floor(res.startTime.getTime() / 1000);
+              const end1 = Math.floor(endTime.getTime() / 1000);
+              const end2 = Math.floor(res.endTime.getTime() / 1000);
+
+              if (
+                (start1 > start2 && start1 < end2) ||
+                (start2 > start1 && start2 < end1)
+              ) {
+                available = false;
+              }
             }
           });
 

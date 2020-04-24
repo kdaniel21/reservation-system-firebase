@@ -25,7 +25,7 @@ import { ReservationMaterialModule } from './reservation-material.module';
     ReactiveFormsModule,
     NgbModule,
     SharedModule,
-    ReservationMaterialModule
+    ReservationMaterialModule,
   ],
   exports: [
     ReservationComponent

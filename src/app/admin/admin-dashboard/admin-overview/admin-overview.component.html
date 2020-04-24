@@ -1,14 +1,15 @@
-<div class="row">
-  <div class="col-sm-8">
-    <div class="col">
-      <app-admin-current-reservation></app-admin-current-reservation>
+<div class="container">
+  <div fxLayout="row" fxLayout.lt-sm="column" style="display: flex; width: 100%; height: 100%;">
+    <div fxFlex="70" style="width: 70%; height: 100%;">
+      <div fxLayout="column">
+        <app-admin-current-reservation fxFlex></app-admin-current-reservation>
+        <mat-divider [inset]="true" style="margin-top: 2%; margin-bottom: 2%"></mat-divider>
+        <app-admin-camera fxFlex></app-admin-camera>
+      </div>
     </div>
-    <hr />
-    <div class="col">
-      <app-admin-camera></app-admin-camera>
+    <div fxFlex="30" style="margin-left: 2%; width: 28%; min-height: 100%; border-left: 1px solid lightgray">
+      <mat-divider [vertical]="true"></mat-divider>
+      <app-admin-notifications fxFlex></app-admin-notifications>
     </div>
-  </div>
-  <div class="col-sm-4">
-    <app-admin-notifications></app-admin-notifications>
   </div>
 </div>

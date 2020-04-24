@@ -1,13 +1,24 @@
-import { Component, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Inject } from '@angular/core';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { User } from 'src/app/auth/user.model';
+import { AuthService } from 'src/app/auth/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-users-info',
-  templateUrl: './admin-users-info.component.html'
+  templateUrl: './admin-users-info.component.html',
 })
 export class AdminUsersInfoComponent {
-  @Input() user: User;
-
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private authService: AuthService
+  ) {
+    // Calculate registration date
+    this.data.user.registered = new Date(
+      this.data.user.registered.seconds * 1000
+    );
+    this.data.user.registeredBy = this.authService.getDisplayName(
+      this.data.user.registeredBy
+    );
+  }
 }

@@ -1,13 +1,14 @@
-<div class="current-reservation" *ngIf="currentReservation">
-  <div class="card-title">Current Reservation:</div>
-  <h6>{{ currentReservation.name }}</h6>
-  <p class="card-text">{{ currentReservation.start }} - {{ currentReservation.end }}</p>
-  <p class="card-text">
+<mat-card *ngIf="currentReservation">
+  <mat-card-title>Current Reservation</mat-card-title>
+  <mat-card-content>
+    {{ currentReservation.name }} <br />
+    {{ currentReservation.start }} - {{ currentReservation.end }} <br />
     Created by:
     {{ currentReservation.createdBy }}
-  </p>
-</div>
+  </mat-card-content>
+</mat-card>
 
-<div class="no-current-reservation" *ngIf="!currentReservation">
-  <div class="card-title">Currently there is no reservation!</div>
+<div *ngIf="!currentReservation">
+  <!-- <div class="card-title">Currently there is no reservation!</div> -->
+  <div class="mat-h1">Currently there is no reservation!</div>
 </div>

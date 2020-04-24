@@ -6,7 +6,7 @@ import { AppState } from 'src/app/store/app.reducer';
 import * as fromAuth from '../../auth/store/auth.reducer';
 import { HttpClient } from '@angular/common/http';
 import { ReservationService } from '../reservation.service';
-import { take, map, switchMap, tap } from 'rxjs/operators';
+import { take, map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ReservationEditService {
@@ -18,6 +18,7 @@ export class ReservationEditService {
 
   createNewReservation(newReservation: Reservation) {
     return this.store.select('auth').pipe(
+      take(1),
       switchMap((authState: fromAuth.State) => {
         const reservation = { ...newReservation };
         // Get logged in user
@@ -40,7 +41,7 @@ export class ReservationEditService {
             reservation
           )
           .pipe(
-            map(response => {
+            map((response) => {
               // Add the id to the reservation object
               reservation.id = response.name;
               return reservation;
@@ -92,23 +93,20 @@ export class ReservationEditService {
       this.resService.getFirstDayOfWeek(reservation.startTime)
     );
 
-    this.http
-      .delete(
-        `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${reservation.id}.json`
-      )
-      .pipe(take(1))
-      .subscribe();
+    return this.http.delete(
+      `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${reservation.id}.json`
+    );
   }
 
   // Checks if user can edit the given reservation
   canUserEdit(reservation_id: string) {
-    const user_id = JSON.parse(localStorage.getItem('user')).id;
-
     return this.http
       .get('https://reservation-system-81981.firebaseio.com/calendar.json')
       .pipe(
         take(1),
-        map(reservations => {
+        withLatestFrom(this.store.select('auth')),
+        map(([reservations, authState]) => {
+          //const user_id = authState.user.uid;
           // Loop through the years
           for (let year of Object.keys(reservations)) {
             // Loop through weeks
@@ -120,7 +118,9 @@ export class ReservationEditService {
               ) {
                 // If reservation is found, check creator
                 if (
-                  reservations[year][week][reservation_id].createdBy === user_id
+                  // ONLY DEV PURPOSES -> FIX RESOLVER
+                  true
+                  // reservations[year][week][reservation_id].createdBy === user_id
                 ) {
                   return reservations[year][week][reservation_id];
                 }
@@ -130,5 +130,15 @@ export class ReservationEditService {
           return null;
         })
       );
+  }
+
+  // returns the string time as {hour: XX, minute: XX}
+  parseTime(time: string): { hour: number; minute: number } {
+    if (!time || time === '') {
+      return { hour: 0, minute: 0 };
+    }
+
+    const splittedTime = time.split(':');
+    return { hour: +splittedTime[0], minute: +splittedTime[1] };
   }
 }

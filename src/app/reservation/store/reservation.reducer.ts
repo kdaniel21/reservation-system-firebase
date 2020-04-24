@@ -5,7 +5,7 @@ const initialState = {
   currentWeekStartingDate: null,
   currentWeek: null,
   currentWeekReservations: null,
-  editedReservation: null
+  editedReservation: null,
 };
 
 export interface State {
@@ -24,25 +24,27 @@ export function reservationReducer(
       return {
         ...state,
         editedReservation: null,
-        currentWeekReservations: [...action.payload]
+        currentWeekReservations: [...action.payload],
       };
     case ReservationActions.SET_CURR_WEEK_START:
       return {
         ...state,
-        currentWeekStartingDate: action.payload
+        currentWeekStartingDate: action.payload,
       };
     case ReservationActions.START_EDIT:
       const id = action.payload;
-      const editedReservation = [...state.currentWeekReservations].find(res => res.id == id);
+      const editedReservation = [...state.currentWeekReservations].find(
+        (res) => res.id == id
+      );
 
       return {
         ...state,
-        editedReservation: editedReservation
+        editedReservation: editedReservation,
       };
     case ReservationActions.DELETE_RESERVATION:
       const deletedReservation = action.payload;
       const currentReservations = [
-        ...state.currentWeekReservations
+        ...state.currentWeekReservations,
       ].filter((reservation: Reservation) =>
         reservation.id === deletedReservation.id ? false : true
       );
@@ -50,13 +52,16 @@ export function reservationReducer(
       return {
         ...state,
         editedReservation: null,
-        currentWeekReservations: [...currentReservations]
+        currentWeekReservations: [...currentReservations],
       };
     case ReservationActions.ADD_RESERVATION:
       return {
         ...state,
         editedReservation: null,
-        currentWeekReservations: [...state.currentWeekReservations, action.payload]
+        currentWeekReservations: [
+          ...state.currentWeekReservations,
+          action.payload,
+        ],
       };
     default:
       return state;

@@ -1,3 +1,13 @@
-.nav-item {
-  cursor: pointer;
+.container {
+  width: 80%;
+  height: 60%;
+  margin: auto;
+  padding-top: 4%;
+}
+.card-content {
+  padding-top: 5%;
+  width: 100%;
+  max-height: 50vh;
+  overflow-y: auto
+  ;
 }

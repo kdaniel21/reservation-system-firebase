@@ -12,9 +12,9 @@ import { AdminUsersListComponent } from './admin-dashboard/admin-users/admin-use
 import { AdminUserEditComponent } from './admin-dashboard/admin-users/admin-user-edit/admin-user-edit.component';
 import { AdminUserInviteComponent } from './admin-dashboard/admin-users/admin-user-invite/admin-user-invite.component';
 import { AdminUsersInfoComponent } from './admin-dashboard/admin-users/admin-users-info/admin-users-info.component';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { AdminMaterialModule } from './admin-material.module';
 
 @NgModule({
   declarations: [
@@ -28,9 +28,19 @@ import { SharedModule } from '../shared/shared.module';
     AdminUsersListComponent,
     AdminUserInviteComponent,
     AdminUsersInfoComponent,
-    AdminUserEditComponent
+    AdminUserEditComponent,
   ],
-  imports: [CommonModule, AdminRoutingModule, ReactiveFormsModule, NgbModule, SharedModule],
-  entryComponents: [AdminUsersInfoComponent, AdminUserEditComponent, AdminUserInviteComponent],
+  imports: [
+    CommonModule,
+    AdminRoutingModule,
+    ReactiveFormsModule,
+    SharedModule,
+    AdminMaterialModule,
+  ],
+  entryComponents: [
+    AdminUsersInfoComponent,
+    AdminUserEditComponent,
+    AdminUserInviteComponent,
+  ],
 })
 export class AdminModule {}

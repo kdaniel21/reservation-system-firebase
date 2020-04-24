@@ -1,24 +1,11 @@
-<!-- <div class="event" *ngFor="let reservation of dailyReservations">
-  <!-- {{ reservation.name }}
-  <br>
-  {{ reservation.startTime }}
-  <div class="d-flex flex-column row-hl reservation-item" (click)="onEditReservation(reservation.id)">
-    <div class="p-2 item-hl">{{ reservation.name }}</div>
-  </div>
-</div> -->
-<!-- <mat-grid-list cols="1" rowHeight="fit" style="height: 100%">
-  <!-- <mat-grid-tile *ngFor="let reservation of dailyReservations">
-    16:00:<br>
-    Foglalás
-  </mat-grid-tile>
-  <mat-grid-tile>
-    16:00:<br>
-    Foglalás
-  </mat-grid-tile>
-</mat-grid-list> -->
-<mat-card *ngFor="let reservation of dailyReservations" class="reservation">
-  {{ reservation.startTime.getHours() }}:{{
-    reservation.startTime.getMinutes()
-  }}:<br />
-  {{ reservation.name }}
-</mat-card>
+<div fxLayout="column" fxLayoutAlign="center">
+  <mat-card
+    *ngFor="let reservation of dailyReservations"
+    class="reservation"
+    (click)="this.user.admin && onEditReservation(reservation.id)"
+  >
+    {{ this.resService.stringifyTime(reservation.startTime) }} -
+    {{ this.resService.stringifyTime(reservation.endTime) }} <br />
+    {{ reservation.name }}
+  </mat-card>
+</div>

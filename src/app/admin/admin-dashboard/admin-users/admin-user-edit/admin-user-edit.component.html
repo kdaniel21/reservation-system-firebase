@@ -1,66 +1,33 @@
-<div class="modal-header">
-  <h4 class="modal-title">Edit User - {{ user.name }}</h4>
-  <button
-    type="button"
-    class="close"
-    aria-label="Close"
-    (click)="activeModal.dismiss()"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
-<div class="modal-body">
-  <!-- ALERT -->
-  <div class="alert" *ngIf="alertMsg" [ngClass]="alertMsg.color">
-    {{ alertMsg.message }}
-  </div>
-  <!-- EDIT FORM -->
-  <form [formGroup]="userEditForm" (ngSubmit)="onSaveEdit()">
-    <div class="form-group">
-      <label for="name">Name</label>
+<h1 mat-dialog-title>Edit user - {{ data.user.name }}</h1>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<form [formGroup]="userEditForm" (ngSubmit)="onSaveEdit()" *ngIf="!loading">
+  <div mat-dialog-content class="edit-form">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+    </mat-form-field>
+    <br />
+    <mat-form-field>
+      <mat-label>Email</mat-label>
       <input
-        type="text"
-        class="form-control"
-        id="name"
-        formControlName="name"
-      />
-    </div>
-    <div class="form-group">
-      <label for="email">Email address</label>
-      <input
-        type="text"
-        class="form-control"
-        id="email"
+        matInput
+        placeholder="Email address"
         formControlName="email"
-      />
-    </div>
-    <div class="form-group">
-      <label for="admin">
-        <input
-          type="checkbox"
-          id="admin"
-          class="mr-1"
-          formControlName="admin"
-        />Admin</label
-      >
-    </div>
-    <!-- BUTTONS -->
-    <div class="modal-footer">
-      <button
-        type="submit"
-        class="btn btn-primary float-right"
-        [disabled]="!userEditForm.valid || loading"
-      >
-        <!-- LOADING SPINNER -->
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-          *ngIf="loading"
-        ></span>
-        {{ loading ? 'Saving...' : 'Save Changes' }}
-      </button>
-    </div>
-  </form>
-</div>
+      /> </mat-form-field
+    ><br />
+    <mat-slide-toggle formControlName="admin">Admin</mat-slide-toggle>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button type="button" mat-raised-button (click)="dialogRef.close()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      [disabled]="userEditForm.invalid || loading"
+      mat-raised-button
+      color="warn"
+    >
+      Save
+    </button>
+  </div>
+</form>

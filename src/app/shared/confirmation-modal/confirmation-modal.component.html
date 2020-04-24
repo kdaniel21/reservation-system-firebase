@@ -1,4 +1,4 @@
-<div class="modal-header">
+<!-- <div class="modal-header">
   <h4 class="modal-title">{{ title }}</h4>
   <button type="button" class="close" aria-label="close" (click)="activeModal.dismiss('esc')">
     <span aria-hidden="true">&times;</span>
@@ -12,4 +12,14 @@
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-primary" (click)="activeModal.close('cancel')">Cancel</button>
   <button type="button" class="btn btn-danger" (click)="activeModal.close('confirm')">{{ submitBtnText }}</button>
+</div> -->
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content>
+  {{ data.message }}
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="warn" mat-dialog-close="confirm">
+    {{ data.submitBtnText }}
+  </button>
 </div>

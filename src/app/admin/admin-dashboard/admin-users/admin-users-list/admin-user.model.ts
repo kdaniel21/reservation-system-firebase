@@ -1,5 +1,5 @@
 // Interface of the data stored in Firestore
-export interface AdminUser {
+export interface StoredUser {
   admin: boolean,
   uid: string,
   deleted: boolean,

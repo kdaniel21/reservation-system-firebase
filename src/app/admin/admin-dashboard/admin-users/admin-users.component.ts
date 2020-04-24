@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { AngularFireFunctions } from '@angular/fire/functions';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminUserInviteComponent } from './admin-user-invite/admin-user-invite.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin-users',
-  templateUrl: './admin-users.component.html'
+  templateUrl: './admin-users.component.html',
 })
 export class AdminUsersComponent {
-  constructor(private afFunctions: AngularFireFunctions, private modalService: NgbModal) {}
+  constructor(private dialog: MatDialog) {}
 
   onInviteUser() {
-    const modalRef = this.modalService.open(AdminUserInviteComponent);
+    this.dialog.open(AdminUserInviteComponent, {
+      width: '35%',
+      height: '34%',
+    });
   }
 }

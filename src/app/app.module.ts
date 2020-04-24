@@ -19,6 +19,8 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { LayoutModule } from '@angular/cdk/layout';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 
 @NgModule({
@@ -38,7 +40,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AngularFireFunctionsModule,
     SharedModule,
     BrowserAnimationsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    LayoutModule,
+    NgxMaterialTimepickerModule
   ],
   bootstrap: [AppComponent],
 })

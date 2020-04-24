@@ -1,59 +1,71 @@
-<!-- <h5 class="week-date">
-  {{ resService.formatDateToString(startingDayOfWeek) }} -
-  {{ resService.formatDateToString(endingDayOfWeek) }}
-</h5>
-<h6 class="week-date">{{ calculateWeeksAway() }}</h6>
-<div class="row">
-  <button
-    class="btn btn-outline-primary change-week mr-3"
-    (click)="previousWeek()"
-  >
-    &lt;
-  </button>
-  <div class="d-flex flex-row row-hl">
-    <div class="day p-4 item-hl" *ngFor="let day of daysOfWeek; let i = index">
-      <div class="day-name">{{ day }}</div>
-      <app-reservation-dayview [day]="i + 1"></app-reservation-dayview>
+<div class="container">
+  <div class="info">
+    <div class="week mat-subheading-1">
+      <h3>{{ calculateWeeksAway() }}</h3>
+      <h3>
+        {{
+          this.startingDayOfWeek.getFullYear() + '. ' +
+          this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
+        }}
+      </h3>
     </div>
   </div>
-  <button class="btn btn-outline-primary change-week ml-3" (click)="nextWeek()">
-    &gt;
-  </button>
-</div>
-<div class="add-btn-wrapper">
-  <button
-    type="button"
-    class="btn btn-primary"
-    [routerLink]="['/calendar/edit']"
-    [queryParams]="{ mode: 'new' }"
-    >
-    <i class="fa fa-plus"></i> Create Reservation
-  </button>
-</div> -->
-<!-- <div class="container">
-  <div class="info"></div>
   <div class="calendar">
-    <mat-grid-list cols="7" rowHeight="fit" style="height: 10%;">
-      <mat-grid-tile *ngFor="let day of daysOfWeek; let i = index" class="day-header">
-        {{ day }}
-      </mat-grid-tile>
-    </mat-grid-list>
-    <mat-grid-list cols="7" rowHeight="fit" style="height: 90%;">
-      <mat-grid-tile>
-        <div class="reservations">
-          <app-reservation-dayview [day]="i + 1"></app-reservation-dayview>
-        </div>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </div>
-</div> -->
-
-<div fxLayout="row" fxLayoutGap="10px">
-  <div
-    *ngFor="let day of daysOfWeek; let i = index"
-    fxFlex="100"
-    style="width: 10%; height: 40%;"
-  >
-    {{ day }}
+    <div fxLayout="row" fxFill style="display: flex; height: 58px; width: 99%;">
+      <div *ngFor="let day of daysOfWeek; let i = index" class="day-name">
+        {{ day }} <br />
+        {{ this.calculateDate(i) }}
+      </div>
+    </div>
+    <!-- LOADING BAR -->
+    <div class="loading" *ngIf="loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+    <div
+      fxLayout="row"
+      fxLayout.md="columns"
+      fxFill
+      style="
+        display: flex;
+        width: 100%;
+        height: calc(100% - 58px);
+        overflow-y: scroll;
+      "
+    >
+      <div fxFlex *ngFor="let i of [1, 2, 3, 4, 5, 6, 7]" class="day-content">
+        <app-reservation-dayview [day]="i"></app-reservation-dayview>
+      </div>
+    </div>
+    <!-- ADD BUTTON -->
+    <div class="new-reservation-btn">
+      <button
+        mat-fab
+        color="primary"
+        aria-label="Add New Reservation"
+        style="margin-right: 10px;"
+        (click)="previousWeek()"
+      >
+        <span class="material-icons">keyboard_arrow_left</span>
+      </button>
+      <button
+        mat-fab
+        color="primary"
+        style="margin-right: 10px;"
+        aria-label="Add New Reservation"
+        (click)="nextWeek()"
+      >
+        <span class="material-icons">keyboard_arrow_right</span>
+      </button>
+      <button
+        mat-fab
+        color="primary"
+        style="margin-right: 10px;"
+        aria-label="Add New Reservation"
+        [routerLink]="['/calendar/edit']"
+        [queryParams]="{ mode: 'new' }"
+      >
+        <span class="material-icons">add</span>
+      </button>
+    </div>
   </div>
 </div>

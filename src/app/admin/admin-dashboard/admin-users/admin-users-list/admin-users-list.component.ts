@@ -1,14 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from 'src/app/auth/user.model';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminUsersInfoComponent } from '../admin-users-info/admin-users-info.component';
+import { AdminUsersService } from '../admin-users.service';
+import { map, take } from 'rxjs/operators';
+import { StoredUser } from './admin-user.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
 import { AdminUserEditComponent } from '../admin-user-edit/admin-user-edit.component';
 import { ConfirmationModalComponent } from 'src/app/shared/confirmation-modal/confirmation-modal.component';
-import { AdminUsersService } from '../admin-users.service';
-import { map, switchMap } from 'rxjs/operators';
-import { AdminUser } from './admin-user.model';
-import { Observable, from, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin-users-list',
@@ -16,19 +20,33 @@ import { Observable, from, of } from 'rxjs';
   styleUrls: ['./admin-users-list.component.css'],
 })
 export class AdminUsersListComponent implements OnInit {
-  users$: Observable<AdminUser[]>;
-  alertMsg;
-  loading;
+  displayedColumns: string[] = [
+    'name',
+    'email',
+    'admin',
+    'disabled',
+    'uid',
+    'actions',
+  ];
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  dataSource: MatTableDataSource<StoredUser>;
+
+  loading: boolean;
 
   constructor(
     private afStore: AngularFirestore,
     private usersService: AdminUsersService,
-    private modalService: NgbModal
+    private bottomSheet: MatBottomSheet,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
-    this.users$ = this.afStore
-      .collection<AdminUser>('users', (ref) =>
+    this.loading = true;
+    // Get users from db
+    this.afStore
+      .collection<StoredUser>('users', (ref) =>
         ref.where('deleted', '==', false)
       )
       .snapshotChanges()
@@ -37,101 +55,102 @@ export class AdminUsersListComponent implements OnInit {
           return actions.map((a) => {
             const data = a.payload.doc.data();
             const uid = a.payload.doc.id;
-            console.log({ uid, ...data });
             return { uid, ...data };
           });
         })
-      );
+      )
+      .subscribe((userData) => {
+        this.loading = false;
+        this.dataSource = new MatTableDataSource(userData);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      });
   }
 
   onOpenInfoModal(user: User) {
-    const modalRef = this.modalService.open(AdminUsersInfoComponent);
-    modalRef.componentInstance.user = user;
+    this.bottomSheet.open(AdminUsersInfoComponent, {
+      data: { user },
+    });
   }
 
   onOpenEditModal(user: User) {
-    const modalRef = this.modalService.open(AdminUserEditComponent);
-    modalRef.componentInstance.user = user;
+    this.dialog.open(AdminUserEditComponent, {
+      height: '35%',
+      width: '35%',
+      data: { user },
+    });
   }
 
   // Disable user
   onDisableUser(user: User) {
-    // Confirmation modal
-    const modalRef = this.modalService.open(ConfirmationModalComponent);
-
-    modalRef.componentInstance.title = `Confirm ${
-      !user.disabled ? 'disablement' : 'enablement'
-    }`;
-    modalRef.componentInstance.message = `Are you sure you want to ${
-      !user.disabled ? 'disable' : 'enable'
-    } ${user.name}?`;
-    modalRef.componentInstance.submitBtnText = user.disabled
-      ? 'Enable'
-      : 'Disable';
+    // Confirmation Modal
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      data: {
+        title: `${!user.disabled ? 'Disable' : 'Enable'} User`,
+        message: `Are you sure you want to ${
+          !user.disabled ? 'disable' : 'enable'
+        } ${user.name}?`,
+        submitBtnText: user.disabled ? 'Enable' : 'Disable',
+      },
+    });
 
     // Wait for confirmation
-    modalRef.result.then((result) => {
-      if (result === 'confirm') {
-        this.loading = true;
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result === 'confirm') {
+          this.loading = true;
 
-        this.usersService
-          .disableUser(user)
-          .then(() => {
-            this.alertMsg = {
-              color: 'alert-success',
-              message: `${user.name} was ${
-                !user.disabled ? 'disabled' : 'enabled'
-              } successfully!`,
-            };
-          })
-          .catch(() => {
-            this.alertMsg = {
-              color: 'alert-danger',
-              message: `Error! ${user.name} couldn't be ${
-                user.disabled ? 'disabled' : 'enabled'
-              }! Please try again!`,
-            };
-          })
-          .finally(() => {
-            this.loading = false;
-            setTimeout(() => (this.alertMsg = null), 5000);
-          });
-      }
-    });
+          this.usersService
+            .disableUser(user)
+            .then(() => {
+              this.snackBar.open(
+                `${user.name} was ${
+                  !user.disabled ? 'disabled' : 'enabled'
+                } successfully!`
+              );
+            })
+            .catch(() => {
+              this.snackBar.open(
+                `Error! ${user.name} couldn't be ${
+                  user.disabled ? 'disabled' : 'enabled'
+                }! Please try again!`
+              );
+            })
+            .finally(() => (this.loading = false));
+        }
+      });
   }
 
   onDeleteUser(user: User) {
-    // Confirmation modal
-    const modalRef = this.modalService.open(ConfirmationModalComponent);
-
-    modalRef.componentInstance.title = 'Confirm delete';
-    modalRef.componentInstance.message = `Are you sure you want to delete ${user.name}? This action is permament and cannot be redone later!`;
-    modalRef.componentInstance.submitBtnText = 'Delete';
-
-    // Wait for confirmation
-    modalRef.result.then((result) => {
-      if (result === 'confirm') {
-        this.loading = true;
-
-        this.usersService
-          .deleteUser(user)
-          .then(() => {
-            this.alertMsg = {
-              color: 'alert-success',
-              message: `${user.name} was deleted successfully!`,
-            };
-          })
-          .catch(() => {
-            this.alertMsg = {
-              color: 'alert-danger',
-              message: `Error! ${user.name} couldn't be deleted! Please try again!`,
-            };
-          })
-          .finally(() => {
-            this.loading = false;
-            setTimeout(() => (this.alertMsg = null), 5000);
-          });
-      }
+    // Confirmation Modal
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      data: {
+        title: `Delete User`,
+        message: `Are you sure you want to delete ${user.name}? This action is permament and cannot be redone later!`,
+        submitBtnText: 'Delete',
+      },
     });
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result === 'confirm') {
+          this.loading = true;
+          this.usersService
+            .deleteUser(user)
+            .then(() => {
+              this.snackBar.open(`${user.name} was deleted successfully!`);
+            })
+            .catch(() => {
+              this.snackBar.open(
+                `Error! ${user.name} couldn't be deleted! Please try again!`
+              );
+            })
+            .finally(() => (this.loading = false));
+        }
+      });
   }
 }

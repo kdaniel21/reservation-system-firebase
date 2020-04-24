@@ -59,40 +59,38 @@ export class AuthService {
     const user = { ...userData };
 
     // Create user in the auth
-    return (
-      this.afFunctions
-        .httpsCallable('createUser')({
-          email: user.invitation.email,
-          password: user.password,
-        })
-        .toPromise()
-        .then((userRecord) => {
-          // Create user record in Firestore
-          return this.afStore.collection('users').doc(userRecord.user.uid).set({
-            admin: false,
-            disabled: false,
-            deleted: false,
-            email: userRecord.user.email,
-            name: user.name,
-            registered: new Date(),
-            registeredBy: user.invitation.invitedBy,
-            reservations: [],
+    return this.afFunctions
+      .httpsCallable('createUser')({
+        email: user.invitation.email,
+        password: user.password,
+      })
+      .toPromise()
+      .then((userRecord) => {
+        // Create user record in Firestore
+        return this.afStore.collection('users').doc(userRecord.user.uid).set({
+          admin: false,
+          disabled: false,
+          deleted: false,
+          email: userRecord.user.email,
+          name: user.name,
+          registered: new Date(),
+          registeredBy: user.invitation.invitedBy,
+          reservations: [],
+        });
+      })
+      .then(() => {
+        // Invalidate invitation
+        return this.afStore
+          .collection('invitations')
+          .doc(user.invitation.id)
+          .update({
+            valid: false,
           });
-        })
-        .then(() => {
-          // Invalidate invitation
-          return this.afStore
-            .collection('invitations')
-            .doc(user.invitation.id)
-            .update({
-              valid: false,
-            });
-        })
-        .catch((err) => {
-          console.log('ERROR', err);
-          return err;
-        })
-    );
+      })
+      .catch((err) => {
+        console.log('ERROR', err);
+        return err;
+      });
   }
 
   loginUser(email: string, password: string) {
@@ -116,6 +114,11 @@ export class AuthService {
       .collection<UserData>('users')
       .doc(userId)
       .get()
-      .pipe(map((userData) => userData.data().name));
+      .pipe(
+        map((userData) => {
+          console.log(userData.data());
+          return userData.data().name;
+        })
+      );
   }
 }

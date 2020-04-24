@@ -1,4 +1,6 @@
 .reservation {
   box-sizing: border-box;
-  width: 12rem;
+  width: 10vw;
+  margin: auto;
+  margin-top: 5px;
 }

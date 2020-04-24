@@ -8,6 +8,7 @@ export const AUTHENTICATED = '[Auth] Authenticated';
 export const NOT_AUTHENTICATED = '[Auth] Not Authenticated';
 export const LOGOUT = '[Auth] Logout';
 export const AUTH_ERROR = '[Auth] Error';
+export const SET_LOADING = '[Auth] Set Loading';
 
 export class Login implements Action {
   readonly type = LOGIN;
@@ -43,6 +44,12 @@ export class AuthError implements Action {
   constructor(public payload: string) {}
 }
 
+export class SetLoading implements Action {
+  readonly type = SET_LOADING;
+
+  constructor(public payload: boolean) {}
+}
+
 export type AuthActions =
   | Login
   | AutoLogin
@@ -50,4 +57,5 @@ export type AuthActions =
   | Authenticated
   | NotAuthenticated
   | Logout
-  | AuthError;
+  | AuthError
+  | SetLoading;

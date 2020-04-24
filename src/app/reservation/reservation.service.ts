@@ -62,4 +62,9 @@ export class ReservationService {
     //console.log('DAY: ', new Date(date).getDay() || 7);
     return new Date(date).getDay() || 7;
   }
+
+  // return the time as string (eg. 16:00)
+  stringifyTime(date: Date) {
+    return new Date(date).toLocaleTimeString('hu-HU').slice(0, -3);
+  }
 }

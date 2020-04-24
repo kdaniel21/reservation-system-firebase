@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
@@ -100,7 +100,9 @@ export class AdminUsersService {
             name: user.name,
             invitedAt: new Date(),
             invitedBy: authState.user.uid,
-            expirationDate: new Date(new Date().getTime() + 432000000), // 5 days from the date of invitation
+            expirationDate: new Date(
+              new Date().getTime() + 1000 * 60 * 60 * 24 * 5
+            ), // 5 days from the date of invitation in ms
             valid: true,
           })
         );
@@ -110,11 +112,11 @@ export class AdminUsersService {
         const sendInvitationEmail = this.afFunctions.httpsCallable(
           'sendInvitationEmail'
         );
-        return sendInvitationEmail({
+        return from(sendInvitationEmail({
           email: user.email,
           name: user.name,
           id: docRef.id,
-        });
+        }).toPromise());
       }),
       map((res) => {
         if (res.error) {

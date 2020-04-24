@@ -6,14 +6,12 @@ import { map, switchMap, withLatestFrom, tap, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import {
   ReservationService,
-  ReservationInterface
+  ReservationInterface,
 } from '../reservation.service';
 import { Reservation } from '../reservation.model';
 import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as fromReservation from './reservation.reducer';
-import * as fromAuth from '../../auth/store/auth.reducer';
-import { of } from 'rxjs';
 import { ReservationEditService } from '../reservation-edit/reservation-edit.service';
 
 @Injectable()
@@ -121,7 +119,6 @@ export class ReservationEffects {
         );
 
         // + add updateWeek action TODO
-        console.log('')
         return new ReservationActions.SetWeek(updatedReservations);
       }
     )
@@ -133,7 +130,7 @@ export class ReservationEffects {
     switchMap((actionData: ReservationActions.NewReservation) => {
       // Save onto the server
       return this.resEditService.createNewReservation({
-        ...actionData.payload
+        ...actionData.payload,
       });
     }),
     map(
@@ -146,12 +143,19 @@ export class ReservationEffects {
   deleteReservation = this.actions$.pipe(
     ofType(ReservationActions.START_DELETE_RESERVATION),
     // Delete on the server
-    map((actionData: ReservationActions.StartDeleteReservation) => {
-      const reservation = actionData.payload;
-      this.resEditService.deleteReservation(reservation);
-      return reservation;
+    map(
+      (actionData: ReservationActions.StartDeleteReservation) =>
+        actionData.payload
+    ),
+    switchMap((reservation) => {
+      return this.resEditService
+        .deleteReservation(reservation)
+        .pipe(map(() => reservation));
     }),
     // Delete in the state
-    map((reservation: Reservation) => new ReservationActions.DeleteReservation(reservation))
-  )
+    map(
+      (reservation: Reservation) =>
+        new ReservationActions.DeleteReservation(reservation)
+    )
+  );
 }

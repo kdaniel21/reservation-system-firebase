@@ -1,22 +1,88 @@
-<!-- ALERT -->
-<div class="alert mt-4" *ngIf="alertMsg" [ngClass]="alertMsg.color">
-  {{ alertMsg.message }}
-</div>
+<!-- LOADING SPINNER -->
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
-<!-- LIST OF USERS -->
+<!-- TABLE -->
+<mat-table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+  <!-- NAME COLUMN -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{ user.name }}</mat-cell>
+  </ng-container>
+
+  <!-- EMAIL COLUMN -->
+  <ng-container matColumnDef="email">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{ user.email }}</mat-cell>
+  </ng-container>
+
+  <!-- ADMIN COLUMN -->
+  <ng-container matColumnDef="admin">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Admin</mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{ user.admin }}</mat-cell>
+  </ng-container>
+
+  <!-- DISABLED COLUMN -->
+  <ng-container matColumnDef="disabled">
+    <mat-header-cell *matHeaderCellDef mat-sort-header
+      >Disabled</mat-header-cell
+    >
+    <mat-cell *matCellDef="let user"> {{ user.disabled }}</mat-cell>
+  </ng-container>
+
+  <!-- UID COLUMN -->
+  <ng-container matColumnDef="uid">
+    <mat-header-cell *matHeaderCellDef>UID</mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{ user.uid }}</mat-cell>
+  </ng-container>
+
+  <!-- ACTIONS COLUMN -->
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+    <mat-cell *matCellDef="let user">
+      <!-- BUTTONS -->
+      <button mat-icon-button (click)="onOpenEditModal(user)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onOpenInfoModal(user)">
+        <mat-icon>account_box</mat-icon>
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="otherActions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <!-- DROPDOWN MENU -->
+      <mat-menu #otherActions="matMenu">
+        <button mat-menu-item (click)="onDisableUser(user)">
+          {{ user.disabled ? 'Enable Account' : 'Disable Account' }}
+        </button>
+        <button mat-menu-item (click)="onDeleteUser(user)">
+          Delete Account
+        </button>
+      </mat-menu>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row
+    *matRowDef="let user; columns: displayedColumns"
+    [style.backgroundColor]="user.disabled ? 'rgba(244, 67, 54, 0.7)' : ''"
+  ></mat-row>
+</mat-table>
+<mat-paginator [pageSizeOptions]="[5, 10, 25, 50]"> </mat-paginator>
+
+<!-- LIST OF USERS
 <table class="table table-hover">
   <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Admin</th>
-      <th>Disabled</th>
-      <th>UID</th>
-      <th>Actions</th>
-    </tr>
+    <mat-cell>
+      <mat-header-cell>Name</mat-header-cell>
+      <mat-header-cell>Email</mat-header-cell>
+      <mat-header-cell>Admin</mat-header-cell>
+      <mat-header-cell>Disabled</mat-header-cell>
+      <mat-header-cell>UID</mat-header-cell>
+      <mat-header-cell>Actions</mat-header-cell>
+    </mat-cell>
   </thead>
   <tbody *ngIf="!loading">
-    <tr
+    <mat-cell
       *ngFor="let user of users$ | async"
       [ngClass]="{ 'table-danger': user.disabled }"
     >
@@ -52,12 +118,16 @@
           </div>
         </span>
       </td>
-    </tr>
+    </mat-cell>
   </tbody>
-</table>
+</table> -->
 <!-- LOADING SPINNER -->
 <div class="d-flex justify-content-center" *ngIf="loading">
-  <div class="spinner-border text-primary" role="status" style="height: 5rem; width: 5rem">
+  <div
+    class="spinner-border text-primary"
+    role="status"
+    style="height: 5rem; width: 5rem;"
+  >
     <span class="sr-only">Loading...</span>
   </div>
 </div>

@@ -1,38 +1,10 @@
-<div class="modal-header">
-  <h4 class="modal-title">User information - {{ user.name }}</h4>
-  <button
-    type="button"
-    class="close"
-    aria-label="Close"
-    (click)="activeModal.dismiss()"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
-<div class="modal-body">
-  <div class="card text-center">
-    <div class="card-header">User Information</div>
-    <div class="card-body">
-      <ul class="list-group">
-        <li class="list-group-item">Name: {{ user.name }}</li>
-        <li class="list-group-item">UID: {{ user.uid }}</li>
-        <li class="list-group-item">Email: {{ user.email }}</li>
-        <li class="list-group-item">Admin: {{ user.admin }}</li>
-        <li class="list-group-item">Disabled: {{ user.disabled }}</li>
-        <li class="list-group-item">Registered: {{ user.registered.toString() }}</li>
-        <li class="list-group-item">Registered by: {{ user.registeredBy }}</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-outline-primary"
-    (click)="activeModal.close()"
-  >
-    Close
-  </button>
-</div>
+<mat-list>
+  <mat-list-item><strong>Name: </strong> {{ data.user.name }}</mat-list-item>
+  <mat-list-item><strong>UID: </strong> {{ data.user.uid }}</mat-list-item>
+  <mat-list-item><strong>Email: </strong> {{ data.user.email }}</mat-list-item>
+  <mat-list-item><strong>Admin: </strong> {{ data.user.admin }}</mat-list-item>
+  <mat-list-item><strong>Disabled: </strong> {{ data.user.disabled }}</mat-list-item>
+  <mat-list-item><strong>Registered: </strong> {{ data.user.registered.toLocaleDateString() }}</mat-list-item>
+  <mat-list-item><strong>Registered by: </strong> {{ data.user.registeredBy | async }}</mat-list-item>
+</mat-list>
+<strong></strong>
