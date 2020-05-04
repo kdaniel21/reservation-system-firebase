@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,4 +10,7 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit() {
     console.log('INITIALIZED');
   }
+
+  constructor(public changeRef: ChangeDetectorRef) {}
+
 }

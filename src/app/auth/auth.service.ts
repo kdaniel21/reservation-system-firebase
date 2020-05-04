@@ -111,11 +111,6 @@ export class AuthService {
       .collection<UserData>('users')
       .doc(userId)
       .get()
-      .pipe(
-        map((userData) => {
-          console.log(userData.data());
-          return userData.data().name;
-        })
-      );
+      .pipe(map((userData) => userData.data().name));
   }
 }

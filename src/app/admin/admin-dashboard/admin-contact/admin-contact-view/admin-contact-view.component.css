@@ -1,0 +1,18 @@
+.container {
+  height: 100%;
+  width: 100%;
+}
+mat-form-field {
+  width: 100%;
+}
+button {
+  float: right;
+}
+.original-message {
+  margin-bottom: 4%;
+}
+.solved-btn {
+  background-color: #4BB543;
+  color: white;
+  margin-right: 0.5rem;
+}

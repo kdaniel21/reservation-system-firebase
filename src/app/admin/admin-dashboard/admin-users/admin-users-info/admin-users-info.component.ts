@@ -1,8 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { User } from 'src/app/auth/user.model';
 import { AuthService } from 'src/app/auth/auth.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-users-info',

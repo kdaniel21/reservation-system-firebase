@@ -1,3 +1,5 @@
+import { AdminContactViewResolver } from './admin-dashboard/admin-contact/admin-contact-view/admin-contact-view.resolver';
+import { AdminContactListComponent } from './admin-dashboard/admin-contact/admin-contact-list/admin-contact-list.component';
 import { AdminContactComponent } from './admin-dashboard/admin-contact/admin-contact.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -8,32 +10,27 @@ import { AdminUsersComponent } from './admin-dashboard/admin-users/admin-users.c
 import { AdminUserEditComponent } from './admin-dashboard/admin-users/admin-user-edit/admin-user-edit.component';
 import { AdminUsersListComponent } from './admin-dashboard/admin-users/admin-users-list/admin-users-list.component';
 import { AdminUserInviteComponent } from './admin-dashboard/admin-users/admin-user-invite/admin-user-invite.component';
+import { AdminContactViewComponent } from './admin-dashboard/admin-contact/admin-contact-view/admin-contact-view.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', component: AdminOverviewComponent },
+      { path: 'users', component: AdminUsersComponent },
       {
-        path: 'dashboard',
-        component: AdminDashboardComponent,
+        path: 'messages',
+        component: AdminContactComponent,
         children: [
-          { path: '', redirectTo: 'overview', pathMatch: 'full' },
-          { path: 'overview', component: AdminOverviewComponent },
+          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: 'list', component: AdminContactListComponent },
           {
-            path: 'users',
-            component: AdminUsersComponent,
-            children: [
-              { path: '', redirectTo: 'list', pathMatch: 'full' },
-              { path: 'list', component: AdminUsersListComponent },
-              { path: 'edit', component: AdminUserEditComponent },
-              { path: 'invite', component: AdminUserInviteComponent },
-            ],
+            path: 'view/:id',
+            component: AdminContactViewComponent,
+            resolve: { res: AdminContactViewResolver },
           },
-          { path: 'messages', component: AdminContactComponent, children: [
-            // { path: 'view/:id', component: AdminContactView}
-          ]},
         ],
       },
     ],

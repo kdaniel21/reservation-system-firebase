@@ -12,9 +12,11 @@ export class ContactService {
     return this.afStore.collection('messages').add({
       name: controls.name.value,
       email: controls.email.value,
-      type: controls.type.value,
+      topic: controls.type.value,
       message: controls.message.value,
-      priority: controls.type.value === 'Option2'
+      priority: controls.type.value === 'Option2',
+      solved: false,
+      date: new Date()
     });
   }
 }

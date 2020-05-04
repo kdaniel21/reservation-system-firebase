@@ -1,10 +1,10 @@
 <div class="container">
   <mat-card class="dashboard-card">
     <mat-card-header>
-      <nav mat-tab-nav-bar style="width: 97%">
+      <nav mat-tab-nav-bar style="width: 97%;">
         <a
           mat-tab-link
-          [routerLink]="['overview']"
+          routerLink="overview"
           routerLinkActive
           #rla1="routerLinkActive"
           [active]="rla1.isActive"
@@ -49,10 +49,8 @@
         </a>
       </nav>
     </mat-card-header>
-    <div class="card-content">
-      <mat-card-content>
-        <router-outlet></router-outlet>
-      </mat-card-content>
-    </div>
+    <mat-card-content>
+      <router-outlet></router-outlet>
+    </mat-card-content>
   </mat-card>
 </div>
