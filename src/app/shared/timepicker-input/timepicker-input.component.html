@@ -1,0 +1,22 @@
+<div [formGroup]="parts">
+  <input
+    type="text"
+    matInput
+    formControlName="hours"
+    maxlength="2"
+    placeholder="H"
+    pattern="^\d{1,2}$"
+  />
+  <mat-icon (click)="onChangeHours('plus')">keyboard_arrow_up</mat-icon>
+  <mat-icon (click)="onChangeHours('minus')">keyboard_arrow_down</mat-icon>
+  <input
+    type="text"
+    matInput
+    formControlName="minutes"
+    maxlength="2"
+    placeholder="Min"
+    pattern="^[0-5]?\d$"
+  />
+  <mat-icon (click)="onChangeMinutes('plus')">keyboard_arrow_up</mat-icon>
+  <mat-icon (click)="onChangeMinutes('minus')">keyboard_arrow_down</mat-icon>
+</div>

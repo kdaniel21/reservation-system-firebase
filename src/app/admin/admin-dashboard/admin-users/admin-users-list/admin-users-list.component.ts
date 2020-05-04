@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from 'src/app/auth/user.model';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { AdminUsersInfoComponent } from '../admin-users-info/admin-users-info.component';
 import { AdminUsersService } from '../admin-users.service';
-import { map, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { StoredUser } from './admin-user.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -13,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AdminUserEditComponent } from '../admin-user-edit/admin-user-edit.component';
 import { ConfirmationModalComponent } from 'src/app/shared/confirmation-modal/confirmation-modal.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AdminUserInviteComponent } from '../admin-user-invite/admin-user-invite.component';
 
 @Component({
   selector: 'app-admin-users-list',
@@ -35,7 +35,6 @@ export class AdminUsersListComponent implements OnInit {
   loading: boolean;
 
   constructor(
-    private afStore: AngularFirestore,
     private usersService: AdminUsersService,
     private bottomSheet: MatBottomSheet,
     private dialog: MatDialog,
@@ -45,26 +44,12 @@ export class AdminUsersListComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     // Get users from db
-    this.afStore
-      .collection<StoredUser>('users', (ref) =>
-        ref.where('deleted', '==', false)
-      )
-      .snapshotChanges()
-      .pipe(
-        map((actions) => {
-          return actions.map((a) => {
-            const data = a.payload.doc.data();
-            const uid = a.payload.doc.id;
-            return { uid, ...data };
-          });
-        })
-      )
-      .subscribe((userData) => {
-        this.loading = false;
-        this.dataSource = new MatTableDataSource(userData);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      });
+    this.usersService.getUsers().subscribe((userData) => {
+      this.loading = false;
+      this.dataSource = new MatTableDataSource(userData);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
   }
 
   onOpenInfoModal(user: User) {
@@ -81,7 +66,14 @@ export class AdminUsersListComponent implements OnInit {
     });
   }
 
-  // Disable user
+  onInviteUser() {
+    this.dialog.open(AdminUserInviteComponent, {
+      width: '35%',
+      height: '34%',
+    });
+  }
+
+  // // Disable user
   onDisableUser(user: User) {
     // Confirmation Modal
     const dialogRef = this.dialog.open(ConfirmationModalComponent, {
@@ -152,5 +144,14 @@ export class AdminUsersListComponent implements OnInit {
             .finally(() => (this.loading = false));
         }
       });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

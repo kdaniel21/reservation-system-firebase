@@ -1,0 +1,55 @@
+<div class="container">
+  <mat-card class="form-card">
+    <mat-card-title>
+      Contact us
+      <mat-icon
+        id="help-icon"
+        matTooltipClass="help-tooltip"
+        matTooltip="
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta, lorem eu viverra efficitur, mi velit ultricies arcu, quis tincidunt sem enim eu felis. Vivamus mi augue, dictum ut nisl quis, tincidunt viverra mauris. Duis nec condimentum massa."
+        >help</mat-icon
+      >
+    </mat-card-title>
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input
+            placeholder="Your name"
+            matInput
+            formControlName="name"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Email address</mat-label>
+          <input
+            placeholder="Your email address"
+            matInput
+            formControlName="email"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Type of problem</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let option of contactTypes" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field style="width: 80%;">
+          <mat-label>Message</mat-label>
+          <textarea
+            placeholder="Your message"
+            matInput
+            rows="4"
+            formControlName="message"
+          ></textarea>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button type="submit" mat-raised-button color="primary" [disabled]="contactForm.invalid">Send</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

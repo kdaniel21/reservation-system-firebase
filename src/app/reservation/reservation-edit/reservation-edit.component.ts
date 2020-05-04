@@ -5,7 +5,7 @@ import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as ReservationActions from '../store/reservation.actions';
 import { ReservationService } from '../reservation.service';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormControl } from '@angular/forms';
 import { TimeAvailabilityValidator } from './validator/availability.validator';
 import { take, map } from 'rxjs/operators';
 import { Location } from '@angular/common';
@@ -38,8 +38,13 @@ export class ReservationEditComponent implements OnInit {
     'reservation-full-date': this.fb.group(
       {
         'reservation-date': this.fb.control(this.defaultTime),
-        'reservation-start-time': this.fb.control(this.resService.stringifyTime(this.defaultTime)),
-        'reservation-length': this.fb.control('01:00'),
+        'reservation-start-time': this.fb.control(
+          this.resService.stringifyTime(this.defaultTime)
+        ),
+        'reservation-length': this.fb.control(
+          { hours: '01', minutes: '00' },
+          Validators.required
+        ),
       },
       {
         validators: Validators.required,
@@ -83,7 +88,9 @@ export class ReservationEditComponent implements OnInit {
             // Calculate length in minutes
             const startTime = new Date(this.editedItem.startTime);
             const endTime = new Date(this.editedItem.endTime);
-            const length = new Date(endTime.getTime() - startTime.getTime());
+            const length = new Date(
+              endTime.getTime() - startTime.getTime() - 1000 * 60 * 60
+            ); // difference minus 1 hour (date starts from 1 hour);
 
             // Set values on the form with the preloaded data
             this.editForm.setValue({
@@ -93,7 +100,10 @@ export class ReservationEditComponent implements OnInit {
                 'reservation-start-time': this.resService.stringifyTime(
                   this.editedItem.startTime
                 ),
-                'reservation-length': this.resService.stringifyTime(length),
+                'reservation-length': {
+                  hours: length.getHours(),
+                  minutes: length.getMinutes(),
+                },
               },
             });
           }
@@ -117,16 +127,16 @@ export class ReservationEditComponent implements OnInit {
       this.editForm.get('reservation-full-date.reservation-start-time').value
     );
 
-    const lengthValue = this.resEditService.parseTime(
-      this.editForm.get('reservation-full-date.reservation-length').value
-    );
-    const length = lengthValue.hour * 3600000 + lengthValue.minute * 60000; // calculate length in miliseconds
+    const lengthValue = this.editForm.get(
+      'reservation-full-date.reservation-length'
+    ).value;
+    const length = lengthValue.hours * 3600000 + lengthValue.minutes * 60000; // calculate length in miliseconds
 
     this.editedItem.name = this.editForm.value['reservation-name'];
 
     this.editedItem.startTime = new Date(date);
-    this.editedItem.startTime.setHours(start.hour);
-    this.editedItem.startTime.setMinutes(start.minute);
+    this.editedItem.startTime.setHours(start.hours);
+    this.editedItem.startTime.setMinutes(start.minutes);
     this.editedItem.startTime.setSeconds(0);
 
     this.editedItem.endTime = new Date(
@@ -148,7 +158,7 @@ export class ReservationEditComponent implements OnInit {
       );
     }
 
-    // // Navigate to the week on which the reservation is
+    // Navigate to the week on which the reservation is
     this.store.dispatch(
       new ReservationActions.SetCurrWeekStart(
         this.resService.getFirstDayOfWeek(this.editedItem.startTime)

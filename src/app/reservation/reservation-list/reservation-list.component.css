@@ -15,8 +15,10 @@
 }
 div.day-content {
   border: 1px solid lightgray;
+  border-bottom: none;
   width: 100%;
   height: calc(100% - 2px);
+  box-sizing: content-box;
 }
 .day-name {
   width: 100%;
@@ -26,7 +28,7 @@ div.day-content {
   color: #fff;
   padding: 10px;
 }
-.new-reservation-btn {
+.calendar-controls {
   position: fixed;
   bottom: 20px;
   float: left;

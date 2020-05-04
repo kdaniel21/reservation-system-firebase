@@ -4,7 +4,7 @@ import {
   ReservationInterface,
 } from '../../reservation.service';
 import { HttpClient } from '@angular/common/http';
-import { map, withLatestFrom, catchError, tap } from 'rxjs/operators';
+import { map, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducer';
 import { State } from '../../store/reservation.reducer';
@@ -52,9 +52,12 @@ export class AvailabilityService {
               const end1 = Math.floor(endTime.getTime() / 1000);
               const end2 = Math.floor(res.endTime.getTime() / 1000);
 
+              /* compare times:
+              a start and end can be the same of two different reservations
+              e.g. one is 19.00-20.00 and other can be 20.00-21.00 */
               if (
-                (start1 > start2 && start1 < end2) ||
-                (start2 > start1 && start2 < end1)
+                (start1 >= start2 && start1 < end2) ||
+                (start2 >= start1 && start2 < end1)
               ) {
                 available = false;
               }

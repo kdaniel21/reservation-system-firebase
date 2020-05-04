@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfoModalComponent } from 'src/app/shared/info-modal/info-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -97,6 +96,9 @@ export class AuthRegisterUserComponent implements OnInit {
         dialogRef
           .afterClosed()
           .subscribe(() => this.router.navigate(['/auth/login']));
+      })
+      .catch((err) => {
+        this.showError(err);
       });
   }
 }

@@ -18,7 +18,7 @@ const material = [
   MatSnackBarModule,
   MatCheckboxModule,
   MatDialogModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
 ];
 
 @NgModule({

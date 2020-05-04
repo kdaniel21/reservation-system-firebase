@@ -1,0 +1,14 @@
+div {
+  display: flex;
+}
+input {
+  min-width: 5%;
+}
+mat-icon {
+  cursor: pointer;
+  /* opacity: 0; */
+  transition: opacity 200ms;
+}
+:host.floating mat-icon {
+  opacity: 1;
+}

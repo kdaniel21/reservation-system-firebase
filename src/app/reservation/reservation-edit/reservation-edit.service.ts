@@ -1,3 +1,4 @@
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import { Reservation } from '../reservation.model';
 import { Store } from '@ngrx/store';
@@ -6,14 +7,16 @@ import { AppState } from 'src/app/store/app.reducer';
 import * as fromAuth from '../../auth/store/auth.reducer';
 import { HttpClient } from '@angular/common/http';
 import { ReservationService } from '../reservation.service';
-import { take, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { take, map, switchMap } from 'rxjs/operators';
+import * as firebase from 'firebase/app';
 
 @Injectable({ providedIn: 'root' })
 export class ReservationEditService {
   constructor(
     private store: Store<AppState>,
     private http: HttpClient,
-    private resService: ReservationService
+    private resService: ReservationService,
+    private afStore: AngularFirestore
   ) {}
 
   createNewReservation(newReservation: Reservation) {
@@ -22,10 +25,10 @@ export class ReservationEditService {
       switchMap((authState: fromAuth.State) => {
         const reservation = { ...newReservation };
         // Get logged in user
-        const user = authState.user.uid;
+        const userId = authState.user.uid;
 
         // Fill missing data
-        reservation.createdBy = user;
+        reservation.createdBy = userId;
         reservation.createdTime = new Date();
 
         // Get data to save onto the server
@@ -42,13 +45,23 @@ export class ReservationEditService {
           )
           .pipe(
             map((response) => {
-              // Add the id to the reservation object
               reservation.id = response.name;
               return reservation;
             })
           );
       })
     );
+  }
+
+  // Saves the reservation ID to the users profile and returns the reservation
+  saveReservationToUserProfile(reservation: Reservation) {
+    return this.afStore
+      .collection('users')
+      .doc(reservation.createdBy)
+      .update({
+        reservations: firebase.firestore.FieldValue.arrayUnion(reservation.id),
+      })
+      .then(() => reservation);
   }
 
   saveEditChanges(editedReservation: Reservation, originalStart: Date) {
@@ -99,31 +112,36 @@ export class ReservationEditService {
   }
 
   // Checks if user can edit the given reservation
-  canUserEdit(reservation_id: string) {
+  canUserEdit(reservationId: string, userId: string) {
+    return this.afStore
+      .collection('users')
+      .doc(userId)
+      .get()
+      .pipe(
+        take(1),
+        map((user) => user.data().reservations),
+        map((reservations: Array<string>) => {
+          return reservations.includes(reservationId);
+        })
+      );
+  }
+
+  getReservation(reservationId: string) {
     return this.http
       .get('https://reservation-system-81981.firebaseio.com/calendar.json')
       .pipe(
         take(1),
-        withLatestFrom(this.store.select('auth')),
-        map(([reservations, authState]) => {
-          //const user_id = authState.user.uid;
+        map((reservations) => {
           // Loop through the years
           for (let year of Object.keys(reservations)) {
             // Loop through weeks
             for (let week of Object.keys(reservations[year])) {
               // Check if key is in the specific week
               if (
-                Object.keys(reservations[year][week]).indexOf(reservation_id) >
-                -1
+                Object.keys(reservations[year][week]).includes(reservationId)
               ) {
                 // If reservation is found, check creator
-                if (
-                  // ONLY DEV PURPOSES -> FIX RESOLVER
-                  true
-                  // reservations[year][week][reservation_id].createdBy === user_id
-                ) {
-                  return reservations[year][week][reservation_id];
-                }
+                return reservations[year][week][reservationId];
               }
             }
           }
@@ -133,12 +151,12 @@ export class ReservationEditService {
   }
 
   // returns the string time as {hour: XX, minute: XX}
-  parseTime(time: string): { hour: number; minute: number } {
+  parseTime(time: string): { hours: number; minutes: number } {
     if (!time || time === '') {
-      return { hour: 0, minute: 0 };
+      return { hours: 0, minutes: 0 };
     }
 
     const splittedTime = time.split(':');
-    return { hour: +splittedTime[0], minute: +splittedTime[1] };
+    return { hours: +splittedTime[0], minutes: +splittedTime[1] };
   }
 }

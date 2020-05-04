@@ -1,3 +1,5 @@
+import { AdminContactComponent } from './admin-dashboard/admin-contact/admin-contact.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
@@ -29,6 +31,7 @@ import { AdminMaterialModule } from './admin-material.module';
     AdminUserInviteComponent,
     AdminUsersInfoComponent,
     AdminUserEditComponent,
+    AdminContactComponent
   ],
   imports: [
     CommonModule,
@@ -36,6 +39,7 @@ import { AdminMaterialModule } from './admin-material.module';
     ReactiveFormsModule,
     SharedModule,
     AdminMaterialModule,
+    FlexLayoutModule
   ],
   entryComponents: [
     AdminUsersInfoComponent,

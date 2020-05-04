@@ -2,7 +2,7 @@
   <mat-card
     *ngFor="let reservation of dailyReservations"
     class="reservation"
-    (click)="this.user.admin && onEditReservation(reservation.id)"
+    (click)="onEditReservation(reservation.id)"
   >
     {{ this.resService.stringifyTime(reservation.startTime) }} -
     {{ this.resService.stringifyTime(reservation.endTime) }} <br />

@@ -1,5 +1,6 @@
 <div class="container">
   <div class="info">
+    <!-- INFORMATION ABOUT THE DATE -->
     <div class="week mat-subheading-1">
       <h3>{{ calculateWeeksAway() }}</h3>
       <h3>
@@ -11,8 +12,9 @@
     </div>
   </div>
   <div class="calendar">
-    <div fxLayout="row" fxFill style="display: flex; height: 58px; width: 99%;">
-      <div *ngFor="let day of daysOfWeek; let i = index" class="day-name">
+    <!-- DAY NAMES -->
+    <div fxLayout="row" style="height: 58px; width: 99%;">
+      <div fxFlex *ngFor="let day of daysOfWeek; let i = index" class="day-name">
         {{ day }} <br />
         {{ this.calculateDate(i) }}
       </div>
@@ -26,9 +28,8 @@
       fxLayout.md="columns"
       fxFill
       style="
-        display: flex;
         width: 100%;
-        height: calc(100% - 58px);
+        min-height: calc(100% - 58px);
         overflow-y: scroll;
       "
     >
@@ -36,8 +37,8 @@
         <app-reservation-dayview [day]="i"></app-reservation-dayview>
       </div>
     </div>
-    <!-- ADD BUTTON -->
-    <div class="new-reservation-btn">
+    <!-- CONTROL BUTTONS -->
+    <div class="calendar-controls">
       <button
         mat-fab
         color="primary"

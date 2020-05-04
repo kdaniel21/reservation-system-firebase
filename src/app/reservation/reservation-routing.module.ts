@@ -1,3 +1,4 @@
+import { ReservationEditGuard } from './reservation-edit/reservation-edit-guard.service';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReservationComponent } from './reservation.component';
@@ -12,14 +13,19 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'view', pathMatch: 'full' },
       { path: 'view', component: ReservationListComponent },
-      { path: 'edit', component: ReservationEditComponent, resolve: { res: ReservationEditResolver } },
-    ]
-  }
+      {
+        path: 'edit',
+        component: ReservationEditComponent,
+        canActivate: [ReservationEditGuard],
+        resolve: { res: ReservationEditResolver },
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [ReservationEditResolver]
+  providers: [ReservationEditResolver],
 })
 export class ReservationRoutingModule {}

@@ -1,3 +1,4 @@
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 
@@ -21,7 +22,8 @@ export class ReservationEffects {
     private store: Store<AppState>,
     private http: HttpClient,
     private resService: ReservationService,
-    private resEditService: ReservationEditService
+    private resEditService: ReservationEditService,
+    private afStore: AngularFirestore
   ) {}
 
   // Gets week data from the server (automatically with SetCurrWeekStart)
@@ -133,6 +135,9 @@ export class ReservationEffects {
         ...actionData.payload,
       });
     }),
+    switchMap((reservation: Reservation) =>
+      this.resEditService.saveReservationToUserProfile(reservation)
+    ),
     map(
       (reservation: Reservation) =>
         new ReservationActions.AddReservation(reservation)

@@ -1,40 +1,42 @@
 <!-- LOADING SPINNER -->
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 <!-- CARD -->
-<mat-card class="register-card" *ngIf="!loading && !error">
-  <mat-card-title class="register-header">Register</mat-card-title>
-  <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-    <mat-card-content>
-      <mat-form-field class="full-width">
-        <mat-label>Email</mat-label>
-        <input
-          type="text"
-          matInput
-          placeholder="Email address"
-          formControlName="email"
-        />
-      </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Name</mat-label>
-        <input type="text" matInput placeholder="Name" formControlName="name" />
-      </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Password</mat-label>
-        <input
-          type="password"
-          matInput
-          placeholder="Password"
-          formControlName="password"
-        />
-      </mat-form-field>
-      <mat-checkbox formControlName="eula">
-        By registering I accept the terms of use.
-      </mat-checkbox>
-    </mat-card-content>
-    <mat-card-footer>
-      <button type="submit" [disabled]="registerForm.invalid" mat-flat-button color="primary" class="register-button">
-        Register
-      </button>
-    </mat-card-footer>
-  </form>
-</mat-card>
+<div class="container">
+  <mat-card class="register-card" *ngIf="!loading && !error">
+    <mat-card-title class="register-header">Register</mat-card-title>
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <mat-card-content>
+        <mat-form-field class="full-width">
+          <mat-label>Email</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Email address"
+            formControlName="email"
+          />
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Name</mat-label>
+          <input type="text" matInput placeholder="Name" formControlName="name" />
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Password</mat-label>
+          <input
+            type="password"
+            matInput
+            placeholder="Password"
+            formControlName="password"
+          />
+        </mat-form-field>
+        <mat-checkbox formControlName="eula">
+          By registering I accept the terms of use.
+        </mat-checkbox>
+      </mat-card-content>
+      <mat-card-footer>
+        <button type="submit" [disabled]="registerForm.invalid" mat-flat-button color="primary" class="register-button">
+          Register
+        </button>
+      </mat-card-footer>
+    </form>
+  </mat-card>
+</div>

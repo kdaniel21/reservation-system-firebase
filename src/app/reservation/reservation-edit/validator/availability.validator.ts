@@ -9,15 +9,17 @@ export class TimeAvailabilityValidator {
   availableValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
       // Get data of fields
-      const startTime = this.resEditService.parseTime(control.get('reservation-start-time').value);
+      const startTime = this.resEditService.parseTime(
+        control.get('reservation-start-time').value
+      );
       const startDate = control.get('reservation-date').value;
-      const length = this.resEditService.parseTime(control.get('reservation-length').value);
-      const lengthMs = +length.hour * 3600000 + +length.minute * 60000;
+      const length = control.get('reservation-length').value;
+      const lengthMs = +length.hours * 3600000 + +length.minutes * 60000;
 
       // Create full dates date
       const fullStartDate = new Date(startDate);
-      fullStartDate.setHours(startTime.hour);
-      fullStartDate.setMinutes(startTime.minute);
+      fullStartDate.setHours(startTime.hours);
+      fullStartDate.setMinutes(startTime.minutes);
       fullStartDate.setSeconds(0);
 
       const fullEndDate = new Date(fullStartDate.getTime() + lengthMs);
@@ -25,9 +27,14 @@ export class TimeAvailabilityValidator {
 
       return this.availabilityService
         .timeAvailable(fullStartDate, fullEndDate)
-        .pipe(map(available => (available ? null : { 'Time Reserved': true })));
+        .pipe(
+          map((available) => (available ? null : { 'Time Reserved': true }))
+        );
     };
   }
 
-  constructor(private availabilityService: AvailabilityService, private resEditService: ReservationEditService) {}
+  constructor(
+    private availabilityService: AvailabilityService,
+    private resEditService: ReservationEditService
+  ) {}
 }

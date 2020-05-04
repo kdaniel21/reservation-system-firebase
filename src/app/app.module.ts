@@ -21,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
     BrowserAnimationsModule,
     FlexLayoutModule,
     LayoutModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatSnackBarModule
   ],
   bootstrap: [AppComponent],
 })

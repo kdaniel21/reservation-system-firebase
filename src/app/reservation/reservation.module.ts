@@ -1,3 +1,4 @@
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservationComponent } from './reservation.component';
@@ -26,6 +27,8 @@ import { ReservationMaterialModule } from './reservation-material.module';
     NgbModule,
     SharedModule,
     ReservationMaterialModule,
+    FlexLayoutModule,
+    FormsModule
   ],
   exports: [
     ReservationComponent

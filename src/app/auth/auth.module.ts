@@ -1,3 +1,4 @@
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from "@angular/core";
 import { AuthComponent } from './auth.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,7 +22,8 @@ import { AuthMaterialModule } from './auth-material.module';
     ReactiveFormsModule,
     AuthRoutingModule,
     SharedModule,
-    AuthMaterialModule
+    AuthMaterialModule,
+    FlexLayoutModule
   ],
   exports: [],
   entryComponents: [InfoModalComponent]

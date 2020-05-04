@@ -1,3 +1,5 @@
+import { TimepickerInputComponent } from './timepicker-input/timepicker-input.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -6,6 +8,7 @@ import { ConfirmationModalComponent } from './confirmation-modal/confirmation-mo
 import { InfoModalComponent } from './info-modal/info-modal.component';
 import { SharedMaterialModule } from './shared-material.module';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 
 
@@ -14,18 +17,23 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
     SidebarComponent,
     ConfirmationModalComponent,
     InfoModalComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    TimepickerInputComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
-    SharedMaterialModule
+    SharedMaterialModule,
+    FlexLayoutModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [
     SidebarComponent,
     ConfirmationModalComponent,
     InfoModalComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    TimepickerInputComponent
   ],
   entryComponents: [InfoModalComponent]
 })

@@ -6,13 +6,4 @@ import { MatDialog } from '@angular/material/dialog';
   selector: 'app-admin-users',
   templateUrl: './admin-users.component.html',
 })
-export class AdminUsersComponent {
-  constructor(private dialog: MatDialog) {}
-
-  onInviteUser() {
-    this.dialog.open(AdminUserInviteComponent, {
-      width: '35%',
-      height: '34%',
-    });
-  }
-}
+export class AdminUsersComponent {}

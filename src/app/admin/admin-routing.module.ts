@@ -1,3 +1,4 @@
+import { AdminContactComponent } from './admin-dashboard/admin-contact/admin-contact.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './admin.component';
@@ -27,9 +28,12 @@ const routes: Routes = [
               { path: '', redirectTo: 'list', pathMatch: 'full' },
               { path: 'list', component: AdminUsersListComponent },
               { path: 'edit', component: AdminUserEditComponent },
-              { path: 'invite', component: AdminUserInviteComponent }
+              { path: 'invite', component: AdminUserInviteComponent },
             ],
           },
+          { path: 'messages', component: AdminContactComponent, children: [
+            // { path: 'view/:id', component: AdminContactView}
+          ]},
         ],
       },
     ],

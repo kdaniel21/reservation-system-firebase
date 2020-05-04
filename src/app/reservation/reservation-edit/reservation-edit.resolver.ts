@@ -37,30 +37,30 @@ export class ReservationEditResolver implements Resolve<any> {
             /* If the user reloaded the edit page (no data in Store), then gets data from the
             database and checks if the user is allowed to edit
             + loads the selected week and selects item to edit
-            + gives the editedItem*/
-            return this.resEditService.canUserEdit(id).pipe(
-              map(canUserEdit => {
-                if (canUserEdit) {
-                  canUserEdit.id = id;
+            + returns the editedItem */
+            return this.resEditService.getReservation(id).pipe(
+              map(reservation => {
+                if (reservation) {
+                  reservation.id = id;
                   const weekStart = this.resService.getFirstDayOfWeek(
-                    canUserEdit.startTime
+                    reservation.startTime
                   );
 
                   this.store.dispatch(
                     new ReservationActions.SetCurrWeekStart(weekStart)
                   );
 
-                  return canUserEdit;
+                  return reservation;
                 } else {
                   return null;
                 }
               }),
               // Delay is because StartEdit would get data from the store, but the data isn't there if they run parallel
               delay(350),
-              tap(canUserEdit => {
-                if (canUserEdit)
+              tap(reservation => {
+                if (reservation)
                   this.store.dispatch(
-                    new ReservationActions.StartEdit(canUserEdit.id)
+                    new ReservationActions.StartEdit(reservation.id)
                   );
               })
             );

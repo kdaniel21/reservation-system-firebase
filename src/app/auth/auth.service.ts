@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from '../store/app.reducer';
-
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import { AngularFireFunctions } from '@angular/fire/functions';
@@ -23,7 +20,6 @@ export class AuthService {
   expirationTimer;
 
   constructor(
-    private store: Store<AppState>,
     private afStore: AngularFirestore,
     private afFunctions: AngularFireFunctions,
     private afAuth: AngularFireAuth
@@ -75,6 +71,7 @@ export class AuthService {
           name: user.name,
           registered: new Date(),
           registeredBy: user.invitation.invitedBy,
+          invitationId: user.invitation.id,
           reservations: [],
         });
       })
@@ -89,7 +86,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log('ERROR', err);
-        return err;
+        throw new Error(err);
       });
   }
 

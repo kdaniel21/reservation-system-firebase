@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
@@ -41,7 +40,7 @@ const material = [
   MatProgressBarModule
 ];
 @NgModule({
-  imports: [material, FlexLayoutModule],
+  imports: [material],
   exports: [material],
 })
 export class AdminMaterialModule {}

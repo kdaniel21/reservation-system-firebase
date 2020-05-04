@@ -1,6 +1,27 @@
 <!-- LOADING SPINNER -->
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
+<div style="display: grid!important; grid-template-columns: auto auto;">
+  <!-- FILTERING -->
+  <div fxFlex style="font-size: 16px">
+    <mat-form-field >
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" />
+    </mat-form-field>
+  </div>
+  <!-- INVITE USER -->
+  <div style="text-align: end" >
+    <button
+      type="button"
+      mat-raised-button
+      (click)="onInviteUser()"
+      color="primary"
+      style="margin-top: 2vh"
+    >
+      <span class="material-icons">add</span> Invite User
+    </button>
+  </div>
+</div>
 <!-- TABLE -->
 <mat-table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
   <!-- NAME COLUMN -->

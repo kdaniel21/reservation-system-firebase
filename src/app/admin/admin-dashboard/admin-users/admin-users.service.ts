@@ -6,6 +6,7 @@ import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { User } from 'src/app/auth/user.model';
+import { StoredUser } from './admin-users-list/admin-user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminUsersService {
@@ -15,6 +16,23 @@ export class AdminUsersService {
     private store: Store<AppState>
   ) {}
 
+  // Get users that are not deleted
+  getUsers() {
+    return this.afStore
+      .collection<StoredUser>('users', (ref) =>
+        ref.where('deleted', '==', false)
+      )
+      .snapshotChanges()
+      .pipe(
+        map((actions) => {
+          return actions.map((a) => {
+            const data = a.payload.doc.data();
+            const uid = a.payload.doc.id;
+            return { uid, ...data };
+          });
+        })
+      );
+  }
   // Disable/Enable user globally
   disableUser(user) {
     const disableUserAuth = this.afFunctions
@@ -45,9 +63,11 @@ export class AdminUsersService {
       });
 
     // Delete user in Auth
-    const deleteUserAuth = this.afFunctions.httpsCallable('deleteUser')({
-      uid: user.uid,
-    });
+    const deleteUserAuth = this.afFunctions
+      .httpsCallable('deleteUser')({
+        uid: user.uid,
+      })
+      .toPromise();
 
     return Promise.all([deleteUserFirestore, deleteUserAuth]);
   }
@@ -66,20 +86,22 @@ export class AdminUsersService {
     promises.push(editUserFirestore);
 
     if (controls.admin.touched) {
-      const manageAdminAccess = this.afFunctions.httpsCallable(
-        'manageAdminAccess'
-      )({
-        email: controls.email.value,
-        admin: controls.admin.value,
-      });
+      const manageAdminAccess = this.afFunctions
+        .httpsCallable('manageAdminAccess')({
+          email: controls.email.value,
+          admin: controls.admin.value,
+        })
+        .toPromise();
       promises.push(manageAdminAccess);
     }
 
     if (controls.email.touched) {
-      const updateUser = this.afFunctions.httpsCallable('updateUser')({
-        uid: user.uid,
-        updateObj: { email: controls.email.value },
-      });
+      const updateUser = this.afFunctions
+        .httpsCallable('updateUser')({
+          uid: user.uid,
+          updateObj: { email: controls.email.value },
+        })
+        .toPromise();
 
       promises.push(updateUser);
     }
@@ -89,7 +111,6 @@ export class AdminUsersService {
 
   sendInvitation(user: { email: string; name: string }) {
     // Create invitation
-    // return of({}).pipe(delay(2000));
     return this.store.select('auth').pipe(
       // Get admin's UID from Store
       switchMap((authState) => {
@@ -112,11 +133,13 @@ export class AdminUsersService {
         const sendInvitationEmail = this.afFunctions.httpsCallable(
           'sendInvitationEmail'
         );
-        return from(sendInvitationEmail({
-          email: user.email,
-          name: user.name,
-          id: docRef.id,
-        }).toPromise());
+        return from(
+          sendInvitationEmail({
+            email: user.email,
+            name: user.name,
+            id: docRef.id,
+          }).toPromise()
+        );
       }),
       map((res) => {
         if (res.error) {

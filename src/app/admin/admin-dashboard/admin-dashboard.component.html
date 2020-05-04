@@ -22,10 +22,19 @@
         </a>
         <a
           mat-tab-link
-          [routerLink]="['stats']"
+          [routerLink]="['messages']"
           routerLinkActive
           #rla3="routerLinkActive"
           [active]="rla3.isActive"
+        >
+          Messages
+        </a>
+        <a
+          mat-tab-link
+          [routerLink]="['stats']"
+          routerLinkActive
+          #rla4="routerLinkActive"
+          [active]="rla4.isActive"
         >
           Stats
         </a>
@@ -33,8 +42,8 @@
           mat-tab-link
           [routerLink]="['blog']"
           routerLinkActive
-          #rla4="routerLinkActive"
-          [active]="rla4.isActive"
+          #rla5="routerLinkActive"
+          [active]="rla5.isActive"
         >
           Blog
         </a>
