@@ -1,0 +1,49 @@
+<div class="container">
+  <!-- LOADING SPINNER -->
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <div *ngIf="contact && !loading">
+    <!-- ORIGINAL MESSAGES -->
+    <div class="messages">
+      <mat-card *ngFor="let message of contact.messages">
+        <mat-card-title>
+          {{ message.sentBy.name }}
+          {{ message.sentBy.admin ? '(Admin)' : null }} -
+          {{ message.date.toDate() | date: 'hh:mm - yyyy.MM.dd' }}
+        </mat-card-title>
+        <mat-card-content>
+          {{ message.message }}
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- REPLY FORM -->
+    <form [formGroup]="replyForm" (ngSubmit)="onReply()" >
+      <mat-form-field>
+        <mat-label>Reply</mat-label>
+        <textarea
+          matInput
+          rows="4"
+          placeholder="Answer to this contact"
+          formControlName="answer"
+        ></textarea>
+      </mat-form-field>
+      <div align="end">
+        <button
+          type="button"
+          mat-raised-button
+          class="solved-btn"
+          (click)="onMarkAsSolved()"
+        >
+          {{ contact.closed ? 'Reopen' : 'Mark as solved' }}
+        </button>
+        <button
+          type="submit"
+          mat-raised-button
+          color="primary"
+          [disabled]="replyForm.invalid"
+        >
+          Send
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

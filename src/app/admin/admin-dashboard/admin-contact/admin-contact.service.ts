@@ -1,16 +1,18 @@
-import { UserMessage } from './message.model';
+import { Store } from '@ngrx/store';
+import { AngularFireFunctions } from '@angular/fire/functions';
+import { ContactMetaData } from './contact.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, take, switchMap } from 'rxjs/operators';
+import { AppState } from 'src/app/store/app.reducer';
 
 @Injectable({ providedIn: 'root' })
 export class AdminContactService {
   constructor(private afStore: AngularFirestore) {}
 
-  getMessages() {
+  getContacts() {
     return this.afStore
-      .collection<UserMessage>('messages')
+      .collection<ContactMetaData>('contacts')
       .snapshotChanges()
       .pipe(
         map((actions) => {
@@ -21,13 +23,5 @@ export class AdminContactService {
           });
         })
       );
-  }
-
-  getMessage(id: string) {
-    return this.afStore
-      .collection<UserMessage>('messages')
-      .doc(id)
-      .get()
-      .pipe(map((res) => res.data()));
   }
 }

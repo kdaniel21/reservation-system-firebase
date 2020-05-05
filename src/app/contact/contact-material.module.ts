@@ -1,3 +1,5 @@
+import { MatListModule } from '@angular/material/list';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { NgModule } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,7 +18,9 @@ const material = [
   MatIconModule,
   MatTooltipModule,
   MatSelectModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatBottomSheetModule,
+  MatListModule
 ];
 
 @NgModule({

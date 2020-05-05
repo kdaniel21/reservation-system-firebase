@@ -1,13 +1,14 @@
 .container {
-  width: 80%;
-  height: 60%;
-  margin: auto;
-  padding-top: 4%;
-}
-mat-card-content {
-  padding-top: 5%;
   width: 100%;
-  max-height: 50vh;
-  overflow-y: auto
-  ;
+  height: 100%;
+  padding-top: 3%;
+}
+mat-card {
+  margin: auto;
+  width: 90%;
+  max-height: 80vh;
+}
+
+mat-card-content {
+  padding-top: 3%;
 }

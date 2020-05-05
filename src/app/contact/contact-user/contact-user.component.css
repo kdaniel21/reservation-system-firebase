@@ -10,10 +10,10 @@
   max-width: 50%;
 }
 .help-tooltip {
-  font-size: 105px!important;
+  font-size: 105px !important;
   background-color: red;
 }
-#help-icon {
+.icon {
   float: right;
 }
 mat-form-field {
@@ -28,4 +28,21 @@ mat-card-actions {
 }
 button {
   float: right;
+}
+@media (max-width: 1500px) {
+  mat-form-field {
+    width: 70%;
+  }
+}
+@media (max-width: 1200px) {
+  mat-form-field {
+    width: 90%;
+  }
+}
+.history-icon {
+  position: fixed;
+  bottom: 20px;
+  float: left;
+  right: 20px;
+  z-index: 100;
 }

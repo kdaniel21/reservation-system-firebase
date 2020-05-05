@@ -1,6 +1,3 @@
-import { AdminContactService } from './../admin-contact.service';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { UserMessage } from './../message.model';
 import { Injectable } from '@angular/core';
 import {
   Resolve,
@@ -10,13 +7,14 @@ import {
 import { Observable, of } from 'rxjs';
 import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
-import { map, take, switchMap } from 'rxjs/operators';
+import { take, switchMap } from 'rxjs/operators';
+import { ContactService } from '../contact.service';
 
 @Injectable({ providedIn: 'root' })
-export class AdminContactViewResolver implements Resolve<Observable<any>> {
+export class ContactViewResolver implements Resolve<Observable<any>> {
   constructor(
     private store: Store<AppState>,
-    private contactService: AdminContactService
+    private contactService: ContactService
   ) {}
 
   resolve(
@@ -30,12 +28,11 @@ export class AdminContactViewResolver implements Resolve<Observable<any>> {
       take(1),
       switchMap((adminState) => {
         if (adminState.viewedMessage !== null) {
-          return of(adminState.viewedMessage);
-        } else {
-          return this.contactService.getMessage(id);
+          return of({ ...adminState.viewedMessage });
         }
+
+        return this.contactService.getContact(id);
       })
     );
-    return of(null);
   }
 }

@@ -1,8 +1,11 @@
+<!-- TITLE -->
+<div class="mat-h1">Messages</div>
+
 <!-- LOADING SPINNER -->
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
 <!-- FILTERING -->
-<mat-form-field style="display: block;">
+<mat-form-field style="width: 20%">
   <mat-label>Search</mat-label>
   <input matInput (keyup)="applyFilter($event)" />
 </mat-form-field>
@@ -35,9 +38,9 @@
   </ng-container>
 
   <!-- SOLVED COLUMN -->
-  <ng-container matColumnDef="solved">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Solved</mat-header-cell>
-    <mat-cell *matCellDef="let message"> {{ message.solved }}</mat-cell>
+  <ng-container matColumnDef="closed">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Closed</mat-header-cell>
+    <mat-cell *matCellDef="let message"> {{ message.closed }}</mat-cell>
   </ng-container>
 
   <!-- DATE COLUMN -->

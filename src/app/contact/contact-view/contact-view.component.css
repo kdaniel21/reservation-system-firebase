@@ -5,11 +5,13 @@
 mat-form-field {
   width: 100%;
 }
-button {
-  float: right;
+.messages {
+  height: 40vh;
+  max-height: 40vh;
+  overflow-y: auto;
 }
-.original-message {
-  margin-bottom: 4%;
+mat-card {
+  margin-bottom: 0.5rem;
 }
 .solved-btn {
   background-color: #4BB543;

@@ -1,11 +1,8 @@
-import { AdminContactViewComponent } from './admin-dashboard/admin-contact/admin-contact-view/admin-contact-view.component';
 import { AdminContactListComponent } from './admin-dashboard/admin-contact/admin-contact-list/admin-contact-list.component';
-import { AdminContactComponent } from './admin-dashboard/admin-contact/admin-contact.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { AdminComponent } from './admin.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminOverviewComponent } from './admin-dashboard/admin-overview/admin-overview.component';
 import { AdminCurrentReservationComponent } from './admin-dashboard/admin-overview/admin-current-reservation/admin-current-reservation.component';
@@ -22,7 +19,6 @@ import { AdminMaterialModule } from './admin-material.module';
 
 @NgModule({
   declarations: [
-    AdminComponent,
     AdminDashboardComponent,
     AdminOverviewComponent,
     AdminCurrentReservationComponent,
@@ -33,9 +29,7 @@ import { AdminMaterialModule } from './admin-material.module';
     AdminUserInviteComponent,
     AdminUsersInfoComponent,
     AdminUserEditComponent,
-    AdminContactComponent,
     AdminContactListComponent,
-    AdminContactViewComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +37,7 @@ import { AdminMaterialModule } from './admin-material.module';
     ReactiveFormsModule,
     SharedModule,
     AdminMaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   entryComponents: [
     AdminUsersInfoComponent,

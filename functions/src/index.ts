@@ -58,7 +58,7 @@ export const getAllUsers = functions
   });
 
 // Update a user
-// Expected value: { uid: user's uid, updateObj: {updated parameters}}
+// Expected parameter: { uid: user's uid, updateObj: {updated parameters}}
 export const updateUser = functions
   .region('europe-west3')
   .https.onCall((data, context) => {
@@ -107,14 +107,17 @@ export const createUser = functions
         password: data.password,
       })
       .then((userRecord) => {
-        return { message: `${data.email} user successfully created!`, user: userRecord };
+        return {
+          message: `${data.email} user successfully created!`,
+          user: userRecord,
+        };
       })
       .catch((error) => {
         return { error: `Error creating new user: ${error}` };
       });
   });
 
-// Sending invitation emails
+// Send invitation emails
 const gmailEmail = functions.config().gmail.email;
 const gmailPassword = functions.config().gmail.password;
 const mailTransport = nodemailer.createTransport({
@@ -146,6 +149,32 @@ export const sendInvitationEmail = functions
         message: `Invitation letter successfuly sent to ${data.email}!`,
       };
     } catch (err) {
-      return { error: 'Something bad happened: ', err };
+      return { error: 'Something went wrong: ', err };
+    }
+  });
+
+// Send email back to contact request/message
+export const sendEmail = functions
+  .region('europe-west3')
+  .https.onCall(async (data, context) => {
+    if (context.auth?.token.admin !== true) {
+      return { error: 'No access!' };
+    }
+
+    // Email message
+    const mailOptions = {
+      from: '"Reservation System" <noreply@reservationsystem.com>',
+      to: data.email,
+      subject: `${data.topic}`,
+      html: `<h5>Dear ${data.name}!</h5><br><p>${ data.message }</p>`,
+    };
+
+    try {
+      await mailTransport.sendMail(mailOptions);
+      return {
+        message: `Messsage successfuly sent to ${data.email}!`,
+      };
+    } catch (err) {
+      return { error: 'Something went wrong: ', err };
     }
   });

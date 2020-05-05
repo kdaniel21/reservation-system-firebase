@@ -1,12 +1,12 @@
 import * as AdminActions from './admin.actions';
-import { UserMessage } from '../admin-dashboard/admin-contact/message.model';
+import { ContactMetaData } from '../admin-dashboard/admin-contact/contact.model';
 
 const initialState = {
   viewedMessage: null,
 };
 
 export interface State {
-  viewedMessage: UserMessage;
+  viewedMessage: ContactMetaData;
 }
 
 export function adminReducer(
@@ -23,6 +23,10 @@ export function adminReducer(
       return {
         ...state,
         viewedMessage: null,
+      };
+    default:
+      return {
+        ...state,
       };
   }
 }

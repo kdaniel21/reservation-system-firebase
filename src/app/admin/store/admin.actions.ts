@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
-import { UserMessage } from '../admin-dashboard/admin-contact/message.model';
+import { ContactMetaData } from '../admin-dashboard/admin-contact/contact.model';
 
 export const START_VIEW_MESSAGE = '[Admin] Start View Message';
 export const STOP_VIEW_MESSAGE = '[Admin] Stop View Message';
 
 export class StartViewMessage implements Action {
   readonly type = START_VIEW_MESSAGE;
-  constructor(public payload: UserMessage) {}
+  constructor(public payload: ContactMetaData) {}
 }
 
 export class StopViewMessage implements Action {
