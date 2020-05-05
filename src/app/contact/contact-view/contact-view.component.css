@@ -1,20 +1,32 @@
 .container {
   height: 100%;
   width: 100%;
+  padding-top: 3%;
 }
 mat-form-field {
   width: 100%;
+}
+#main-card {
+  margin: auto;
+  width: 90%;
+  max-height: 80vh;
+}
+#main-card-content {
+  padding-top: 3%;
 }
 .messages {
   height: 40vh;
   max-height: 40vh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
 }
-mat-card {
+.messages mat-card {
   margin-bottom: 0.5rem;
 }
 .solved-btn {
-  background-color: #4BB543;
+  background-color: #4bb543;
   color: white;
   margin-right: 0.5rem;
 }

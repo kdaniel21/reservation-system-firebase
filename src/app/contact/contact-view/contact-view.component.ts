@@ -1,3 +1,4 @@
+import { ContactMetaData } from './../../admin/admin-dashboard/admin-contact/contact.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
@@ -13,7 +14,7 @@ import { ContactService } from '../contact.service';
 })
 export class ContactViewComponent implements OnInit {
   loading: boolean;
-  contact;
+  contact: ContactMetaData;
 
   messagesSub: Subscription;
 
@@ -40,8 +41,6 @@ export class ContactViewComponent implements OnInit {
         this.loading = false;
         this.contact = contact;
 
-        console.log(this.contact);
-
         if (this.contact.closed) {
           this.replyForm.disable();
         }
@@ -67,13 +66,14 @@ export class ContactViewComponent implements OnInit {
 
     this.contactService
       .sendReply(this.contact, message)
-      .then(([sendEmailRes, saveDBRes]) => {
-        this.snackBar.open(sendEmailRes.message);
+      .then((res) => {
+        console.log(res);
+        this.snackBar.open('Your message was successfully sent!');
         this.replyForm.reset();
       })
       .catch((error) => {
         this.snackBar.open('Something went wrong. Please try again!');
-        console.log('ERROR:', error)
+        console.log('ERROR:', error);
       })
       .finally(() => (this.loading = false));
   }
@@ -83,17 +83,18 @@ export class ContactViewComponent implements OnInit {
 
     const id = this.contact.id;
     const closed = !this.contact.closed;
-    console.log(this.contact);
 
     this.contactService
       .closeContact(id, closed)
       .then(() => {
+        this.contact.closed = closed;
         this.replyForm.disable();
         this.snackBar.open('Message closed successfully!');
       })
-      .catch((err) =>
-        this.snackBar.open("Message couldn't have been closed. Try again!", err)
-      )
+      .catch((err) => {
+        this.snackBar.open("Message couldn't have been closed. Try again!");
+        console.log('ERROR: ', err);
+      })
       .finally(() => (this.loading = false));
   }
 }

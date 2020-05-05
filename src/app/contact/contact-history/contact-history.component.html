@@ -1,6 +1,11 @@
 <mat-nav-list>
-  <a mat-list-item *ngFor="let contact of contacts">
+  <a
+    mat-list-item
+    *ngFor="let contact of contacts"
+    [routerLink]="['contact/view', contact.id]"
+    (click)="bottomSheetRef.dismiss()"
+  >
     <span mat-line>{{ contact.topic }}</span>
-    <span mat-line>Created: {{ contact.date }}</span>
+    <span mat-line>Created: {{ contact.date | date: 'HH:mm - yyyy.MM.dd' }}</span>
   </a>
 </mat-nav-list>

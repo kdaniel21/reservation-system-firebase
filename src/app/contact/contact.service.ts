@@ -1,11 +1,15 @@
 import { AngularFireFunctions } from '@angular/fire/functions';
-import { ContactMetaData } from './../admin/admin-dashboard/admin-contact/contact.model';
+import {
+  ContactMetaData,
+  ContactMessage,
+} from './../admin/admin-dashboard/admin-contact/contact.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { map, take, switchMap } from 'rxjs/operators';
 import { AppState } from '../store/app.reducer';
 import { Store } from '@ngrx/store';
+import { User } from '../auth/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class ContactService {
@@ -21,7 +25,7 @@ export class ContactService {
     const id = this.afStore.createId();
 
     const createMetaData = this.afStore
-      .collection('contacts')
+      .collection<ContactMetaData>('contacts')
       .doc(id)
       .set({
         name: controls.name.value,
@@ -72,6 +76,7 @@ export class ContactService {
         map((actions) => {
           const id = actions.payload.id;
           const data = actions.payload.data();
+          data.date = data.date.toDate();
 
           return { id, ...data };
         })
@@ -80,11 +85,20 @@ export class ContactService {
 
   getMessages(id: string) {
     return this.afStore
-      .collection<ContactMetaData>('contacts/' + id + '/messages')
-      .valueChanges();
+      .collection<ContactMessage>('contacts/' + id + '/messages', (ref) =>
+        ref.orderBy('date', 'desc')
+      )
+      .valueChanges()
+      .pipe(
+        map((messages) => {
+          // Convert dates to JS Date object
+          messages.forEach((m) => (m.date = m.date.toDate()));
+          return messages;
+        })
+      );
   }
 
-  sendReply(metaData: ContactMetaData, message: string) {
+  sendReplyEmail(metaData: ContactMetaData, message: string) {
     const data = {
       email: metaData.email,
       name: metaData.name,
@@ -93,41 +107,45 @@ export class ContactService {
     };
 
     // Sends email
-    const sendEmail = this.afFunctions
-      .httpsCallable('sendEmail')(data)
-      .toPromise();
+    return this.afFunctions.httpsCallable('sendEmail')(data).toPromise();
+  }
 
-    // Saves reply to Firestore
-    const saveReplyToDB = this.store
+  // Saves reply to Firestore
+  saveReplyToFirestore(user: User, metaData: ContactMetaData, message: string) {
+    return this.afStore
+      .collection('contacts/' + metaData.id + '/messages')
+      .add({
+        date: new Date(),
+        message,
+        sentBy: {
+          name: user.name,
+          email: user.email,
+          admin: user.admin,
+        },
+      });
+  }
+
+  sendReply(metaData: ContactMetaData, message: string) {
+    return this.store
       .select('auth')
       .pipe(
-        take(1),
         switchMap((authState) => {
-          // Gets user data from store
-          const user = {
-            name: authState.user.name,
-            email: authState.user.email,
-            admin: authState.user.admin,
-          };
-
-          // Saves to Firebase
-          return this.afStore
-            .collection('contacts/' + metaData.id + '/messages')
-            .add({
-              date: new Date(),
-              message,
-              sentBy: { ...user },
-            });
+          if (authState.user.admin) {
+            // sends email only if admin sends the message
+            return Promise.all([
+              this.sendReplyEmail(metaData, message),
+              this.saveReplyToFirestore(authState.user, metaData, message),
+            ]);
+          } else {
+            return this.saveReplyToFirestore(authState.user, metaData, message);
+          }
         })
       )
       .toPromise();
-
-    return Promise.all([sendEmail, saveReplyToDB]);
   }
 
   closeContact(id: string, closed: boolean) {
-    console.log(id, closed);
-    return this.afStore.collection('messages').doc(id).update({
+    return this.afStore.collection('contacts').doc(id).update({
       closed,
     });
   }

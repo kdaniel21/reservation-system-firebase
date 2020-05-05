@@ -1,3 +1,4 @@
+import { ContactMetaData } from './../../admin/admin-dashboard/admin-contact/contact.model';
 import { Subscription } from 'rxjs';
 import { ContactService } from './../contact.service';
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
@@ -12,10 +13,10 @@ import {
 })
 export class ContactHistoryComponent implements OnInit, OnDestroy {
   contactsSub: Subscription;
-  contacts;
+  contacts: ContactMetaData[];
 
   constructor(
-    private bottomSheetRef: MatBottomSheetRef<ContactHistoryComponent>,
+    public bottomSheetRef: MatBottomSheetRef<ContactHistoryComponent>,
     public contactService: ContactService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
   ) {}
