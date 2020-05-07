@@ -2,7 +2,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservationComponent } from './reservation.component';
-import { DailyEventsPipe } from './events.pipe';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
 import { ReservationDayviewComponent } from './reservation-dayview/reservation-dayview.component';
 import { ReservationEditComponent } from './reservation-edit/reservation-edit.component';
@@ -15,7 +14,6 @@ import { ReservationMaterialModule } from './reservation-material.module';
 @NgModule({
   declarations: [
     ReservationComponent,
-    DailyEventsPipe,
     ReservationListComponent,
     ReservationDayviewComponent,
     ReservationEditComponent

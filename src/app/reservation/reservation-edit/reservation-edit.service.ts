@@ -88,6 +88,7 @@ export class ReservationEditService {
     }
 
     // Save onto the server
+    console.log(editedReservation);
     this.http
       .put(
         `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${editedReservation.id}.json`,

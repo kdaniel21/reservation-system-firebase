@@ -88,7 +88,7 @@ export class ContactViewComponent implements OnInit {
       .closeContact(id, closed)
       .then(() => {
         this.contact.closed = closed;
-        this.replyForm.disable();
+        closed ? this.replyForm.disable() : this.replyForm.enable();
         this.snackBar.open('Message closed successfully!');
       })
       .catch((err) => {

@@ -129,6 +129,7 @@ export class ContactService {
     return this.store
       .select('auth')
       .pipe(
+        take(1),
         switchMap((authState) => {
           if (authState.user.admin) {
             // sends email only if admin sends the message

@@ -17,13 +17,15 @@ mat-form-field {
 .messages {
   height: 40vh;
   max-height: 40vh;
-  overflow-y: auto;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column-reverse;
-  justify-content: flex-end;
 }
 .messages mat-card {
   margin-bottom: 0.5rem;
+}
+.messages mat-card:first-child {
+  margin-bottom: auto;
 }
 .solved-btn {
   background-color: #4bb543;
