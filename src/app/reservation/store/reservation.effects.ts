@@ -99,7 +99,7 @@ export class ReservationEffects {
   submitEditChanges = this.actions$.pipe(
     ofType(ReservationActions.SUBMIT_EDIT),
     withLatestFrom(this.store.select('reservation')),
-    map(
+    switchMap(
       ([actionData, resState]: [
         ReservationActions.SubmitEdit,
         fromReservation.State
@@ -115,13 +115,12 @@ export class ReservationEffects {
         });
 
         // Save on the server
-        this.resEditService.saveEditChanges(
-          editedReservation,
-          actionData.payload.originalStartDate
-        );
-
-        // + add updateWeek action TODO
-        return new ReservationActions.SetWeek(updatedReservations);
+        return this.resEditService
+          .saveEditChanges(
+            editedReservation,
+            actionData.payload.originalStartDate
+          )
+          .pipe(map(() => new ReservationActions.SetWeek(updatedReservations)));
       }
     )
   );

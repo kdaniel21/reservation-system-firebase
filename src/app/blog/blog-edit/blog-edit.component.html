@@ -1,0 +1,70 @@
+<div class="container">
+  <mat-card>
+    <mat-card-title>{{ title }}</mat-card-title>
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            placeholder="Title"
+            formControlName="title"
+            (keyup)="createUrl()"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>URL</mat-label>
+          <input matInput placeholder="URL" formControlName="url" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="date"
+            placeholder="Publication date"
+            formControlName="date"
+          />
+          <mat-datepicker-toggle [for]="date" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #date></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Time</mat-label>
+          <input
+            matInput
+            [format]="24"
+            readonly
+            [ngxTimepicker]="time"
+            formControlName="time"
+          />
+          <ngx-material-timepicker-toggle
+            [for]="time"
+            matSuffix
+          ></ngx-material-timepicker-toggle>
+          <ngx-material-timepicker [minutesGap]="5" #time>
+          </ngx-material-timepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Image (URL)</mat-label>
+          <input matInput placeholder="Image URL" formControlName="imageUrl" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Lead</mat-label>
+          <input matInput placeholder="Lead text" formControlName="lead" />
+        </mat-form-field>
+        <mat-form-field id="textarea" floatLabel="always">
+          <mat-label>Content</mat-label>
+          <textarea
+            matInput
+            placeholder="Content"
+            formControlName="content"
+            rows="15"
+          ></textarea>
+        </mat-form-field>
+        <mat-slide-toggle formControlName="public">Public</mat-slide-toggle>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button type="submit" mat-raised-button color="primary">Save</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

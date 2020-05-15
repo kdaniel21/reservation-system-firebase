@@ -40,51 +40,10 @@
               #startTime
             ></ngx-material-timepicker> </mat-form-field
           ><br />
-          <!-- <mat-form-field style="width: 10%;">
-            <mat-label>Hours</mat-label>
-            <input
-              type="number"
-              min="0"
-              max="24"
-              matInput
-              formControlName="reservation-length-hours"
-              (change)="checkHours()"
-            />
-          </mat-form-field>
-          :
-          <mat-form-field style="width: 10%;">
-            <mat-label>Minutes</mat-label>
-            <input
-              type="number"
-              min="0"
-              max="60"
-              matInput
-              formControlName="reservation-length-minutes"
-              (change)="checkMinutes()"
-            />
-          </mat-form-field> -->
           <mat-form-field>
             <mat-label>Length</mat-label>
             <app-timepicker formControlName="reservation-length"></app-timepicker>
           </mat-form-field>
-          <!-- <mat-form-field>
-            <mat-label>Length</mat-label>
-            <input
-              matInput
-              [format]="24"
-              readonly
-              [ngxTimepicker]="length"
-              formControlName="reservation-length"
-            />
-            <ngx-material-timepicker-toggle
-              [for]="length"
-              matSuffix
-            ></ngx-material-timepicker-toggle>
-            <ngx-material-timepicker
-              #length
-              [minutesGap]="5"
-            ></ngx-material-timepicker>
-          </mat-form-field> -->
         </div>
       </mat-card-content>
       <!-- BUTTONS -->

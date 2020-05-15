@@ -6,8 +6,8 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot,
 } from '@angular/router';
-import { Observable, forkJoin, merge, combineLatest, of } from 'rxjs';
-import { tap, map, switchMap, take } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ReservationEditGuard implements CanActivate {

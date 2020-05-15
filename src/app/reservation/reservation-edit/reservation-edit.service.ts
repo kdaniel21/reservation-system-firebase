@@ -7,6 +7,7 @@ import { AppState } from 'src/app/store/app.reducer';
 import * as fromAuth from '../../auth/store/auth.reducer';
 import { HttpClient } from '@angular/common/http';
 import { ReservationService } from '../reservation.service';
+import { combineLatest } from 'rxjs';
 import { take, map, switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 
@@ -75,29 +76,24 @@ export class ReservationEditService {
     const formattedOriginalStartOfWeek = this.resService.formatDateToString(
       this.resService.getFirstDayOfWeek(originalStart)
     );
+
+    let deleteReservation;
     if (formattedStartOfWeek !== formattedOriginalStartOfWeek) {
       // Delete previous object from the server
-      this.http
-        .delete(
-          `https://reservation-system-81981.firebaseio.com/calendar/${originalStart.getFullYear()}/${formattedOriginalStartOfWeek}/${
-            editedReservation.id
-          }.json`
-        )
-        .pipe(take(1))
-        .subscribe();
+      deleteReservation = this.http.delete(
+        `https://reservation-system-81981.firebaseio.com/calendar/${originalStart.getFullYear()}/${formattedOriginalStartOfWeek}/${
+          editedReservation.id
+        }.json`
+      );
     }
 
     // Save onto the server
-    console.log(editedReservation);
-    this.http
-      .put(
-        `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${editedReservation.id}.json`,
-        editedReservation
-      )
-      .pipe(take(1))
-      .subscribe();
+    const saveToServer = this.http.put(
+      `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${editedReservation.id}.json`,
+      editedReservation
+    );
 
-    return editedReservation;
+    return combineLatest(saveToServer, deleteReservation).pipe(take(1));
   }
 
   deleteReservation(reservation: Reservation) {
