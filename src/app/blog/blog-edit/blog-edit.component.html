@@ -1,15 +1,16 @@
 <div class="container">
   <mat-card>
-    <mat-card-title>{{ title }}</mat-card-title>
+    <mat-card-title>{{ cardTitle }}</mat-card-title>
     <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
-      <mat-card-content>
+      <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+      <mat-card-content *ngIf="!loading">
         <mat-form-field>
           <mat-label>Title</mat-label>
           <input
             matInput
             placeholder="Title"
             formControlName="title"
-            (keyup)="createUrl()"
+            (keyup)="!id && createUrl()"
           />
         </mat-form-field>
         <mat-form-field>
@@ -57,12 +58,13 @@
             matInput
             placeholder="Content"
             formControlName="content"
-            rows="15"
+            rows="10"
           ></textarea>
         </mat-form-field>
         <mat-slide-toggle formControlName="public">Public</mat-slide-toggle>
       </mat-card-content>
       <mat-card-actions align="end">
+        <button type="button" mat-raised-button color="warn" (click)="onDeletePost()" *ngIf="id">Delete</button>
         <button type="submit" mat-raised-button color="primary">Save</button>
       </mat-card-actions>
     </form>

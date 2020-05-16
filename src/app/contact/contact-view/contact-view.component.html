@@ -6,7 +6,7 @@
     <mat-card-title>Messaging: {{ contact.topic }} - {{ contact.name }}</mat-card-title>
     <!-- CARD CONTENT -->
     <mat-card-content *ngIf="contact && !loading" id="main-card-content">
-      <!-- ORIGINAL MESSAGES -->
+      <!-- MESSAGES -->
       <div class="messages">
         <mat-card *ngFor="let message of contact.messages">
           <mat-card-title>

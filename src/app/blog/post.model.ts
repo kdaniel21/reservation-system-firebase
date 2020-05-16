@@ -6,5 +6,6 @@ export interface Post {
   content: string,
   public: boolean,
   imageUrl: string,
-  lead: string
+  lead: string,
+  author: string
 }

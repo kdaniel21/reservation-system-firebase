@@ -1,11 +1,12 @@
+import { ConfirmationModalComponent } from './../../shared/confirmation-modal/confirmation-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 import { ReservationService } from './../../reservation/reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlogService } from './../blog.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-blog-edit',
@@ -25,31 +26,43 @@ export class BlogEditComponent implements OnInit {
   });
 
   id: string;
-  title = 'Create Post';
+  cardTitle = 'Create Post';
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private blogService: BlogService,
     private snackBar: MatSnackBar,
-    private _location: Location,
-    private resService: ReservationService
+    private resService: ReservationService,
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    const id = this.route.queryParams['id'];
+    const id = this.route.snapshot.queryParams['id'];
     if (id) {
+      this.loading = true;
       // load article
       this.blogService
         .loadPostToEdit(id)
         .pipe(take(1))
         .subscribe((post) => {
-          this.editForm.setValue({
-            post,
-          });
+          this.loading = false;
 
           this.id = post.id;
-          this.title = 'Edit Post - ' + post.title;
+          this.cardTitle = 'Edit Post - ' + post.title;
+
+          this.editForm.setValue({
+            title: post.title,
+            url: post.url,
+            date: post.date.toDate(),
+            time: this.resService.stringifyTime(post.date.toDate()),
+            imageUrl: post.imageUrl,
+            lead: post.lead,
+            content: post.content,
+            public: post.public,
+          });
         });
     }
   }
@@ -65,40 +78,70 @@ export class BlogEditComponent implements OnInit {
   }
 
   onSubmit() {
-    const values = {...this.editForm.value};
+    const values = { ...this.editForm.value };
 
-    // Create date field
+    // Combine date and time fields
     const time = values.time.split(':');
     values.date.setHours(time[0]);
     values.date.setMinutes(time[1]);
     delete values.time;
 
-    console.log(values);
+    if (this.id) {
+      this.blogService
+        .editPost(this.id, values)
+        .then(() => {
+          this.snackBar.open('The post was updated successfully!');
+          this.router.navigate(['blog/latest']);
+        })
+        .catch((err) => {
+          this.snackBar.open('Something went wrong. Try again!');
+          console.log('ERROR: ', err);
+        });
+    } else {
+      this.blogService
+        .savePost(values)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.snackBar.open('The post was created!');
+            this.router.navigate(['blog/latest']);
+          },
+          (err) => {
+            this.snackBar.open('Something went wrong. Try again!');
+            console.log('ERROR: ', err);
+          }
+        );
+    }
+  }
 
-    // if (this.id) {
-    //   this.blogService
-    //     .editPost(this.id, values)
-    //     .then(() => {
-    //       this.snackBar.open('The post was updated successfully!');
-    //       // TODO: navigate somewhere
-    //       //this._location.back();
-    //     })
-    //     .catch((err) => {
-    //       this.snackBar.open('Something went wrong. Try again!');
-    //       console.log('ERROR: ', err);
-    //     });
-    // } else {
-    //   this.blogService
-    //     .savePost(values)
-    //     .then(() => {
-    //       this.snackBar.open('The post was created!');
-    //       // TODO: navigate somewhere
-    //       //this._location.back();
-    //     })
-    //     .catch((err) => {
-    //       this.snackBar.open('Something went wrong. Try again!');
-    //       console.log('ERROR: ', err);
-    //     });
-    // }
+  onDeletePost() {
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      data: {
+        title: 'Confirm Delete',
+        message:
+          'Are you sure you want to delete this post? If you just do not need it, you can set it to not be public.',
+        submitBtnText: 'Delete',
+      },
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result === 'confirm') {
+          // delete post
+          this.loading = true;
+          this.blogService
+            .deletePost(this.id)
+            .then(() => {
+              this.snackBar.open('Post deleted successfully.');
+              this.router.navigate(['blog/latest']);
+            })
+            .catch((err) =>
+              this.snackBar.open('Post could not be deleted. Try again!')
+            )
+            .finally(() => (this.loading = false));
+        }
+      });
   }
 }

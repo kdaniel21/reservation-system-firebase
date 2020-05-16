@@ -1,0 +1,23 @@
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 5% 0;
+}
+mat-card {
+  width: 80%;
+  margin: auto;
+}
+#lead {
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+}
+mat-divider {
+  padding: 0.5rem 0!important;
+}
+/* #back-arrow {
+  height: 26px;
+  width: 26px;
+}
+mat-icon {
+  font-size: 14px;
+} */

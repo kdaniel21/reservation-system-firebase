@@ -22,7 +22,6 @@ import { ReservationMaterialModule } from './reservation-material.module';
     CommonModule,
     ReservationRoutingModule,
     ReactiveFormsModule,
-    NgbModule,
     SharedModule,
     ReservationMaterialModule,
     FlexLayoutModule,

@@ -30,6 +30,10 @@
           <mat-icon matListIcon>calendar_today</mat-icon>
           <a matLine>Reservation Calendar</a>
         </mat-list-item>
+        <mat-list-item *ngIf="currentUser" routerLink="blog/latest">
+          <mat-icon matListIcon>library_books</mat-icon>
+          <a matLine>Blog</a>
+        </mat-list-item>
         <mat-list-item
           *ngIf="currentUser && currentUser.admin"
           [routerLink]="['../admin']"

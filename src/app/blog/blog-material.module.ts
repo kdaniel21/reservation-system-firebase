@@ -1,3 +1,6 @@
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -22,13 +25,14 @@ const material = [
   MatNativeDateModule,
   MatSnackBarModule,
   MatListModule,
-  FlexLayoutModule
+  MatIconModule,
+  MatDialogModule,
+  MatDividerModule
 ];
 
 @NgModule({
   imports: [material],
   exports: [material],
-  providers: [MatDatepickerModule]
 })
 
 export class BlogMaterialModule {}

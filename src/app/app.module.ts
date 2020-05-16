@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ReservationEffects } from './reservation/store/reservation.effects';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -23,14 +23,12 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     CoreModule,
     HttpClientModule,
-    FormsModule,
     StoreModule.forRoot(fromApp.appReducer),
     EffectsModule.forRoot([AuthEffects, ReservationEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
