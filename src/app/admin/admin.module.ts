@@ -1,3 +1,4 @@
+import { AdminBlogListComponent } from './admin-dashboard/admin-blog/admin-blog-list/admin-blog-list.component';
 import { AdminContactListComponent } from './admin-dashboard/admin-contact/admin-contact-list/admin-contact-list.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
@@ -30,6 +31,7 @@ import { AdminMaterialModule } from './admin-material.module';
     AdminUsersInfoComponent,
     AdminUserEditComponent,
     AdminContactListComponent,
+    AdminBlogListComponent
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+import { AdminBlogListComponent } from './admin-dashboard/admin-blog/admin-blog-list/admin-blog-list.component';
 import { AdminContactListComponent } from './admin-dashboard/admin-contact/admin-contact-list/admin-contact-list.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'overview', component: AdminOverviewComponent },
       { path: 'users', component: AdminUsersComponent },
       { path: 'messages', component: AdminContactListComponent },
+      { path: 'blog', component: AdminBlogListComponent },
     ],
   },
 ];
