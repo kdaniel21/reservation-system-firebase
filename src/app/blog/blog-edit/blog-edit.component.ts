@@ -104,7 +104,7 @@ export class BlogEditComponent implements OnInit {
         .subscribe(
           () => {
             this.snackBar.open('The post was created!');
-            this.router.navigate(['blog/latest']);
+            this.router.navigate(['admin/dashboard/blog']);
           },
           (err) => {
             this.snackBar.open('Something went wrong. Try again!');

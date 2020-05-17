@@ -1,4 +1,3 @@
-
 export const environment = {
   production: false,
   firebase_key: 'AIzaSyBriOg_IT7FZldAZg7ZKXD2frJ5mrXj3_Y',
