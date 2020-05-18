@@ -36,7 +36,6 @@ export class BlogFeedComponent implements OnInit, OnDestroy {
       });
 
     this.postsSub = this.blogService.loadPosts().subscribe((posts) => {
-      console.log(posts);
       this.loading = false;
 
       this.posts = posts;
