@@ -49,6 +49,10 @@ const appRoutes: Routes = [
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin },
   },
+  {
+    path: '**',
+    redirectTo: 'calendar',
+  },
 ];
 
 @NgModule({
