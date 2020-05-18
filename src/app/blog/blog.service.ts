@@ -27,7 +27,6 @@ export class BlogService {
   }
 
   loadPostToRead(url: string) {
-    console.log(url);
     return this.afStore
       .collection<Post>('posts', (ref) => ref.where('url', '==', url).limit(1))
       .get()

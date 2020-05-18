@@ -27,10 +27,7 @@ export class BlogViewComponent implements OnInit {
         .loadPostToRead(url)
         .pipe(take(1))
         .subscribe(
-          (post) => {
-            console.log(post);
-            this.post = post;
-          },
+          (post) => (this.post = post),
           (err) => {
             this.snackBar.open('Article is not existing. Try again!');
             console.log('ERROR: ', err);
