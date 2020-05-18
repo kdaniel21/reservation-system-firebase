@@ -21,19 +21,18 @@ export class BlogFeedComponent implements OnInit, OnDestroy {
   loading = false;
   userAdmin: boolean;
 
+  userAdminSub: Subscription;
   postsSub: Subscription;
 
   ngOnInit() {
     this.loading = true;
 
-    this.store
-      .select('auth')
-      .pipe(take(1))
-      .subscribe((authState) => {
-        if (authState.user) {
-          this.userAdmin = authState.user.admin;
-        }
-      });
+    this.userAdminSub = this.store.select('auth').subscribe((authState) => {
+      console.log('AUTH STATE: ', authState);
+      if (authState.user) {
+        this.userAdmin = authState.user.admin;
+      }
+    });
 
     this.postsSub = this.blogService.loadPosts().subscribe((posts) => {
       this.loading = false;
@@ -44,5 +43,6 @@ export class BlogFeedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postsSub.unsubscribe();
+    this.userAdminSub.unsubscribe();
   }
 }
