@@ -104,7 +104,7 @@ export class BlogEditComponent implements OnInit {
         .subscribe(
           () => {
             this.snackBar.open('The post was created!');
-            this.router.navigate(['/']);
+            this.router.navigate(['admin/blog']);
           },
           (err) => {
             this.snackBar.open('Something went wrong. Try again!');
@@ -135,11 +135,12 @@ export class BlogEditComponent implements OnInit {
             .deletePost(this.id)
             .then(() => {
               this.snackBar.open('Post deleted successfully.');
-              this.router.navigate(['blog/latest']);
+              this.router.navigate(['admin/blog']);
             })
-            .catch((err) =>
+            .catch((err) => {
               this.snackBar.open('Post could not be deleted. Try again!')
-            )
+              console.log('ERROR: ', err);
+            })
             .finally(() => (this.loading = false));
         }
       });
