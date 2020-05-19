@@ -67,7 +67,6 @@ export class ContactViewComponent implements OnInit {
     this.contactService
       .sendReply(this.contact, message)
       .then((res) => {
-        console.log(res);
         this.snackBar.open('Your message was successfully sent!');
         this.replyForm.reset();
       })
