@@ -9,6 +9,7 @@ export const NEXT_WEEK = '[Reservation] Switch To Next Week';
 export const PREVIOUS_WEEK = '[Reservation] Switch To Previous Week';
 export const START_EDIT = '[Reservation] Start Edit Reservation';
 export const SUBMIT_EDIT = '[Reservation] Submit Edited Reservation';
+export const CANCEL_EDIT = '[Reservation] Cancel Edited Reservation';
 export const NEW_RESERVATION = '[Reservation] Create New Reservation';
 export const START_DELETE_RESERVATION = '[Reservation] Start Deleting a Reservation';
 export const DELETE_RESERVATION = '[Reservation] Delete a Reservation';
@@ -76,6 +77,10 @@ export class AddReservation implements Action {
   constructor(public payload: Reservation) {}
 }
 
+export class CancelEdit implements Action {
+  readonly type = CANCEL_EDIT;
+}
+
 export type ReservationActions =
   | GetWeek
   | SetWeek
@@ -87,4 +92,5 @@ export type ReservationActions =
   | NewReservation
   | StartDeleteReservation
   | DeleteReservation
-  | AddReservation;
+  | AddReservation
+  | CancelEdit;

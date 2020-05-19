@@ -63,6 +63,11 @@ export function reservationReducer(
           action.payload,
         ],
       };
+    case ReservationActions.CANCEL_EDIT:
+      return {
+        ...state,
+        editedReservation: null,
+      };
     default:
       return state;
   }

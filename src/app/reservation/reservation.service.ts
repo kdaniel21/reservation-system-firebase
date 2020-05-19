@@ -13,7 +13,6 @@ export interface ReservationInterface {
 
 @Injectable({providedIn: 'root'})
 export class ReservationService {
-
   // Formats date to YYYY-MM-DD (january = 1 etc.)
   formatDateToString(date: Date) {
     const year = date.getFullYear();

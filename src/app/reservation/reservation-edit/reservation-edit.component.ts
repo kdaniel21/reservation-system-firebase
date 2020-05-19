@@ -78,35 +78,31 @@ export class ReservationEditComponent implements OnInit {
         )
         .subscribe((editedItem) => {
           this.loading = false;
-          // Redirect to the calendar if the user is not allowed to edit
-          if (!editedItem) {
-            this.router.navigate(['/calendar/view']);
-          } else {
-            // Load reservation data
-            this.editedItem = { ...editedItem };
 
-            // Calculate length in minutes
-            const startTime = new Date(this.editedItem.startTime);
-            const endTime = new Date(this.editedItem.endTime);
-            const length = new Date(
-              endTime.getTime() - startTime.getTime() - 1000 * 60 * 60
-            ); // difference minus 1 hour (date starts from 1 hour);
+          // Load reservation data
+          this.editedItem = { ...editedItem };
 
-            // Set values on the form with the preloaded data
-            this.editForm.setValue({
-              'reservation-name': this.editedItem.name,
-              'reservation-full-date': {
-                'reservation-date': startTime,
-                'reservation-start-time': this.resService.stringifyTime(
-                  this.editedItem.startTime
-                ),
-                'reservation-length': {
-                  hours: length.getHours(),
-                  minutes: length.getMinutes(),
-                },
+          // Calculate length in minutes
+          const startTime = new Date(this.editedItem.startTime);
+          const endTime = new Date(this.editedItem.endTime);
+          const length = new Date(
+            endTime.getTime() - startTime.getTime() - 1000 * 60 * 60
+          ); // difference minus 1 hour (date starts from 1 hour);
+
+          // Set values on the form with the preloaded data
+          this.editForm.setValue({
+            'reservation-name': this.editedItem.name,
+            'reservation-full-date': {
+              'reservation-date': startTime,
+              'reservation-start-time': this.resService.stringifyTime(
+                this.editedItem.startTime
+              ),
+              'reservation-length': {
+                hours: length.getHours(),
+                minutes: length.getMinutes(),
               },
-            });
-          }
+            },
+          });
         });
     }
   }
