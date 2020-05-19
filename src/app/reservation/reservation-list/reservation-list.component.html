@@ -1,21 +1,19 @@
 <div class="container">
-  <div class="info">
-    <!-- INFORMATION ABOUT THE DATE -->
-    <div class="week mat-h3">
-      <div>{{ calculateWeeksAway() }}</div>
-      <div>
-        {{
-          this.startingDayOfWeek.getFullYear() +
-            '. ' +
-            this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
-        }}
-      </div>
+  <!-- INFORMATION ABOUT THE DATE -->
+  <div id="info" class="mat-h3">
+    <div>{{ calculateWeeksAway() }}</div>
+    <div>
+      {{
+        this.startingDayOfWeek.getFullYear() +
+          '. ' +
+          this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
+      }}
     </div>
   </div>
   <div id="calendar">
     <div *ngFor="let day of daysOfWeek; let i = index" class="days">
       <div class="day-header">
-        <div class="mat-h4" style="color: gray">{{ day }}</div>
+        <div class="mat-h4" style="color: gray;">{{ day }}</div>
         <div class="mat-display-1">{{ this.calculateDate(i) }}</div>
       </div>
       <div class="day-content">
