@@ -42,7 +42,7 @@ export class AdminContactListComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.contactsSub = this.contactService.getContacts().subscribe((contacts) => {
       this.loading = false;
-      console.log(contacts);
+
       this.dataSource = new MatTableDataSource(contacts);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;

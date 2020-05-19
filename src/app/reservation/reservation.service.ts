@@ -58,7 +58,6 @@ export class ReservationService {
 
   // return the day of the date (in the week, Monday = 1, Sunday = 7)
   getDay(date: Date) {
-    //console.log('DAY: ', new Date(date).getDay() || 7);
     return new Date(date).getDay() || 7;
   }
 

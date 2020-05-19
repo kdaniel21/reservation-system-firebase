@@ -28,7 +28,6 @@ export class BlogFeedComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.userAdminSub = this.store.select('auth').subscribe((authState) => {
-      console.log('AUTH STATE: ', authState);
       if (authState.user) {
         this.userAdmin = authState.user.admin;
       }

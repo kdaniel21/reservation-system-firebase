@@ -23,7 +23,6 @@ export class AdminCurrentReservationComponent implements OnInit {
       .getCurrentReservation()
       .subscribe((currRes) => {
         if (currRes) {
-          console.log(currRes);
           this.currentReservation = {
             name: currRes.name,
             start: new Date(currRes.startTime)
