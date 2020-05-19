@@ -1,11 +1,10 @@
-<div fxLayout="column" fxLayoutAlign="center">
-  <mat-card
-    *ngFor="let reservation of dailyReservations"
-    class="reservation"
-    (click)="onEditReservation(reservation.id)"
-  >
+<mat-card
+  *ngFor="let reservation of dailyReservations"
+  (click)="onEditReservation(reservation.id)"
+>
+  <div class="name mat-h3" style="margin-bottom: 0;">{{ reservation.name }}</div>
+  <div class="time mat-h5">
     {{ this.resService.stringifyTime(reservation.startTime) }} -
-    {{ this.resService.stringifyTime(reservation.endTime) }} <br />
-    {{ reservation.name }}
-  </mat-card>
-</div>
+    {{ this.resService.stringifyTime(reservation.endTime) }}
+  </div>
+</mat-card>

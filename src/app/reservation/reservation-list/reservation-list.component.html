@@ -1,25 +1,30 @@
-<div class="container">
+<!-- <div class="container">
   <div class="info">
-    <!-- INFORMATION ABOUT THE DATE -->
+    <!-- INFORMATION ABOUT THE DATE
     <div class="week mat-subheading-1">
       <h3>{{ calculateWeeksAway() }}</h3>
       <h3>
         {{
-          this.startingDayOfWeek.getFullYear() + '. ' +
-          this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
+          this.startingDayOfWeek.getFullYear() +
+            '. ' +
+            this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
         }}
       </h3>
     </div>
   </div>
   <div class="calendar">
-    <!-- DAY NAMES -->
+    <!-- DAY NAMES
     <div fxLayout="row" style="height: 58px; width: 99%;">
-      <div fxFlex *ngFor="let day of daysOfWeek; let i = index" class="day-name">
-        {{ day }} <br />
-        {{ this.calculateDate(i) }}
+      <div
+        fxFlex
+        *ngFor="let day of daysOfWeek; let i = index"
+        class="day-name"
+      >
+        <div>{{ day }}</div>
+        <div>{{ this.calculateDate(i) }}</div>
       </div>
     </div>
-    <!-- LOADING BAR -->
+    <!-- LOADING BAR
     <div class="loading" *ngIf="loading">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
@@ -27,17 +32,13 @@
       fxLayout="row"
       fxLayout.md="columns"
       fxFill
-      style="
-        width: 100%;
-        min-height: calc(100% - 58px);
-        overflow-y: scroll;
-      "
+      style="width: 100%; min-height: calc(100% - 58px); overflow-y: scroll;"
     >
       <div fxFlex *ngFor="let i of [1, 2, 3, 4, 5, 6, 7]" class="day-content">
         <app-reservation-dayview [day]="i"></app-reservation-dayview>
       </div>
     </div>
-    <!-- CONTROL BUTTONS -->
+    <!-- CONTROL BUTTONS
     <div class="calendar-controls">
       <button
         mat-fab
@@ -68,5 +69,62 @@
         <span class="material-icons">add</span>
       </button>
     </div>
+  </div>
+</div> -->
+
+<div class="container">
+  <div class="info">
+    <!-- INFORMATION ABOUT THE DATE -->
+    <div class="week mat-h3">
+      <div>{{ calculateWeeksAway() }}</div>
+      <div>
+        {{
+          this.startingDayOfWeek.getFullYear() +
+            '. ' +
+            this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
+        }}
+      </div>
+    </div>
+  </div>
+  <div id="calendar">
+    <div *ngFor="let day of daysOfWeek; let i = index" class="days">
+      <div class="day-header">
+        <div class="mat-h4" style="color: gray">{{ day }}</div>
+        <div class="mat-display-1">{{ this.calculateDate(i) }}</div>
+      </div>
+      <div class="day-content">
+        <app-reservation-dayview [day]="i + 1"></app-reservation-dayview>
+      </div>
+    </div>
+  </div>
+  <div class="calendar-controls">
+    <button
+      mat-fab
+      color="primary"
+      aria-label="Add New Reservation"
+      style="margin-right: 10px;"
+      (click)="previousWeek()"
+    >
+      <span class="material-icons">keyboard_arrow_left</span>
+    </button>
+    <button
+      mat-fab
+      color="primary"
+      style="margin-right: 10px;"
+      aria-label="Add New Reservation"
+      (click)="nextWeek()"
+    >
+      <span class="material-icons">keyboard_arrow_right</span>
+    </button>
+    <button
+      mat-fab
+      color="primary"
+      style="margin-right: 10px;"
+      aria-label="Add New Reservation"
+      [routerLink]="['/calendar/edit']"
+      [queryParams]="{ mode: 'new' }"
+    >
+      <span class="material-icons">add</span>
+    </button>
   </div>
 </div>

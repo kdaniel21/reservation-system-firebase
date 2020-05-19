@@ -1,6 +1,13 @@
-.reservation {
+mat-card {
   box-sizing: border-box;
-  width: 10vw;
+  width: 9.5rem;
   margin: auto;
   margin-top: 5px;
+  background-color: #3f51b5;
+  color: white;
+  text-align: left;
+  padding: 10px!important;
+}
+.name {
+
 }
