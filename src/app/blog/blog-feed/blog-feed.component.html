@@ -8,40 +8,38 @@
         </button>
       </div>
     </mat-card-header>
-    <mat-card-content>
-      <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-      <div class="posts" *ngIf="!loading">
-        <mat-card class="post-card" *ngFor="let post of posts">
-          <div fxLayout="row">
-            <div fxFlex="110px">
-              <img [src]="post.imageUrl" width="100px" height="100px" />
-            </div>
-            <div fxFlex="auto">
-              <div class="mat-h2 post-text">
-                {{ post.title }}
-                <span
-                  class="icons"
-                  routerLink="../edit"
-                  *ngIf="userAdmin"
-                  [queryParams]="{ id: post.id }"
-                  ><mat-icon>edit</mat-icon></span
-                >
-              </div>
-              <div class="mat-h4 post-text">
-                {{ post.author }} | {{ post.date | date: 'yyyy.MM.dd HH:mm' }}
-              </div>
-              <div class="mat-h3 post-text">{{ post.lead }}</div>
-              <div
-                class="mat-h3 post-text"
-                [routerLink]="['/blog', post.url]"
-                style="cursor: pointer;"
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+    <mat-card-content class="posts" *ngIf="!loading">
+      <mat-card class="post-card" *ngFor="let post of posts">
+        <div fxLayout="row">
+          <div fxFlex="110px" fxHide.lt-sm>
+            <img [src]="post.imageUrl" width="100px" height="100px" />
+          </div>
+          <div fxFlex="auto">
+            <div class="mat-h2 post-text">
+              {{ post.title }}
+              <span
+                class="icons"
+                routerLink="../edit"
+                *ngIf="userAdmin"
+                [queryParams]="{ id: post.id }"
+                ><mat-icon>edit</mat-icon></span
               >
-                Read More...
-              </div>
+            </div>
+            <div class="mat-h4 post-text">
+              {{ post.author }} | {{ post.date | date: 'yyyy.MM.dd HH:mm' }}
+            </div>
+            <div class="mat-h3 post-text">{{ post.lead }}</div>
+            <div
+              class="mat-h3 post-text"
+              [routerLink]="['/blog', post.url]"
+              style="cursor: pointer;"
+            >
+              Read More...
             </div>
           </div>
-        </mat-card>
-      </div>
+        </div>
+      </mat-card>
     </mat-card-content>
   </mat-card>
 </div>

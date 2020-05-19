@@ -4,7 +4,7 @@
   padding: 5% 0;
 }
 #feed {
-  width: 60%;
+  max-width: 50rem;
   height: 80%;
   margin: 0 auto;
 
@@ -24,7 +24,7 @@ mat-card-header {
   cursor: pointer;
 }
 .posts {
-  height: 67vh;
+  height: 85%;
   display: flex;
   overflow-y: auto;
   flex-direction: column;
