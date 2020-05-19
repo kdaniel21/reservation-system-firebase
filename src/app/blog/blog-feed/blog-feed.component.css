@@ -26,6 +26,6 @@ mat-card-header {
 .posts {
   height: 67vh;
   display: flex;
-  overflow-x: auto;
+  overflow-y: auto;
   flex-direction: column;
 }
