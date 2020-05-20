@@ -10,6 +10,14 @@
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta, lorem eu viverra efficitur, mi velit ultricies arcu, quis tincidunt sem enim eu felis. Vivamus mi augue, dictum ut nisl quis, tincidunt viverra mauris. Duis nec condimentum massa."
         >help</mat-icon
       >
+      <button
+        mat-raised-button
+        class="history-icon"
+        color="primary"
+        (click)="onShowContactHistory()"
+      >
+        <mat-icon>history</mat-icon> Show History
+      </button>
     </mat-card-title>
     <!-- LOADING SPINNER -->
     <app-loading-spinner *ngIf="loading"></app-loading-spinner>
@@ -60,11 +68,4 @@
       </mat-card-actions>
     </form>
   </mat-card>
-  <!-- HISTORY ICON -->
-  <button fxHide.gt-xs mat-mini-fab class="history-icon" color="primary" (click)="onShowContactHistory()">
-    <mat-icon>history</mat-icon>
-  </button>
-  <button fxHide.lt-sm mat-fab class="history-icon" color="primary" (click)="onShowContactHistory()">
-    <mat-icon>history</mat-icon>
-  </button>
 </div>

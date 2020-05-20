@@ -35,9 +35,5 @@ mat-card-actions {
   }
 }
 .history-icon {
-  position: fixed;
-  bottom: 20px;
-  float: left;
-  right: 20px;
-  z-index: 100;
+  float: right;
 }
