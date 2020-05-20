@@ -22,10 +22,6 @@
     <!-- NAVIGATION LIST -->
     <mat-nav-list>
       <div class="top-action">
-        <mat-list-item *ngIf="currentUser" [routerLink]="['']">
-          <mat-icon matListIcon>home</mat-icon>
-          <a matLine>Home</a>
-        </mat-list-item>
         <mat-list-item *ngIf="currentUser" [routerLink]="['../calendar/view']">
           <mat-icon matListIcon>calendar_today</mat-icon>
           <a matLine>Reservation Calendar</a>
@@ -41,10 +37,10 @@
           <mat-icon matListIcon>work</mat-icon>
           <a matLine>Admin Panel</a>
         </mat-list-item>
-        <mat-list-item *ngIf="currentUser" [routerLink]="['']">
+        <!-- <mat-list-item *ngIf="currentUser" [routerLink]="['']">
           <mat-icon matListIcon>help</mat-icon>
           <a matLine>How does it work?</a>
-        </mat-list-item>
+        </mat-list-item> -->
         <mat-list-item *ngIf="!currentUser" [routerLink]="['../auth/login']">
           <mat-icon matListIcon>vpn_key</mat-icon>
           <a matLine>Login</a>
