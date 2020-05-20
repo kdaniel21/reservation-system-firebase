@@ -52,6 +52,7 @@
           type="submit"
           mat-raised-button
           color="primary"
+          id="submit-btn"
           [disabled]="contactForm.invalid"
         >
           Send
@@ -60,7 +61,10 @@
     </form>
   </mat-card>
   <!-- HISTORY ICON -->
-  <button mat-fab class="history-icon" color="primary" (click)="onShowContactHistory()">
+  <button fxHide.gt-xs mat-mini-fab class="history-icon" color="primary" (click)="onShowContactHistory()">
+    <mat-icon>history</mat-icon>
+  </button>
+  <button fxHide.lt-sm mat-fab class="history-icon" color="primary" (click)="onShowContactHistory()">
     <mat-icon>history</mat-icon>
   </button>
 </div>

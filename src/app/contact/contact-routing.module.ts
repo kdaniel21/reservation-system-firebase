@@ -1,13 +1,13 @@
 import { ContactViewComponent } from './contact-view/contact-view.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ContactUserComponent } from './contact-user/contact-user.component';
+import { ContactFormComponent } from './contact-form/contact-form.component';
 import { ContactViewResolver } from './contact-view/contact-view.resolver';
 
 const routes = [
   {
     path: '',
-    component: ContactUserComponent,
+    component: ContactFormComponent,
   },
   {
     path: 'view/:id',

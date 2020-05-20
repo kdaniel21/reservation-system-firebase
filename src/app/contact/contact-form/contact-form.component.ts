@@ -1,5 +1,5 @@
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { ContactService } from './../contact.service';
+import { ContactService } from '../contact.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppState } from 'src/app/store/app.reducer';
@@ -10,10 +10,10 @@ import { ContactHistoryComponent } from '../contact-history/contact-history.comp
 
 @Component({
   selector: 'app-contact-user',
-  templateUrl: './contact-user.component.html',
-  styleUrls: ['./contact-user.component.css'],
+  templateUrl: './contact-form.component.html',
+  styleUrls: ['./contact-form.component.css'],
 })
-export class ContactUserComponent implements OnInit {
+export class ContactFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,

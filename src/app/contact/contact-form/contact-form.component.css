@@ -4,17 +4,12 @@
   height: 100%;
   padding-top: 10%;
 }
-.form-card {
+mat-card {
   margin: auto;
-  max-width: 50%;
-  max-width: 50%;
+  max-width: 40rem;
 }
 .help-tooltip {
   font-size: 105px !important;
-  background-color: red;
-}
-.icon {
-  float: right;
 }
 mat-form-field {
   width: 45%;
@@ -26,7 +21,7 @@ mat-card-content {
 mat-card-actions {
   padding-bottom: 1rem;
 }
-button {
+#submit-btn {
   float: right;
 }
 @media (max-width: 1500px) {
