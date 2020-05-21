@@ -60,16 +60,20 @@ export class AdminUsersListComponent implements OnInit {
 
   onOpenEditModal(user: User) {
     this.dialog.open(AdminUserEditComponent, {
-      height: '35%',
-      width: '35%',
+      maxWidth: '22rem',
+      maxHeight: '19rem',
+      height: '100%',
+      width: '100%',
       data: { user },
     });
   }
 
   onInviteUser() {
     this.dialog.open(AdminUserInviteComponent, {
-      width: '35%',
-      height: '34%',
+      maxWidth: '20rem',
+      maxHeight: '17rem',
+      height: '100%',
+      width: '100%',
     });
   }
 
