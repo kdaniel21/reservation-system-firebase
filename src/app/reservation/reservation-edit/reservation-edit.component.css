@@ -11,14 +11,15 @@
 }
 .edit-card {
   margin: auto;
-  max-width: 60%;
+  max-width: 40rem;
 }
 .edit-card-title {
   padding-top: 2%;
   padding-bottom: 2%;
 }
 mat-form-field {
+  background-color: red;
   font-size: 17px;
-  min-width: 50%;
-  max-width: 90%
+  width: 100%;
+  max-width: 20rem;
 }
