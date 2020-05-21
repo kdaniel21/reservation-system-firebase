@@ -23,3 +23,9 @@ mat-form-field {
   width: 100%;
   max-width: 20rem;
 }
+
+@media screen and (max-height: 600px) {
+  .container {
+    padding: 1%;
+  }
+}
