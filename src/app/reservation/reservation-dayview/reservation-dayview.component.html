@@ -1,10 +1,13 @@
 <mat-card
-  *ngFor="let reservation of dailyReservations"
-  (click)="onEditReservation(reservation.id)"
+  *ngFor="let res of dailyReservations"
+  (click)="
+    (res.createdBy === user.uid || user.admin) && onEditReservation(res.id)
+  "
+  [style.cursor]="res.createdBy === user.uid || user.admin ? 'pointer' : 'auto'"
 >
-  <div class="name mat-h3" style="margin-bottom: 0;">{{ reservation.name }}</div>
+  <div class="name mat-h3" style="margin-bottom: 0;">{{ res.name }}</div>
   <div class="time mat-h5">
-    {{ this.resService.stringifyTime(reservation.startTime) }} -
-    {{ this.resService.stringifyTime(reservation.endTime) }}
+    {{ this.resService.stringifyTime(res.startTime) }} -
+    {{ this.resService.stringifyTime(res.endTime) }}
   </div>
 </mat-card>
