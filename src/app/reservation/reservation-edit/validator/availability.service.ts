@@ -18,7 +18,11 @@ export class AvailabilityService {
     private store: Store<AppState>
   ) {}
 
-  timeAvailable(startTime: Date, endTime: Date) {
+  timeAvailable(
+    startTime: Date,
+    endTime: Date,
+    place: { table: boolean; court: boolean }
+  ) {
     // TODO the program doesn't get the id -> comparison not good
     const formattedStartOfWeek = this.resService.formatDateToString(
       this.resService.getFirstDayOfWeek(startTime)
@@ -40,11 +44,11 @@ export class AvailabilityService {
         withLatestFrom(this.store.select('reservation')),
         map(([reservations, resState]: [Reservation[], State]) => {
           let available = true;
-          reservations.forEach((res) => {
-            const editedId = resState.editedReservation
-              ? resState.editedReservation.id
-              : true;
 
+          const editedId = resState.editedReservation
+            ? resState.editedReservation.id
+            : true;
+          reservations.forEach((res) => {
             if (editedId === true || res.id !== editedId) {
               // to not compare milliseconds
               const start1 = Math.floor(startTime.getTime() / 1000);
@@ -56,9 +60,12 @@ export class AvailabilityService {
               a start and end can be the same of two different reservations
               e.g. one is 19.00-20.00 and other can be 20.00-21.00 */
               if (
-                (start1 >= start2 && start1 < end2) ||
-                (start2 >= start1 && start2 < end1)
+                ((start1 >= start2 && start1 < end2) ||
+                  (start2 >= start1 && start2 < end1)) &&
+                ((res.place.table && place.table) ||
+                  (res.place.court && place.court))
               ) {
+                console.log('NOT AVAILABLE!!');
                 available = false;
               }
             }

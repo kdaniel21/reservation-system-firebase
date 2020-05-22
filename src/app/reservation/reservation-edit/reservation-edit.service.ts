@@ -66,6 +66,7 @@ export class ReservationEditService {
   }
 
   saveEditChanges(editedReservation: Reservation, originalStart: Date) {
+    console.log('EDITED: ', editedReservation);
     // Get data to save onto the server
     const year = editedReservation.startTime.getFullYear();
     const formattedStartOfWeek = this.resService.formatDateToString(

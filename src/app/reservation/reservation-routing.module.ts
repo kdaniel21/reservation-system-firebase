@@ -9,10 +9,8 @@ import { ReservationEditResolver } from './reservation-edit/reservation-edit.res
 const routes: Routes = [
   {
     path: '',
-    component: ReservationComponent,
     children: [
-      { path: '', redirectTo: 'view', pathMatch: 'full' },
-      { path: 'view', component: ReservationListComponent },
+      { path: '', component: ReservationListComponent, pathMatch: 'full' },
       {
         path: 'edit',
         component: ReservationEditComponent,

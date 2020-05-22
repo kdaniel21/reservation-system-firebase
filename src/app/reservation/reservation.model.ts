@@ -5,6 +5,7 @@ export class Reservation {
     public createdTime: Date,
     public name: string,
     public startTime: Date,
-    public endTime: Date
+    public endTime: Date,
+    public place: { table: boolean; court: boolean }
   ) {}
 }

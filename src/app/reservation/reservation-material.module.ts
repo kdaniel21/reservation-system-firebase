@@ -1,3 +1,4 @@
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgModule } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
@@ -28,7 +29,8 @@ const material = [
   MatInputModule,
   MatNativeDateModule,
   NgxMaterialTimepickerModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatSlideToggleModule
 ];
 
 @NgModule({

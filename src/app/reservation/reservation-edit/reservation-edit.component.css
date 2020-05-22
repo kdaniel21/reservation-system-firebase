@@ -1,11 +1,12 @@
 .time-available {
   color: green;
-} .time-not-available {
+}
+.time-not-available {
   color: red;
-} .time-pending {
+}
+.time-pending {
   color: orange;
 }
-
 .container {
   padding-top: 10%;
 }
@@ -27,4 +28,8 @@ mat-form-field {
   .container {
     padding: 1%;
   }
+}
+
+#place-selector {
+  margin-right: 1rem;
 }

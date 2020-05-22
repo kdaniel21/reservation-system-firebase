@@ -10,13 +10,13 @@ export class TimeAvailabilityValidator {
     return (control: AbstractControl): ValidationErrors | null => {
       // Get data of fields
       const startTime = this.resEditService.parseTime(
-        control.get('reservation-start-time').value
+        control.get('full-date.start').value
       );
-      const startDate = control.get('reservation-date').value;
-      const length = control.get('reservation-length').value;
+      const startDate = control.get('full-date.date').value;
+      const length = control.get('full-date.length').value;
       const lengthMs = +length.hours * 3600000 + +length.minutes * 60000;
 
-      // Create full dates date
+      // Create full start date
       const fullStartDate = new Date(startDate);
       fullStartDate.setHours(startTime.hours);
       fullStartDate.setMinutes(startTime.minutes);
@@ -25,8 +25,13 @@ export class TimeAvailabilityValidator {
       const fullEndDate = new Date(fullStartDate.getTime() + lengthMs);
       fullEndDate.setSeconds(0);
 
+      const place = {
+        table: control.get('place.table').value,
+        court: control.get('place.court').value,
+      };
+
       return this.availabilityService
-        .timeAvailable(fullStartDate, fullEndDate)
+        .timeAvailable(fullStartDate, fullEndDate, place)
         .pipe(
           map((available) => (available ? null : { 'Time Reserved': true }))
         );

@@ -6,60 +6,66 @@
       <mat-card-content>
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input type="text" matInput formControlName="reservation-name" />
+          <input type="text" matInput formControlName="name" />
         </mat-form-field>
-        <div formGroupName="reservation-full-date">
-          <mat-form-field>
-            <mat-label>Date</mat-label>
-            <input
-              matInput
-              [matDatepicker]="date"
-              formControlName="reservation-date"
-            />
-            <mat-datepicker-toggle
-              [for]="date"
-              matSuffix
-            ></mat-datepicker-toggle>
-            <mat-datepicker #date></mat-datepicker> </mat-form-field
-          ><br />
-          <mat-form-field>
-            <mat-label>Start Time</mat-label>
-            <input
-              matInput
-              [format]="24"
-              readonly
-              [ngxTimepicker]="startTime"
-              formControlName="reservation-start-time"
-            />
-            <ngx-material-timepicker-toggle
-              [for]="startTime"
-              matSuffix
-            ></ngx-material-timepicker-toggle>
-            <ngx-material-timepicker
-              [minutesGap]="5"
-              #startTime
-            ></ngx-material-timepicker> </mat-form-field
-          ><br />
-          <mat-form-field>
-            <mat-label>Length</mat-label>
-            <app-timepicker formControlName="reservation-length"></app-timepicker>
-          </mat-form-field>
+        <div formGroupName="details">
+          <div formGroupName="full-date">
+            <mat-form-field>
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="date" formControlName="date" />
+              <mat-datepicker-toggle
+                [for]="date"
+                matSuffix
+              ></mat-datepicker-toggle>
+              <mat-datepicker #date></mat-datepicker> </mat-form-field
+            ><br />
+            <mat-form-field>
+              <mat-label>Start Time</mat-label>
+              <input
+                matInput
+                [format]="24"
+                readonly
+                [ngxTimepicker]="startTime"
+                formControlName="start"
+              />
+              <ngx-material-timepicker-toggle
+                [for]="startTime"
+                matSuffix
+              ></ngx-material-timepicker-toggle>
+              <ngx-material-timepicker
+                [minutesGap]="5"
+                #startTime
+              ></ngx-material-timepicker> </mat-form-field
+            ><br />
+            <mat-form-field>
+              <mat-label>Length</mat-label>
+              <app-timepicker formControlName="length"></app-timepicker>
+            </mat-form-field>
+          </div>
+          <div formGroupName="place">
+            <mat-slide-toggle id="place-selector" formControlName="table">
+              Table Tennis Table
+            </mat-slide-toggle>
+            <mat-slide-toggle formControlName="court">
+              Badminton Court
+            </mat-slide-toggle>
+          </div>
         </div>
       </mat-card-content>
       <!-- BUTTONS -->
-      <mat-card-actions style="text-align: right">
+      <mat-card-actions style="text-align: right;">
         <p class="text-right time-pending" *ngIf="editForm.pending">
           Checking availability...
         </p>
         <p
           class="text-right time-not-available"
-          *ngIf="editForm.controls['reservation-full-date'].invalid"
+          *ngIf="editForm.controls['details'].invalid"
         >
           Time is not available! Please choose another!
         </p>
         <p
           class="text-right time-available"
-          *ngIf="editForm.controls['reservation-full-date'].valid"
+          *ngIf="editForm.controls['details'].valid"
         >
           Time available!
         </p>
