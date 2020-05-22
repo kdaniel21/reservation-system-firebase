@@ -54,15 +54,6 @@ export function reservationReducer(
         editedReservation: null,
         currentWeekReservations: [...currentReservations],
       };
-    // case ReservationActions.ADD_RESERVATION:
-    //   return {
-    //     ...state,
-    //     editedReservation: null,
-    //     currentWeekReservations: [
-    //       ...state.currentWeekReservations,
-    //       action.payload,
-    //     ],
-    //   };
     case ReservationActions.CANCEL_EDIT:
       return {
         ...state,
