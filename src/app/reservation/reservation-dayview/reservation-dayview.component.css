@@ -3,11 +3,14 @@ mat-card {
   width: 9.5rem;
   margin: auto;
   margin-top: 5px;
-  background-color: #3f51b5;
   color: white;
   text-align: left;
   padding: 10px!important;
 }
-.name {
-
+.dot {
+  height: 15px;
+  width: 15px;
+  background-color: #ff4081;
+  border-radius: 50%;
+  float: right;
 }

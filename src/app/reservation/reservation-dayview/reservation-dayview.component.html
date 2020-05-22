@@ -3,9 +3,13 @@
   (click)="
     (res.createdBy === user.uid || user.admin) && onEditReservation(res.id)
   "
-  [style.cursor]="res.createdBy === user.uid || user.admin ? 'pointer' : 'auto'"
+  [ngStyle]="{
+    cursor: res.createdBy === user.uid || user.admin ? 'pointer' : 'auto',
+    'background-color': res.place.court ? '#3f51b5' : '#ff4081'
+  }"
 >
-  <div class="name mat-h3" style="margin-bottom: 0;">{{ res.name }}</div>
+  <span class="name mat-h3" style="margin-bottom: 0;">{{ res.name }}</span>
+  <span class="dot" *ngIf="res.place.court && res.place.table"></span>
   <div class="time mat-h5">
     {{ this.resService.stringifyTime(res.startTime) }} -
     {{ this.resService.stringifyTime(res.endTime) }}
