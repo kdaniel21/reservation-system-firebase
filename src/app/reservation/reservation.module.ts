@@ -1,3 +1,4 @@
+import { ReservationListFilterComponent } from './reservation-list/reservation-list-filter/reservation-list-filter.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -7,7 +8,6 @@ import { ReservationDayviewComponent } from './reservation-dayview/reservation-d
 import { ReservationEditComponent } from './reservation-edit/reservation-edit.component';
 import { ReservationRoutingModule } from './reservation-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../shared/shared.module';
 import { ReservationMaterialModule } from './reservation-material.module';
 
@@ -16,7 +16,8 @@ import { ReservationMaterialModule } from './reservation-material.module';
     ReservationComponent,
     ReservationListComponent,
     ReservationDayviewComponent,
-    ReservationEditComponent
+    ReservationEditComponent,
+    ReservationListFilterComponent
   ],
   imports: [
     CommonModule,

@@ -1,13 +1,18 @@
 <div class="container">
   <!-- INFORMATION ABOUT THE DATE -->
-  <div id="info" class="mat-h3">
-    <div>{{ calculateWeeksAway() }}</div>
-    <div>
-      {{
-        this.startingDayOfWeek.getFullYear() +
-          '. ' +
-          this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
-      }}
+  <div id="info" class="mat-h3" fxLayout="row">
+    <div id="filter" fxFlex="33">
+      <app-reservation-list-filter></app-reservation-list-filter>
+    </div>
+    <div id="week-info" fxFlex="33">
+      <div>{{ calculateWeeksAway() }}</div>
+      <div>
+        {{
+          this.startingDayOfWeek.getFullYear() +
+            '. ' +
+            this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
+        }}
+      </div>
     </div>
   </div>
   <div id="calendar">

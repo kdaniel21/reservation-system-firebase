@@ -1,3 +1,4 @@
+import { withLatestFrom } from 'rxjs/operators';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.reducer';
@@ -29,9 +30,8 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.dayNumber === 1) {
+    if (this.dayNumber === 1)
       this.store.dispatch(new AuthActions.SetLoading(true));
-    }
 
     this.userSub = this.store
       .select('auth')
@@ -39,20 +39,25 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
 
     this.reservationsSub = this.store
       .select('reservation')
-      .subscribe((reservationState) => {
+      .subscribe((resState) => {
         if (this.dayNumber === 7) {
           this.store.dispatch(new AuthActions.SetLoading(false));
         }
 
         // get reservations for the whole week
-        if (reservationState.currentWeekReservations) {
+        if (resState.currentWeekReservations) {
           // filter to the specified day
-          const reservations = reservationState.currentWeekReservations.filter(
+          const reservations = resState.currentWeekReservations.filter(
             (reservation: Reservation) => {
-              return this.resService.getDay(reservation.startTime) ==
-                this.dayNumber
-                ? true
-                : false;
+              const thisDay =
+                this.resService.getDay(reservation.startTime) ===
+                this.dayNumber;
+
+              const filter =
+                (reservation.place.court && resState.filter.court) ||
+                (reservation.place.table && resState.filter.table);
+
+              return thisDay && filter;
             }
           );
 

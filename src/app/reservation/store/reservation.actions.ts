@@ -11,9 +11,11 @@ export const START_EDIT = '[Reservation] Start Edit Reservation';
 export const SUBMIT_EDIT = '[Reservation] Submit Edited Reservation';
 export const CANCEL_EDIT = '[Reservation] Cancel Edited Reservation';
 export const NEW_RESERVATION = '[Reservation] Create New Reservation';
-export const START_DELETE_RESERVATION = '[Reservation] Start Deleting a Reservation';
+export const START_DELETE_RESERVATION =
+  '[Reservation] Start Deleting a Reservation';
 export const DELETE_RESERVATION = '[Reservation] Delete a Reservation';
 export const ADD_RESERVATION = '[Reservation] Add a Single Reservation';
+export const TOGGLE_FILTER = '[Reservation] Toggle Filter';
 
 export class GetWeek implements Action {
   readonly type = GET_WEEK;
@@ -81,6 +83,12 @@ export class CancelEdit implements Action {
   readonly type = CANCEL_EDIT;
 }
 
+export class ToggleFilter implements Action {
+  readonly type = TOGGLE_FILTER;
+
+  constructor(public payload: string) {} // name of the filter (table or court)
+}
+
 export type ReservationActions =
   | GetWeek
   | SetWeek
@@ -93,4 +101,5 @@ export type ReservationActions =
   | StartDeleteReservation
   | DeleteReservation
   | AddReservation
-  | CancelEdit;
+  | CancelEdit
+  | ToggleFilter;

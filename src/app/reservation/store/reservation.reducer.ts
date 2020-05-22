@@ -3,16 +3,16 @@ import { Reservation } from '../reservation.model';
 
 const initialState = {
   currentWeekStartingDate: null,
-  currentWeek: null,
   currentWeekReservations: null,
   editedReservation: null,
+  filter: { table: true, court: true },
 };
 
 export interface State {
   currentWeekStartingDate: Date;
-  currentWeek: [];
   currentWeekReservations: Reservation[];
   editedReservation: Reservation;
+  filter: { table: boolean; court: boolean };
 }
 
 export function reservationReducer(
@@ -67,6 +67,14 @@ export function reservationReducer(
       return {
         ...state,
         editedReservation: null,
+      };
+    case ReservationActions.TOGGLE_FILTER:
+      const filter = {...state.filter};
+      filter[action.payload] = !filter[action.payload];
+      console.log(filter);
+      return {
+        ...state,
+        filter,
       };
     default:
       return state;
