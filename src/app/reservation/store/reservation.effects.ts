@@ -22,8 +22,7 @@ export class ReservationEffects {
     private store: Store<AppState>,
     private http: HttpClient,
     private resService: ReservationService,
-    private resEditService: ReservationEditService,
-    private afStore: AngularFirestore
+    private resEditService: ReservationEditService
   ) {}
 
   // Gets week data from the server (automatically with SetCurrWeekStart)
@@ -125,7 +124,7 @@ export class ReservationEffects {
     )
   );
 
-  @Effect()
+  @Effect({ dispatch: false })
   createNewReservation = this.actions$.pipe(
     ofType(ReservationActions.NEW_RESERVATION),
     switchMap((actionData: ReservationActions.NewReservation) => {
@@ -136,10 +135,6 @@ export class ReservationEffects {
     }),
     switchMap((reservation: Reservation) =>
       this.resEditService.saveReservationToUserProfile(reservation)
-    ),
-    map(
-      (reservation: Reservation) =>
-        new ReservationActions.AddReservation(reservation)
     )
   );
 
