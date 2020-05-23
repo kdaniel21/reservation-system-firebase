@@ -138,7 +138,7 @@ export class ReservationEffects {
     )
   );
 
-  @Effect()
+  @Effect({ dispatch: false })
   deleteReservation = this.actions$.pipe(
     ofType(ReservationActions.START_DELETE_RESERVATION),
     // Delete on the server
@@ -150,11 +150,6 @@ export class ReservationEffects {
       return this.resEditService
         .deleteReservation(reservation)
         .pipe(map(() => reservation));
-    }),
-    // Delete in the state
-    map(
-      (reservation: Reservation) =>
-        new ReservationActions.DeleteReservation(reservation)
-    )
+    })
   );
 }

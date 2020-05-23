@@ -73,7 +73,7 @@
           mat-flat-button
           color="warn"
           type="button"
-          *ngIf="editMode && editedItem.id"
+          *ngIf="editMode && editedItem.id && !editedItem.deleted"
           style="margin-right: 0.5rem;"
           (click)="onDeleteReservation()"
         >

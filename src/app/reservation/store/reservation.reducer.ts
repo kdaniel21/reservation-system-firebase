@@ -41,26 +41,13 @@ export function reservationReducer(
         ...state,
         editedReservation: editedReservation,
       };
-    case ReservationActions.DELETE_RESERVATION:
-      const deletedReservation = action.payload;
-      const currentReservations = [
-        ...state.currentWeekReservations,
-      ].filter((reservation: Reservation) =>
-        reservation.id === deletedReservation.id ? false : true
-      );
-
-      return {
-        ...state,
-        editedReservation: null,
-        currentWeekReservations: [...currentReservations],
-      };
     case ReservationActions.CANCEL_EDIT:
       return {
         ...state,
         editedReservation: null,
       };
     case ReservationActions.TOGGLE_FILTER:
-      const filter = {...state.filter};
+      const filter = { ...state.filter };
       filter[action.payload] = !filter[action.payload];
       console.log(filter);
       return {

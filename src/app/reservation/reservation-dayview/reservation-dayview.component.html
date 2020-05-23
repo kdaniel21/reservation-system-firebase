@@ -1,11 +1,13 @@
 <mat-card
   *ngFor="let res of dailyReservations"
   (click)="
-    (user && res.createdBy === user.uid || user.admin) && onEditReservation(res.id)
+    ((user && res.createdBy === user.uid) || user.admin) &&
+      onEditReservation(res.id)
   "
   [ngStyle]="{
     cursor: res.createdBy === user.uid || user.admin ? 'pointer' : 'auto',
-    'background-color': res.place.court ? '#3f51b5' : '#ff4081'
+    'background-color': res.place.court ? '#3f51b5' : '#ff4081',
+    opacity: res.deleted ? '0.6' : '1'
   }"
 >
   <span class="name mat-h3" style="margin-bottom: 0;">{{ res.name }}</span>

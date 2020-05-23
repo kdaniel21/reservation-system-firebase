@@ -45,11 +45,12 @@ export class AvailabilityService {
         map(([reservations, resState]: [Reservation[], State]) => {
           let available = true;
 
+          // check whether it's an existing or a new reservation
           const editedId = resState.editedReservation
             ? resState.editedReservation.id
             : true;
           reservations.forEach((res) => {
-            if (editedId === true || res.id !== editedId) {
+            if ((editedId === true || res.id !== editedId) && !res.deleted) {
               // to not compare milliseconds
               const start1 = Math.floor(startTime.getTime() / 1000);
               const start2 = Math.floor(res.startTime.getTime() / 1000);
@@ -65,7 +66,6 @@ export class AvailabilityService {
                 ((res.place.table && place.table) ||
                   (res.place.court && place.court))
               ) {
-                console.log('NOT AVAILABLE!!');
                 available = false;
               }
             }

@@ -46,7 +46,8 @@ export class ReservationService {
         value[key].name,
         new Date(value[key].startTime),
         new Date(value[key].endTime),
-        { table: value[key].place.table, court: value[key].place.court }
+        { table: value[key].place.table, court: value[key].place.court },
+        value[key].deleted
       );
 
       reservations.push(newReservation);

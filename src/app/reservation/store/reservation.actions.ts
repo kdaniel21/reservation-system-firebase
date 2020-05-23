@@ -13,7 +13,6 @@ export const CANCEL_EDIT = '[Reservation] Cancel Edited Reservation';
 export const NEW_RESERVATION = '[Reservation] Create New Reservation';
 export const START_DELETE_RESERVATION =
   '[Reservation] Start Deleting a Reservation';
-export const DELETE_RESERVATION = '[Reservation] Delete a Reservation';
 export const ADD_RESERVATION = '[Reservation] Add a Single Reservation';
 export const TOGGLE_FILTER = '[Reservation] Toggle Filter';
 
@@ -67,12 +66,6 @@ export class StartDeleteReservation implements Action {
   constructor(public payload: Reservation) {}
 }
 
-export class DeleteReservation implements Action {
-  readonly type = DELETE_RESERVATION;
-
-  constructor(public payload: Reservation) {}
-}
-
 export class AddReservation implements Action {
   readonly type = ADD_RESERVATION;
 
@@ -99,7 +92,6 @@ export type ReservationActions =
   | SubmitEdit
   | NewReservation
   | StartDeleteReservation
-  | DeleteReservation
   | AddReservation
   | CancelEdit
   | ToggleFilter;

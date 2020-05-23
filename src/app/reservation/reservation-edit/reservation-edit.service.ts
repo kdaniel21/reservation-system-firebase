@@ -66,7 +66,6 @@ export class ReservationEditService {
   }
 
   saveEditChanges(editedReservation: Reservation, originalStart: Date) {
-    console.log('EDITED: ', editedReservation);
     // Get data to save onto the server
     const year = editedReservation.startTime.getFullYear();
     const formattedStartOfWeek = this.resService.formatDateToString(
@@ -99,13 +98,17 @@ export class ReservationEditService {
 
   deleteReservation(reservation: Reservation) {
     // Get data to access the element on the server
+    const deletedReservation = { ...reservation };
     const year = reservation.startTime.getFullYear();
     const formattedStartOfWeek = this.resService.formatDateToString(
       this.resService.getFirstDayOfWeek(reservation.startTime)
     );
 
-    return this.http.delete(
-      `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${reservation.id}.json`
+    deletedReservation.deleted = true;
+
+    return this.http.put(
+      `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${reservation.id}.json`,
+      deletedReservation
     );
   }
 

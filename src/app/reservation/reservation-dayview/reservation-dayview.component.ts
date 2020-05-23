@@ -52,6 +52,8 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
               reservation.createdBy === this.user.uid ||
               reservation.startTime.getTime() > today.getTime();
 
+            const notDeleted = this.user.admin || !reservation.deleted;
+
             const thisDay =
               this.resService.getDay(reservation.startTime) === this.dayNumber;
 
@@ -59,7 +61,7 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
               (reservation.place.court && resState.filter.court) ||
               (reservation.place.table && resState.filter.table);
 
-            return madeByUserOrNotPast && thisDay && filter;
+            return madeByUserOrNotPast && thisDay && notDeleted && filter;
           }
         );
         // sort by start time
