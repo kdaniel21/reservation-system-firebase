@@ -1,7 +1,7 @@
 <div class="container">
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-  <mat-card class="edit-card" *ngIf="!loading">
-    <mat-card-title class="edit-card-title">Edit Reservation</mat-card-title>
+  <mat-card *ngIf="!loading">
+    <mat-card-title>Edit Reservation</mat-card-title>
     <form [formGroup]="editForm" (ngSubmit)="onSubmitForm()">
       <mat-card-content>
         <mat-form-field>
@@ -17,8 +17,8 @@
                 [for]="date"
                 matSuffix
               ></mat-datepicker-toggle>
-              <mat-datepicker #date></mat-datepicker> </mat-form-field
-            ><br />
+              <mat-datepicker #date></mat-datepicker>
+            </mat-form-field>
             <mat-form-field>
               <mat-label>Start Time</mat-label>
               <input
@@ -35,14 +35,15 @@
               <ngx-material-timepicker
                 [minutesGap]="5"
                 #startTime
-              ></ngx-material-timepicker> </mat-form-field
-            ><br />
+              ></ngx-material-timepicker>
+            </mat-form-field>
             <mat-form-field>
               <mat-label>Length</mat-label>
               <app-timepicker formControlName="length"></app-timepicker>
             </mat-form-field>
           </div>
           <div formGroupName="place">
+            <div class="mat-h4">Place</div>
             <mat-slide-toggle id="place-selector" formControlName="table">
               Table Tennis Table
             </mat-slide-toggle>

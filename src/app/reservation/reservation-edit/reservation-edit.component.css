@@ -10,11 +10,12 @@
 .container {
   padding-top: 10%;
 }
-.edit-card {
+mat-card {
   margin: auto;
   max-width: 40rem;
+  overflow: auto;
 }
-.edit-card-title {
+mat-card-title {
   padding-top: 2%;
   padding-bottom: 2%;
 }
@@ -22,11 +23,18 @@ mat-form-field {
   font-size: 17px;
   width: 100%;
   max-width: 20rem;
+  display: block;
 }
 
-@media screen and (max-height: 600px) {
+@media screen and (max-height: 650px) {
   .container {
     padding: 1%;
+  }
+}
+@media screen and (max-height: 600px) {
+  mat-card-content {
+    height: 50vh;
+    overflow: auto;
   }
 }
 
