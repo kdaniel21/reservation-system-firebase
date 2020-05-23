@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.reducer';
 import { Reservation } from '../reservation.model';
 import { ReservationService } from '../reservation.service';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 
 import * as ReservationActions from '../store/reservation.actions';
 import { Router } from '@angular/router';
@@ -18,8 +18,7 @@ import * as AuthActions from '../../auth/store/auth.actions';
 })
 export class ReservationDayviewComponent implements OnInit, OnDestroy {
   @Input('day') dayNumber: number;
-  reservationsSub: Subscription;
-  userSub: Subscription;
+  sub: Subscription;
   user: User;
   dailyReservations: Reservation[];
 
@@ -33,40 +32,42 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
     if (this.dayNumber === 1)
       this.store.dispatch(new AuthActions.SetLoading(true));
 
-    this.userSub = this.store
-      .select('auth')
-      .subscribe((authState) => (this.user = authState.user));
+    const userSelect = this.store.select('auth');
+    const reservationSelect = this.store.select('reservation');
 
-    this.reservationsSub = this.store
-      .select('reservation')
-      .subscribe((resState) => {
-        if (this.dayNumber === 7) {
-          this.store.dispatch(new AuthActions.SetLoading(false));
-        }
-
+    this.sub = combineLatest([userSelect, reservationSelect]).subscribe(
+      ([authState, resState]) => {
+        if (!authState.loggedIn || !resState.currentWeekReservations) return;
         // get reservations for the whole week
-        if (resState.currentWeekReservations) {
-          // filter to the specified day
-          const reservations = resState.currentWeekReservations.filter(
-            (reservation: Reservation) => {
-              const thisDay =
-                this.resService.getDay(reservation.startTime) ===
-                this.dayNumber;
+        this.user = authState.user;
 
-              const filter =
-                (reservation.place.court && resState.filter.court) ||
-                (reservation.place.table && resState.filter.table);
+        // filter to the specified day
+        const reservations = resState.currentWeekReservations.filter(
+          (reservation: Reservation) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-              return thisDay && filter;
-            }
-          );
+            const madeByUserOrNotPast =
+              this.user.admin ||
+              reservation.createdBy === this.user.uid ||
+              reservation.startTime.getTime() > today.getTime();
 
-          // sort by start time
-          this.dailyReservations = reservations.sort(
-            (a, b) => a.startTime.getTime() - b.startTime.getTime()
-          );
-        }
-      });
+            const thisDay =
+              this.resService.getDay(reservation.startTime) === this.dayNumber;
+
+            const filter =
+              (reservation.place.court && resState.filter.court) ||
+              (reservation.place.table && resState.filter.table);
+
+            return madeByUserOrNotPast && thisDay && filter;
+          }
+        );
+        // sort by start time
+        this.dailyReservations = reservations.sort(
+          (a, b) => a.startTime.getTime() - b.startTime.getTime()
+        );
+      }
+    );
   }
 
   onEditReservation(id: string) {
@@ -79,7 +80,6 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.userSub.unsubscribe();
-    this.reservationsSub.unsubscribe();
+    this.sub.unsubscribe();
   }
 }

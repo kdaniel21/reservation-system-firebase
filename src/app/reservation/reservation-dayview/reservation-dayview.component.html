@@ -1,7 +1,7 @@
 <mat-card
   *ngFor="let res of dailyReservations"
   (click)="
-    (res.createdBy === user.uid || user.admin) && onEditReservation(res.id)
+    (user && res.createdBy === user.uid || user.admin) && onEditReservation(res.id)
   "
   [ngStyle]="{
     cursor: res.createdBy === user.uid || user.admin ? 'pointer' : 'auto',
