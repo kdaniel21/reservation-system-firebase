@@ -31,7 +31,8 @@ const material = [
   MatNativeDateModule,
   NgxMaterialTimepickerModule,
   MatProgressBarModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatCheckboxModule
 ];
 
 @NgModule({

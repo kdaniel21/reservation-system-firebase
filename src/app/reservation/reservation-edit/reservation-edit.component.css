@@ -41,3 +41,11 @@ mat-form-field {
 #place-selector {
   margin-right: 1rem;
 }
+
+.datetime-input {
+  display: inline-block;
+  width: 25%;
+}
+.mat-h4 {
+  margin: 0!important;
+}

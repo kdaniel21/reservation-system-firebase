@@ -10,7 +10,7 @@
         </mat-form-field>
         <div formGroupName="details">
           <div formGroupName="full-date">
-            <mat-form-field>
+            <mat-form-field class="datetime-input">
               <mat-label>Date</mat-label>
               <input matInput [matDatepicker]="date" formControlName="date" />
               <mat-datepicker-toggle
@@ -19,7 +19,7 @@
               ></mat-datepicker-toggle>
               <mat-datepicker #date></mat-datepicker>
             </mat-form-field>
-            <mat-form-field>
+            <mat-form-field class="datetime-input">
               <mat-label>Start Time</mat-label>
               <input
                 matInput
@@ -42,14 +42,17 @@
               <app-timepicker formControlName="length"></app-timepicker>
             </mat-form-field>
           </div>
+          <div *ngIf="!editMode">
+            <mat-slide-toggle formControlName="repeat">Repeat weekly</mat-slide-toggle>
+          </div>
           <div formGroupName="place">
             <div class="mat-h4">Place</div>
-            <mat-slide-toggle id="place-selector" formControlName="table">
+            <mat-checkbox id="place-selector" formControlName="table">
               Table Tennis Table
-            </mat-slide-toggle>
-            <mat-slide-toggle formControlName="court">
+            </mat-checkbox>
+            <mat-checkbox formControlName="court">
               Badminton Court
-            </mat-slide-toggle>
+            </mat-checkbox>
           </div>
         </div>
       </mat-card-content>

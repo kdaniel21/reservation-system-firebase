@@ -49,6 +49,7 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
             Validators.required
           ),
         }),
+        repeat: this.fb.control(false),
         place: this.fb.group({
           table: this.fb.control(false),
           court: this.fb.control(false),
@@ -98,7 +99,7 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
         ); // difference minus 1 hour (date starts from 1 hour);
 
         // Set values on the form with the preloaded data
-        this.editForm.setValue({
+        this.editForm.patchValue({
           name: this.editedItem.name,
           details: {
             'full-date': {
