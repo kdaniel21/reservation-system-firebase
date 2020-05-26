@@ -1,7 +1,8 @@
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgModule } from '@angular/core';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -17,7 +18,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const material = [
-  MatGridListModule,
   MatDividerModule,
   MatCardModule,
   MatListModule,
@@ -32,7 +32,9 @@ const material = [
   NgxMaterialTimepickerModule,
   MatProgressBarModule,
   MatSlideToggleModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatBottomSheetModule,
+  MatDialogModule
 ];
 
 @NgModule({

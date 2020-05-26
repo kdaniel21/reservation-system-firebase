@@ -1,3 +1,7 @@
+import { EditRecurringDialogComponent } from './edit-recurring-dialog/edit-recurring-dialog.component';
+import { ConfirmationModalComponent } from 'src/app/shared/confirmation-modal/confirmation-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Reservation } from '../reservation.model';
@@ -9,6 +13,7 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { TimeAvailabilityValidator } from './validator/availability.validator';
 import { take, map } from 'rxjs/operators';
 import { ReservationEditService } from './reservation-edit.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-reservation-edit',
@@ -69,10 +74,19 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
     private resService: ReservationService,
     private fb: FormBuilder,
     private availabilityValidator: TimeAvailabilityValidator,
-    private resEditService: ReservationEditService
+    private resEditService: ReservationEditService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
+    if (this.route.snapshot.queryParams.mode === 'new')
+      this.store
+        .select('auth')
+        .pipe(take(1))
+        .subscribe((authState) =>
+          this.editForm.patchValue({ name: `${authState.user.name} - ` })
+        );
+
     if (this.route.snapshot.queryParams.mode !== 'edit') return;
 
     // Turn edit mode on
@@ -86,6 +100,7 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
         map((editedItem) => editedItem.res)
       )
       .subscribe((editedItem) => {
+        console.log(editedItem);
         this.loading = false;
 
         // Load reservation data
@@ -121,6 +136,13 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
 
   onSubmitForm() {
     this.loading = true;
+    // Navigate to the week on which the reservation is
+    this.store.dispatch(
+      new ReservationActions.SetWeekStart(
+        this.resService.getFirstDayOfWeek(this.editedItem.startTime)
+      )
+    );
+
     // Store original start date, to later check if the week was changed
     const originalStart = this.editedItem.startTime;
 
@@ -149,49 +171,79 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
       court: this.editForm.get('details.place.court').value,
     };
 
-    if (this.editMode) {
-      // Save changes
-      console.log({
-        reservation: this.editedItem,
-        originalStartDate: originalStart,
+    if (this.editedItem.recurringId) {
+      this.modifyAllRecurring().subscribe((recurring) => {
+        if (recurring)
+          this.store.dispatch(
+            new ReservationActions.SubmitEditRecurring(this.editedItem)
+          );
+        else
+          this.store.dispatch(
+            new ReservationActions.SubmitEdit({
+              reservation: this.editedItem,
+              originalStartDate: originalStart,
+            })
+          );
       });
+    } else if (this.editMode)
       this.store.dispatch(
         new ReservationActions.SubmitEdit({
           reservation: this.editedItem,
           originalStartDate: originalStart,
         })
       );
-    } else {
-      // Create new reservation
+    else if (this.editForm.get('details.repeat').value)
       this.store.dispatch(
-        new ReservationActions.NewReservation(this.editedItem)
+        new ReservationActions.StartCreateRecurring(this.editedItem)
       );
-    }
+    else
+      this.store.dispatch(new ReservationActions.StartCreate(this.editedItem));
 
-    // Navigate to the week on which the reservation is
-    this.store.dispatch(
-      new ReservationActions.SetCurrWeekStart(
-        this.resService.getFirstDayOfWeek(this.editedItem.startTime)
-      )
-    );
     this.router.navigate(['/calendar/view']);
   }
 
   onDeleteReservation() {
-    this.loading = true;
+    this.editedItem.deleted = true;
+
     // Navigate to the week on which the reservation is
     this.store.dispatch(
-      new ReservationActions.SetCurrWeekStart(
+      new ReservationActions.SetWeekStart(
         this.resService.getFirstDayOfWeek(this.editedItem.startTime)
       )
     );
 
-    // Delete reservation
-    this.store.dispatch(
-      new ReservationActions.StartDeleteReservation(this.editedItem)
-    );
+    if (this.editedItem.recurringId) {
+      this.modifyAllRecurring().subscribe((all) => {
+        if (all)
+          this.store.dispatch(
+            new ReservationActions.StartDeleteRecurring(this.editedItem)
+          );
+        else
+          this.store.dispatch(
+            new ReservationActions.SubmitEdit({
+              reservation: this.editedItem,
+              originalStartDate: this.editedItem.startTime,
+            })
+          );
+      });
+    } else
+      this.store.dispatch(
+        new ReservationActions.SubmitEdit({
+          reservation: this.editedItem,
+          originalStartDate: this.editedItem.startTime,
+        })
+      );
 
     this.router.navigate(['/calendar/view']);
+  }
+
+  private modifyAllRecurring() {
+    const ref = this.dialog.open(EditRecurringDialogComponent);
+
+    return ref.afterClosed().pipe(
+      take(1),
+      map((result) => (result === 'every' ? true : false))
+    );
   }
 
   ngOnDestroy() {

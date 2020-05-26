@@ -5,7 +5,9 @@
       <app-reservation-list-filter></app-reservation-list-filter>
     </div>
     <div id="week-info" fxFlex="33">
-      <div>{{ calculateWeeksAway() }}</div>
+      <div>
+        {{ this.resService.calculateWeeksAway(this.startingDayOfWeek) }}
+      </div>
       <div>
         {{
           this.startingDayOfWeek.getFullYear() +
@@ -13,6 +15,8 @@
             this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
         }}
       </div>
+    </div>
+    <div fxFlex="33" id="repeating-btn">
     </div>
   </div>
   <div id="calendar">
@@ -32,7 +36,7 @@
       color="primary"
       aria-label="Add New Reservation"
       style="margin-right: 10px;"
-      (click)="previousWeek()"
+      (click)="onPreviousWeek()"
     >
       <span class="material-icons">keyboard_arrow_left</span>
     </button>
@@ -41,7 +45,7 @@
       color="primary"
       style="margin-right: 10px;"
       aria-label="Add New Reservation"
-      (click)="nextWeek()"
+      (click)="onNextWeek()"
     >
       <span class="material-icons">keyboard_arrow_right</span>
     </button>

@@ -7,6 +7,7 @@ export class Reservation {
     public startTime: Date,
     public endTime: Date,
     public place: { table: boolean; court: boolean },
-    public deleted: boolean = false
+    public deleted: boolean = false,
+    public recurringId?: string
   ) {}
 }

@@ -1,7 +1,5 @@
-import { AngularFirestore } from '@angular/fire/firestore';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
-
 import * as ReservationActions from './reservation.actions';
 import { map, switchMap, withLatestFrom, tap, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -25,35 +23,23 @@ export class ReservationEffects {
     private resEditService: ReservationEditService
   ) {}
 
-  // Gets week data from the server (automatically with SetCurrWeekStart)
+  // Gets data from the server if new week is set
   @Effect()
   getWeekData = this.actions$.pipe(
-    ofType(ReservationActions.GET_WEEK, ReservationActions.SET_CURR_WEEK_START),
-    withLatestFrom(this.store.select('reservation')),
-    switchMap(
-      ([actionData, reservationState]: [
-        ReservationActions.GetWeek,
-        fromReservation.State
-      ]) => {
-        const currYear = reservationState.currentWeekStartingDate.getFullYear();
-        const formattedDate = this.resService.formatDateToString(
-          reservationState.currentWeekStartingDate
-        );
-        return this.http.get<[ReservationInterface]>(
-          `https://reservation-system-81981.firebaseio.com/calendar/${currYear}/${formattedDate}.json`
-        );
-      }
-    ),
-    map((resData: [ReservationInterface]) => {
-      if (!resData) {
-        // return empty array if there are no reservations for the week
-        return [];
-      }
-      return this.resService.transformToArray(resData);
-    }),
-    map(
-      (reservations: Reservation[]) =>
-        new ReservationActions.SetWeek(reservations)
+    ofType(ReservationActions.SET_WEEK_START),
+    switchMap((action: ReservationActions.SetWeekStart) =>
+      this.http
+        .get<[ReservationInterface]>(
+          this.resService.getRequestUrl(action.payload)
+        )
+        .pipe(
+          map(
+            (resData) =>
+              new ReservationActions.SetWeek(
+                this.resService.transformToArray(resData)
+              )
+          )
+        )
     )
   );
 
@@ -66,11 +52,12 @@ export class ReservationEffects {
         ReservationActions.NextWeek,
         fromReservation.State
       ]) => {
-        const currWeek = new Date(reservationState.currentWeekStartingDate);
-        const nextWeek = currWeek.getDate() + 7;
-        currWeek.setDate(nextWeek);
+        const selectedWeek = new Date(reservationState.currentWeekStartingDate);
+        const nextWeek = new Date(
+          selectedWeek.getTime() + 7 * 24 * 60 * 60 * 1000
+        );
 
-        return new ReservationActions.SetCurrWeekStart(currWeek);
+        return new ReservationActions.SetWeekStart(nextWeek);
       }
     )
   );
@@ -84,11 +71,12 @@ export class ReservationEffects {
         ReservationActions.NextWeek,
         fromReservation.State
       ]) => {
-        const currWeek = new Date(reservationState.currentWeekStartingDate);
-        const nextWeek = currWeek.getDate() - 7;
-        currWeek.setDate(nextWeek);
+        const selectedWeek = new Date(reservationState.currentWeekStartingDate);
+        const previousWeek = new Date(
+          selectedWeek.getTime() - 7 * 24 * 60 * 60 * 1000
+        );
 
-        return new ReservationActions.SetCurrWeekStart(currWeek);
+        return new ReservationActions.SetWeekStart(previousWeek);
       }
     )
   );
@@ -97,59 +85,63 @@ export class ReservationEffects {
   @Effect()
   submitEditChanges = this.actions$.pipe(
     ofType(ReservationActions.SUBMIT_EDIT),
-    withLatestFrom(this.store.select('reservation')),
-    switchMap(
-      ([actionData, resState]: [
-        ReservationActions.SubmitEdit,
-        fromReservation.State
-      ]) => {
-        const editedReservation = actionData.payload.reservation;
-
-        // Update loaded reservations
-        const updatedReservations = [...resState.currentWeekReservations];
-        updatedReservations.find((res, index) => {
-          if (res.id === editedReservation.id) {
-            updatedReservations[index] = editedReservation;
-          }
-        });
-
-        // Save on the server
-        return this.resEditService
-          .saveEditChanges(
-            editedReservation,
-            actionData.payload.originalStartDate
-          )
-          .pipe(map(() => new ReservationActions.SetWeek(updatedReservations)));
-      }
-    )
+    switchMap((actionData: ReservationActions.SubmitEdit) => {
+      // Save on the server
+      return this.resEditService
+        .saveEditChanges(
+          actionData.payload.reservation,
+          actionData.payload.originalStartDate
+        )
+        .pipe(
+          map(() => new ReservationActions.Edit(actionData.payload.reservation))
+        );
+    })
   );
 
-  @Effect({ dispatch: false })
+  @Effect()
+  submitEditRecurring = this.actions$.pipe(
+    ofType(ReservationActions.SUBMIT_EDIT_RECURRING),
+    switchMap((action: ReservationActions.SubmitEditRecurring) => {
+      return this.resEditService
+        .saveRecurringChanges(action.payload)
+        .pipe(map(() => new ReservationActions.Edit(action.payload)));
+    })
+  );
+
+  @Effect()
   createNewReservation = this.actions$.pipe(
-    ofType(ReservationActions.NEW_RESERVATION),
-    switchMap((actionData: ReservationActions.NewReservation) => {
-      // Save onto the server
-      return this.resEditService.createNewReservation({
+    ofType(ReservationActions.START_CREATE),
+    switchMap((actionData: ReservationActions.StartCreate) =>
+      this.resEditService.createNewReservation({
         ...actionData.payload,
-      });
-    }),
+      })
+    ),
     switchMap((reservation: Reservation) =>
       this.resEditService.saveReservationToUserProfile(reservation)
+    ),
+    map(
+      (reservation: Reservation) => new ReservationActions.Create(reservation)
     )
   );
 
-  @Effect({ dispatch: false })
-  deleteReservation = this.actions$.pipe(
-    ofType(ReservationActions.START_DELETE_RESERVATION),
-    // Delete on the server
+  @Effect()
+  createRecurring = this.actions$.pipe(
+    ofType(ReservationActions.START_CREATE_RECURRING),
+    switchMap((actionData: ReservationActions.StartCreateRecurring) => {
+      return this.resEditService.createRecurringReservation(actionData.payload);
+    }),
     map(
-      (actionData: ReservationActions.StartDeleteReservation) =>
-        actionData.payload
-    ),
-    switchMap((reservation) => {
+      (reservation: Reservation) => new ReservationActions.Create(reservation)
+    )
+  );
+
+  @Effect()
+  deleteRecurring = this.actions$.pipe(
+    ofType(ReservationActions.START_DELETE_RECURRING),
+    switchMap((actionData: ReservationActions.StartDeleteRecurring) => {
       return this.resEditService
-        .deleteReservation(reservation)
-        .pipe(map(() => reservation));
+        .deleteRecurringReservation(actionData.payload)
+        .pipe(map(() => new ReservationActions.Delete(actionData.payload.id)));
     })
   );
 }

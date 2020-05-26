@@ -1,3 +1,4 @@
+import { AngularFireFunctions } from '@angular/fire/functions';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import { Reservation } from '../reservation.model';
@@ -7,8 +8,8 @@ import { AppState } from 'src/app/store/app.reducer';
 import * as fromAuth from '../../auth/store/auth.reducer';
 import { HttpClient } from '@angular/common/http';
 import { ReservationService } from '../reservation.service';
-import { combineLatest } from 'rxjs';
-import { take, map, switchMap } from 'rxjs/operators';
+import { combineLatest, of } from 'rxjs';
+import { take, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +18,8 @@ export class ReservationEditService {
     private store: Store<AppState>,
     private http: HttpClient,
     private resService: ReservationService,
-    private afStore: AngularFirestore
+    private afStore: AngularFirestore,
+    private afFunctions: AngularFireFunctions
   ) {}
 
   createNewReservation(newReservation: Reservation) {
@@ -32,16 +34,10 @@ export class ReservationEditService {
         reservation.createdBy = userId;
         reservation.createdTime = new Date();
 
-        // Get data to save onto the server
-        const year = reservation.startTime.getFullYear();
-        const formattedStartOfWeek = this.resService.formatDateToString(
-          this.resService.getFirstDayOfWeek(reservation.startTime)
-        );
-
         // Save onto the server
         return this.http
           .post<Reservation>(
-            `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}.json`,
+            this.resService.getRequestUrl(reservation.startTime),
             reservation
           )
           .pipe(
@@ -67,49 +63,69 @@ export class ReservationEditService {
 
   saveEditChanges(editedReservation: Reservation, originalStart: Date) {
     // Get data to save onto the server
-    const year = editedReservation.startTime.getFullYear();
-    const formattedStartOfWeek = this.resService.formatDateToString(
-      this.resService.getFirstDayOfWeek(editedReservation.startTime)
-    );
-
-    // Check if the week was changed
-    const formattedOriginalStartOfWeek = this.resService.formatDateToString(
-      this.resService.getFirstDayOfWeek(originalStart)
-    );
-
-    let deleteReservation;
-    if (formattedStartOfWeek !== formattedOriginalStartOfWeek) {
-      // Delete previous object from the server
-      deleteReservation = this.http.delete(
-        `https://reservation-system-81981.firebaseio.com/calendar/${originalStart.getFullYear()}/${formattedOriginalStartOfWeek}/${
+    return this.http
+      .put(
+        this.resService.getRequestUrl(
+          editedReservation.startTime,
           editedReservation.id
-        }.json`
+        ),
+        editedReservation
+      )
+      .pipe(
+        withLatestFrom(this.store.select('reservation')),
+        switchMap(([res, resState]) => {
+          const originalStartOfWeek = resState.currentWeekStartingDate;
+
+          // Delete original reservation if the week has changed
+          if (
+            originalStartOfWeek ===
+            this.resService.getFirstDayOfWeek(editedReservation.startTime)
+          )
+            return this.http.delete(
+              this.resService.getRequestUrl(
+                originalStartOfWeek,
+                editedReservation.id
+              )
+            );
+          return of(true);
+        })
       );
-    }
-
-    // Save onto the server
-    const saveToServer = this.http.put(
-      `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${editedReservation.id}.json`,
-      editedReservation
-    );
-
-    return combineLatest(saveToServer, deleteReservation).pipe(take(1));
   }
 
-  deleteReservation(reservation: Reservation) {
-    // Get data to access the element on the server
-    const deletedReservation = { ...reservation };
-    const year = reservation.startTime.getFullYear();
-    const formattedStartOfWeek = this.resService.formatDateToString(
-      this.resService.getFirstDayOfWeek(reservation.startTime)
-    );
+  createRecurringReservation(reservation: Reservation) {
+    const res = {
+      ...reservation,
+      startTime: reservation.startTime.getTime(),
+      endTime: reservation.endTime.getTime(),
+      createdTime: reservation.createdTime.getTime(),
+    };
+    return this.afFunctions.httpsCallable('createRecurringReservation')({
+      reservation: res,
+    });
+  }
 
-    deletedReservation.deleted = true;
+  saveRecurringChanges(reservation: Reservation) {
+    const res = {
+      ...reservation,
+      startTime: reservation.startTime.getTime(),
+      endTime: reservation.endTime.getTime(),
+      createdTime: reservation.createdTime.getTime(),
+    };
+    return this.afFunctions.httpsCallable('saveAllRecurringChanges')({
+      reservation: res,
+    });
+  }
 
-    return this.http.put(
-      `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}/${reservation.id}.json`,
-      deletedReservation
-    );
+  deleteRecurringReservation(reservation: Reservation) {
+    const res = {
+      ...reservation,
+      startTime: reservation.startTime.getTime(),
+      endTime: reservation.endTime.getTime(),
+      createdTime: reservation.createdTime.getTime(),
+    };
+    return this.afFunctions.httpsCallable('deleteRecurringReservation')({
+      reservation: res,
+    });
   }
 
   // Checks if user can edit the given reservation
@@ -127,28 +143,18 @@ export class ReservationEditService {
       );
   }
 
-  getReservation(reservationId: string) {
-    return this.http
-      .get('https://reservation-system-81981.firebaseio.com/calendar.json')
-      .pipe(
-        take(1),
-        map((reservations) => {
-          // Loop through the years
-          for (let year of Object.keys(reservations)) {
-            // Loop through weeks
-            for (let week of Object.keys(reservations[year])) {
-              // Check if key is in the specific week
-              if (
-                Object.keys(reservations[year][week]).includes(reservationId)
-              ) {
-                // If reservation is found, check creator
-                return reservations[year][week][reservationId];
-              }
-            }
-          }
-          return null;
-        })
-      );
+  getReservationById(reservationId: string) {
+    return this.http.get(this.resService.getRequestUrl()).pipe(
+      take(1),
+      map((reservations) => {
+        for (let year of Object.keys(reservations))
+          for (let week of Object.keys(reservations[year]))
+            if (Object.keys(reservations[year][week]).includes(reservationId))
+              return reservations[year][week][reservationId];
+
+        return null;
+      })
+    );
   }
 
   // returns the string time as {hour: XX, minute: XX}

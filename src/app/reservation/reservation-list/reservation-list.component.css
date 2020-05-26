@@ -29,6 +29,10 @@
   border-radius: 15px;
   border: 1px solid lightgray;
 }
+#repeating-btn {
+  padding-top: 5%;
+  text-align: right;
+}
 div.days {
   border-right: 1px solid lightgray;
   display: flex;

@@ -10,14 +10,15 @@ import { ReservationRoutingModule } from './reservation-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { ReservationMaterialModule } from './reservation-material.module';
-
+import { EditRecurringDialogComponent } from './reservation-edit/edit-recurring-dialog/edit-recurring-dialog.component';
 @NgModule({
   declarations: [
     ReservationComponent,
     ReservationListComponent,
     ReservationDayviewComponent,
     ReservationEditComponent,
-    ReservationListFilterComponent
+    ReservationListFilterComponent,
+    EditRecurringDialogComponent
   ],
   imports: [
     CommonModule,
@@ -26,10 +27,9 @@ import { ReservationMaterialModule } from './reservation-material.module';
     SharedModule,
     ReservationMaterialModule,
     FlexLayoutModule,
-    FormsModule
+    FormsModule,
   ],
-  exports: [
-    ReservationComponent
-  ],
+  exports: [ReservationComponent],
+  entryComponents: [EditRecurringDialogComponent]
 })
-export class ReservationModule { }
+export class ReservationModule {}

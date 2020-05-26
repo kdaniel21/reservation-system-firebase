@@ -1,11 +1,9 @@
-import { withLatestFrom } from 'rxjs/operators';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.reducer';
 import { Reservation } from '../reservation.model';
 import { ReservationService } from '../reservation.service';
 import { Subscription, combineLatest } from 'rxjs';
-
 import * as ReservationActions from '../store/reservation.actions';
 import { Router } from '@angular/router';
 import { User } from 'src/app/auth/user.model';
@@ -29,19 +27,16 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.dayNumber === 1)
-      this.store.dispatch(new AuthActions.SetLoading(true));
-
     const userSelect = this.store.select('auth');
     const reservationSelect = this.store.select('reservation');
 
     this.sub = combineLatest([userSelect, reservationSelect]).subscribe(
       ([authState, resState]) => {
         if (!authState.loggedIn || !resState.currentWeekReservations) return;
-        // get reservations for the whole week
+
         this.user = authState.user;
 
-        // filter to the specified day
+        // filter reservations
         const reservations = resState.currentWeekReservations.filter(
           (reservation: Reservation) => {
             const today = new Date();
@@ -64,6 +59,7 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
             return madeByUserOrNotPast && thisDay && notDeleted && filter;
           }
         );
+
         // sort by start time
         this.dailyReservations = reservations.sort(
           (a, b) => a.startTime.getTime() - b.startTime.getTime()
@@ -72,12 +68,12 @@ export class ReservationDayviewComponent implements OnInit, OnDestroy {
     );
   }
 
-  onEditReservation(id: string) {
+  onEditReservation(reservation: Reservation) {
     // store edited item in the store
-    this.store.dispatch(new ReservationActions.StartEdit(id));
+    this.store.dispatch(new ReservationActions.StartEdit(reservation));
     // redirect to the edit page
     this.router.navigate(['calendar/edit'], {
-      queryParams: { id: id, mode: 'edit' },
+      queryParams: { id: reservation.id, mode: 'edit' },
     });
   }
 

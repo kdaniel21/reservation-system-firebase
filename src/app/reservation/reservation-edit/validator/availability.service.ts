@@ -23,17 +23,9 @@ export class AvailabilityService {
     endTime: Date,
     place: { table: boolean; court: boolean }
   ) {
-    // TODO the program doesn't get the id -> comparison not good
-    const formattedStartOfWeek = this.resService.formatDateToString(
-      this.resService.getFirstDayOfWeek(startTime)
-    );
-    const year = startTime.getFullYear();
-
-    // Get all reservations from that week
+    // Get all reservations from the specific week
     return this.http
-      .get<[ReservationInterface]>(
-        `https://reservation-system-81981.firebaseio.com/calendar/${year}/${formattedStartOfWeek}.json`
-      )
+      .get<[ReservationInterface]>(this.resService.getRequestUrl(startTime))
       .pipe(
         map((unformattedReservations) => {
           if (unformattedReservations) {

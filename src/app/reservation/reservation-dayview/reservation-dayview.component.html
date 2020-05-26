@@ -2,7 +2,7 @@
   *ngFor="let res of dailyReservations"
   (click)="
     ((user && res.createdBy === user.uid) || user.admin) &&
-      onEditReservation(res.id)
+      onEditReservation(res)
   "
   [ngStyle]="{
     cursor: res.createdBy === user.uid || user.admin ? 'pointer' : 'auto',

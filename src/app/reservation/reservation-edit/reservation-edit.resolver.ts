@@ -24,50 +24,44 @@ export class ReservationEditResolver implements Resolve<Reservation | null> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<Reservation | null> {
-    // Resolver gives the edited item in edit mode
-    if (route.queryParams['mode'] === 'edit') {
-      const id = route.queryParams['id'];
+    if (route.queryParams['mode'] !== 'edit' || !route.queryParams['id'])
+      return;
 
-      return this.store.select('reservation').pipe(
-        take(1),
-        switchMap((resState) => {
-          // If the user clicks from the normal calendar, then gives the editedItem from the store (faster)
-          if (resState.editedReservation !== null) {
-            return of(resState.editedReservation);
-          } else {
-            /* If the user reloaded the edit page (no data in Store), then gets data from the
+    // Resolver gives the edited item in edit mode
+    const id = route.queryParams['id'];
+
+    return this.store.select('reservation').pipe(
+      take(1),
+      switchMap((resState) => {
+        // If the user clicks from the normal calendar, then gives the editedItem from the store (faster)
+        if (resState.editedReservation !== null) {
+          return of(resState.editedReservation);
+        } else {
+          /* If the user reloaded the edit page (no data in Store), then gets data from the
             database and checks if the user is allowed to edit
             + loads the selected week and selects item to edit
             + returns the editedItem */
-            return this.resEditService.getReservation(id).pipe(
-              map((reservation) => {
-                if (reservation) {
-                  reservation.id = id;
-                  const weekStart = this.resService.getFirstDayOfWeek(
-                    reservation.startTime
-                  );
+          return this.resEditService.getReservationById(id).pipe(
+            map((reservation) => {
+              if (!reservation) return null;
 
-                  this.store.dispatch(
-                    new ReservationActions.SetCurrWeekStart(weekStart)
-                  );
+              reservation.id = id;
 
-                  return reservation;
-                } else {
-                  return null;
-                }
-              }),
-              // Delay is because StartEdit would get data from the store, but the data isn't there if they run parallel
-              delay(350),
-              tap((reservation) => {
-                if (reservation)
-                  this.store.dispatch(
-                    new ReservationActions.StartEdit(reservation.id)
-                  );
-              })
-            );
-          }
-        })
-      );
-    }
+              this.store.dispatch(
+                new ReservationActions.SetWeekStart(
+                  this.resService.getFirstDayOfWeek(reservation.startTime)
+                )
+              );
+
+              this.store.dispatch(
+                new ReservationActions.StartEdit(reservation)
+              );
+
+              return reservation;
+            })
+          );
+        }
+      })
+    );
   }
 }
