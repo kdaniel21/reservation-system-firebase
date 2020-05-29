@@ -83,13 +83,12 @@ function reservePlace(reservation: Reservation) {
 
   const writes = [];
   for (const place of usedPlaces) {
+    console.log('PLACE: ', place);
     writes.push(
       admin
         .database()
         .ref(`/reserved/${place}/${date}/`)
-        .orderByValue()
-        .equalTo(reservation.id).ref
-        .set({ ...placeReservation })
+        .update({ ...placeReservation })
     );
   }
 
@@ -107,36 +106,58 @@ function removePlaceReservation(reservation: Reservation) {
       admin
         .database()
         .ref(`/reserved/${place}/${date}`)
-        .orderByValue()
-        .equalTo(id)
-        .ref.remove()
+        .once('value')
+        .then((snapshot) => {
+          const updatedObject: ReservedPlace = {};
+          for (const key of Object.keys(snapshot.val()))
+            if (snapshot.val()[key] !== id)
+              updatedObject[key] = snapshot.val()[key];
+
+          return admin
+            .database()
+            .ref(`/reserved/${place}/${date}`)
+            .set({ ...updatedObject });
+        })
     );
   }
 
   return Promise.all(deletes);
 }
 
-function isTimeOrPlaceModified(newReservation: Reservation, oldReservation: Reservation) {
-  const newRes = Object.keys(convertToPlaceReservation(newReservation)).toString();
-  const oldRes = Object.keys(convertToPlaceReservation(oldReservation)).toString();
+function isTimeOrPlaceModified(
+  newReservation: Reservation,
+  oldReservation: Reservation
+) {
+  const newRes = Object.keys(
+    convertToPlaceReservation(newReservation)
+  ).toString();
+  const oldRes = Object.keys(
+    convertToPlaceReservation(oldReservation)
+  ).toString();
 
-  const newPlace = newReservation.place.toString();
-  const oldPlace = oldReservation.place.toString();
+  const newPlace = JSON.stringify(newReservation.place);
+  const oldPlace = JSON.stringify(oldReservation.place);
 
   return newRes !== oldRes || newPlace !== oldPlace;
+}
+
+function convertSnapshotToReservation(
+  snapshot: functions.database.DataSnapshot
+): Reservation {
+  return {
+    ...snapshot.val(),
+    id: snapshot.key,
+    startTime: new Date(snapshot.val().startTime),
+    endTime: new Date(snapshot.val().endTime),
+    createdTime: new Date(snapshot.val().createdTime),
+  };
 }
 
 export const onNewReservation = functions
   .region('europe-west3')
   .database.ref('/calendar/{year}/{week}/{reservationId}')
   .onCreate(async (snapshot, context) => {
-    const newReservation = {
-      ...snapshot.val(),
-      id: snapshot.key,
-      startTime: new Date(snapshot.val().startTime),
-      endTime: new Date(snapshot.val().endTime),
-      createdTime: new Date(snapshot.val().createdTime),
-    };
+    const newReservation = convertSnapshotToReservation(snapshot);
 
     // Remove reservation if time (and place) is already reserved
     const available = await isReservationAvailable(newReservation);
@@ -151,13 +172,7 @@ export const onReservationEdited = functions
   .onUpdate(async (snapshot, context) => {
     if (snapshot.after === snapshot.before) return;
 
-    const reservation = {
-      ...snapshot.after.val(),
-      id: snapshot.after.key,
-      startTime: new Date(snapshot.after.val().startTime),
-      endTime: new Date(snapshot.after.val().endTime),
-      createdTime: new Date(snapshot.after.val().createdTime),
-    };
+    const reservation = convertSnapshotToReservation(snapshot.after);
 
     // Removes place reservation if reservation got deleted
     if (reservation.deleted) return removePlaceReservation(reservation);
@@ -166,8 +181,12 @@ export const onReservationEdited = functions
     // Undo changes if new time is not available
     if (!available) return snapshot.after.ref.set(snapshot.before.val());
 
+    const oldReservation = convertSnapshotToReservation(snapshot.before);
     // Re-reserves place only if changed
-    if (isTimeOrPlaceModified(reservation, snapshot.before.val())) return reservePlace(reservation);
+    if (isTimeOrPlaceModified(reservation, oldReservation))
+      return removePlaceReservation(oldReservation).then(() =>
+        reservePlace(reservation)
+      );
 
     return;
   });
