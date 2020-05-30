@@ -2,7 +2,6 @@ import { ReservationListFilterComponent } from './reservation-list/reservation-l
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReservationComponent } from './reservation.component';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
 import { ReservationDayviewComponent } from './reservation-dayview/reservation-dayview.component';
 import { ReservationEditComponent } from './reservation-edit/reservation-edit.component';
@@ -13,7 +12,6 @@ import { ReservationMaterialModule } from './reservation-material.module';
 import { EditRecurringDialogComponent } from './reservation-edit/edit-recurring-dialog/edit-recurring-dialog.component';
 @NgModule({
   declarations: [
-    ReservationComponent,
     ReservationListComponent,
     ReservationDayviewComponent,
     ReservationEditComponent,
@@ -29,7 +27,6 @@ import { EditRecurringDialogComponent } from './reservation-edit/edit-recurring-
     FlexLayoutModule,
     FormsModule,
   ],
-  exports: [ReservationComponent],
   entryComponents: [EditRecurringDialogComponent]
 })
 export class ReservationModule {}

@@ -1,19 +1,14 @@
-import { EditRecurringDialogComponent } from './edit-recurring-dialog/edit-recurring-dialog.component';
-import { ConfirmationModalComponent } from 'src/app/shared/confirmation-modal/confirmation-modal.component';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Reservation } from '../reservation.model';
 import { AppState } from 'src/app/store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as ReservationActions from '../store/reservation.actions';
 import { ReservationService } from '../reservation.service';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TimeAvailabilityValidator } from './validator/availability.validator';
-import { take, map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { ReservationEditService } from './reservation-edit.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-reservation-edit',
@@ -22,50 +17,9 @@ import { Observable } from 'rxjs';
 })
 export class ReservationEditComponent implements OnInit, OnDestroy {
   loading: boolean;
-  // Setting default values
   editMode = false;
-  editedItem = new Reservation('', '', new Date(), '', new Date(), new Date(), {
-    table: false,
-    court: false,
-  });
-
-  currTime = new Date();
-  defaultTime = new Date(
-    this.currTime.getFullYear(),
-    this.currTime.getMonth(),
-    this.currTime.getDate(),
-    this.currTime.getHours() + 1,
-    0,
-    0
-  );
-
-  // Create the reactive form
-  editForm = this.fb.group({
-    name: this.fb.control(null, [Validators.required]),
-    details: this.fb.group(
-      {
-        'full-date': this.fb.group({
-          date: this.fb.control(this.defaultTime),
-          start: this.fb.control(
-            this.resService.stringifyTime(this.defaultTime)
-          ),
-          length: this.fb.control(
-            { hours: '01', minutes: '00' },
-            Validators.required
-          ),
-        }),
-        repeat: this.fb.control(false),
-        place: this.fb.group({
-          table: this.fb.control(false),
-          court: this.fb.control(false),
-        }),
-      },
-      {
-        validators: Validators.required,
-        asyncValidators: this.availabilityValidator.availableValidator(),
-      }
-    ),
-  });
+  editedItem: Reservation;
+  editForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,176 +28,163 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
     private resService: ReservationService,
     private fb: FormBuilder,
     private availabilityValidator: TimeAvailabilityValidator,
-    private resEditService: ReservationEditService,
-    private dialog: MatDialog
+    private resEditService: ReservationEditService
   ) {}
 
   ngOnInit() {
-    if (this.route.snapshot.queryParams.mode === 'new')
-      this.store
-        .select('auth')
-        .pipe(take(1))
-        .subscribe((authState) =>
-          this.editForm.patchValue({ name: `${authState.user.name} - ` })
-        );
+    const mode = this.route.snapshot.queryParams.mode;
+    if (mode === 'edit') this.editMode = true;
 
-    if (this.route.snapshot.queryParams.mode !== 'edit') return;
+    this.route.data.subscribe((routeData) => {
+      const res = routeData.res;
+      console.log('RES: ', res);
+      this.editedItem = new Reservation(
+        res.id,
+        res.createdBy,
+        res.createdTime,
+        res.name,
+        res.startTime,
+        res.endTime,
+        res.place,
+        res.deleted,
+        res.recurringId
+      );
 
-    // Turn edit mode on
-    this.editMode = true;
-
-    // The resolver delivers the edited item (from the state or from the database)
-    this.loading = true;
-    this.route.data
-      .pipe(
-        take(1),
-        map((editedItem) => editedItem.res)
-      )
-      .subscribe((editedItem) => {
-        console.log(editedItem);
-        this.loading = false;
-
-        // Load reservation data
-        this.editedItem = { ...editedItem };
-
-        // Calculate length in minutes
-        const startTime = new Date(this.editedItem.startTime);
-        const endTime = new Date(this.editedItem.endTime);
-        const length = new Date(
-          endTime.getTime() - startTime.getTime() - 1000 * 60 * 60
-        ); // difference minus 1 hour (date starts from 1 hour);
-
-        // Set values on the form with the preloaded data
-        this.editForm.patchValue({
-          name: this.editedItem.name,
-          details: {
-            'full-date': {
-              date: startTime,
-              start: this.resService.stringifyTime(this.editedItem.startTime),
-              length: {
-                hours: length.getHours(),
-                minutes: length.getMinutes(),
-              },
-            },
-            place: {
-              table: this.editedItem.place.table,
-              court: this.editedItem.place.court,
-            },
-          },
-        });
-      });
+      this.editForm = this.createForm();
+    });
   }
 
-  onSubmitForm() {
+  private createForm() {
+    //Calculate length in minutes
+    const length = new Date(
+      this.editedItem.endTime.getTime() -
+        this.editedItem.startTime.getTime() -
+        1000 * 60 * 60
+    ); // difference minus 1 hour (bc date starts from 1 hour);
+
+    return this.fb.group({
+      name: this.fb.control(this.editedItem.name, [Validators.required]),
+      details: this.fb.group(
+        {
+          'full-date': this.fb.group({
+            date: this.fb.control(this.editedItem.startTime),
+            start: this.fb.control(
+              this.resService.stringifyTime(this.editedItem.startTime)
+            ),
+            length: this.fb.control(
+              { hours: length.getHours(), minutes: length.getMinutes() },
+              Validators.required
+            ),
+          }),
+          repeat: this.fb.control(!!this.editedItem.recurringId),
+          place: this.fb.group({
+            table: this.fb.control(this.editedItem.place.table),
+            court: this.fb.control(this.editedItem.place.court),
+          }),
+        },
+        {
+          validators: Validators.required,
+          asyncValidators: this.availabilityValidator.availableValidator(),
+        }
+      ),
+    });
+  }
+
+  async onSubmitForm() {
     this.loading = true;
-    // Navigate to the week on which the reservation is
-    this.store.dispatch(
-      new ReservationActions.SetWeekStart(
-        this.resService.getFirstDayOfWeek(this.editedItem.startTime)
-      )
-    );
+
+    const values = this.editForm.value;
 
     // Store original start date, to later check if the week was changed
     const originalStart = this.editedItem.startTime;
 
-    // Set edited values
-    const date = this.editForm.get('details.full-date.date').value;
-    const start = this.resEditService.parseTime(
-      this.editForm.get('details.full-date.start').value
+    // Set modified values
+    const time = this.resEditService.parseTime(
+      values.details['full-date'].start
     );
+    const date = new Date(values.details['full-date'].date);
+    date.setHours(time.hours, time.minutes, 0, 0);
+    const length =
+      this.resEditService.calculateLength(values.details['full-date'].length) *
+      1000; // calculate length in miliseconds
 
-    const lengthValue = this.editForm.get('details.full-date.length').value;
-    const length = lengthValue.hours * 3600000 + lengthValue.minutes * 60000; // calculate length in miliseconds
-
-    this.editedItem.name = this.editForm.value['name'];
-
-    this.editedItem.startTime = new Date(date);
-    this.editedItem.startTime.setHours(start.hours);
-    this.editedItem.startTime.setMinutes(start.minutes);
-    this.editedItem.startTime.setSeconds(0);
-
-    this.editedItem.endTime = new Date(
-      this.editedItem.startTime.getTime() + length
-    );
-
-    this.editedItem.place = {
-      table: this.editForm.get('details.place.table').value,
-      court: this.editForm.get('details.place.court').value,
+    this.editedItem = {
+      ...this.editedItem,
+      name: values.name,
+      startTime: date,
+      endTime: new Date(date.getTime() + length),
+      place: {
+        table: values.details.place.table,
+        court: values.details.place.court,
+      },
     };
 
-    if (this.editedItem.recurringId) {
-      this.modifyAllRecurring().subscribe((recurring) => {
-        if (recurring)
-          this.store.dispatch(
-            new ReservationActions.SubmitEditRecurring(this.editedItem)
-          );
-        else
-          this.store.dispatch(
-            new ReservationActions.SubmitEdit({
-              reservation: this.editedItem,
-              originalStartDate: originalStart,
-            })
-          );
+    // Navigate to the week which the reservation is on
+    const firstDayOfWeek = this.resService.getFirstDayOfWeek(
+      this.editedItem.startTime
+    );
+    this.store.dispatch(new ReservationActions.SetWeekStart(firstDayOfWeek));
+
+    let isRecurring = !!this.editedItem.recurringId;
+
+    let action;
+
+    // if the reservation is recurring ask if the user wants to edit all
+    if (isRecurring && this.editMode) {
+      await this.resEditService.modifyAllRecurring().then((all) => {
+        if (all)
+          action = new ReservationActions.SubmitEditRecurring(this.editedItem);
+        else isRecurring = false;
       });
-    } else if (this.editMode)
-      this.store.dispatch(
-        new ReservationActions.SubmitEdit({
-          reservation: this.editedItem,
-          originalStartDate: originalStart,
-        })
-      );
-    else if (this.editForm.get('details.repeat').value)
-      this.store.dispatch(
-        new ReservationActions.StartCreateRecurring(this.editedItem)
-      );
-    else
-      this.store.dispatch(new ReservationActions.StartCreate(this.editedItem));
+    }
+
+    // if the reservation is not recurring or the user does not want to edit all
+    if (!isRecurring && this.editMode)
+      action = new ReservationActions.SubmitEdit({
+        reservation: this.editedItem,
+        originalStartDate: originalStart,
+      });
+
+    // if new reservation is created
+    if (!this.editMode && values.details.repeat)
+      action = new ReservationActions.StartCreateRecurring(this.editedItem);
+    else action = new ReservationActions.StartCreate(this.editedItem);
+
+    this.store.dispatch(action);
 
     this.router.navigate(['/calendar/view']);
   }
 
-  onDeleteReservation() {
+  async onDeleteReservation() {
     this.editedItem.deleted = true;
 
     // Navigate to the week on which the reservation is
-    this.store.dispatch(
-      new ReservationActions.SetWeekStart(
-        this.resService.getFirstDayOfWeek(this.editedItem.startTime)
-      )
+    const firstDayOfWeek = this.resService.getFirstDayOfWeek(
+      this.editedItem.startTime
     );
+    this.store.dispatch(new ReservationActions.SetWeekStart(firstDayOfWeek));
 
-    if (this.editedItem.recurringId) {
-      this.modifyAllRecurring().subscribe((all) => {
+    let isRecurring = !!this.editedItem.recurringId;
+
+    let action;
+
+    if (isRecurring) {
+      await this.resEditService.modifyAllRecurring().then((all) => {
         if (all)
-          this.store.dispatch(
-            new ReservationActions.StartDeleteRecurring(this.editedItem)
-          );
-        else
-          this.store.dispatch(
-            new ReservationActions.SubmitEdit({
-              reservation: this.editedItem,
-              originalStartDate: this.editedItem.startTime,
-            })
-          );
+          action = new ReservationActions.StartDeleteRecurring(this.editedItem);
+        else isRecurring = false;
       });
-    } else
-      this.store.dispatch(
-        new ReservationActions.SubmitEdit({
-          reservation: this.editedItem,
-          originalStartDate: this.editedItem.startTime,
-        })
-      );
+    }
+
+    if (!isRecurring)
+      action = new ReservationActions.SubmitEdit({
+        reservation: this.editedItem,
+        originalStartDate: this.editedItem.startTime,
+      });
+
+    this.store.dispatch(action);
 
     this.router.navigate(['/calendar/view']);
-  }
-
-  private modifyAllRecurring() {
-    const ref = this.dialog.open(EditRecurringDialogComponent);
-
-    return ref.afterClosed().pipe(
-      take(1),
-      map((result) => (result === 'every' ? true : false))
-    );
   }
 
   ngOnDestroy() {

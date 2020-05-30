@@ -1,7 +1,6 @@
 import { ReservationEditGuard } from './reservation-edit/reservation-edit-guard.service';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ReservationComponent } from './reservation.component';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
 import { ReservationEditComponent } from './reservation-edit/reservation-edit.component';
 import { ReservationEditResolver } from './reservation-edit/reservation-edit.resolver';

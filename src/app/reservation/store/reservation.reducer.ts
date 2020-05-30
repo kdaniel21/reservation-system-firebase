@@ -23,7 +23,6 @@ export function reservationReducer(
     case ReservationActions.SET_WEEK:
       return {
         ...state,
-        editedReservation: null,
         currentWeekReservations: [...action.payload],
       };
 

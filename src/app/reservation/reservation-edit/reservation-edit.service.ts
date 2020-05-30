@@ -1,3 +1,4 @@
+import { MatDialog } from '@angular/material/dialog';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
@@ -11,6 +12,7 @@ import { ReservationService } from '../reservation.service';
 import { combineLatest, of } from 'rxjs';
 import { take, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
+import { EditRecurringDialogComponent } from './edit-recurring-dialog/edit-recurring-dialog.component';
 
 @Injectable({ providedIn: 'root' })
 export class ReservationEditService {
@@ -19,7 +21,8 @@ export class ReservationEditService {
     private http: HttpClient,
     private resService: ReservationService,
     private afStore: AngularFirestore,
-    private afFunctions: AngularFireFunctions
+    private afFunctions: AngularFireFunctions,
+    private dialog: MatDialog
   ) {}
 
   createNewReservation(newReservation: Reservation) {
@@ -165,5 +168,20 @@ export class ReservationEditService {
 
     const splittedTime = time.split(':');
     return { hours: +splittedTime[0], minutes: +splittedTime[1] };
+  }
+
+  // Asks whether user wants to edit all recurring or just that specific one
+  modifyAllRecurring() {
+    const ref = this.dialog.open(EditRecurringDialogComponent);
+
+    return ref
+      .afterClosed()
+      .pipe(map((result) => (result === 'every' ? true : false)))
+      .toPromise();
+  }
+
+  // returns the length in seconds
+  calculateLength(time: { hours: number; minutes: number }) {
+    return time.hours * 3600 + time.minutes * 60
   }
 }

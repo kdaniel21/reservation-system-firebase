@@ -41,6 +41,7 @@ export class AvailabilityService {
           const editedId = resState.editedReservation
             ? resState.editedReservation.id
             : true;
+
           reservations.forEach((res) => {
             if ((editedId === true || res.id !== editedId) && !res.deleted) {
               // to not compare milliseconds

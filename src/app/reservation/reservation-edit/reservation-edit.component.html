@@ -2,7 +2,7 @@
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
   <mat-card *ngIf="!loading">
     <mat-card-title>Edit Reservation</mat-card-title>
-    <form [formGroup]="editForm" (ngSubmit)="onSubmitForm()">
+    <form [formGroup]="editForm" (ngSubmit)="onSubmitForm()" *ngIf="editForm">
       <mat-card-content>
         <mat-form-field>
           <mat-label>Name</mat-label>
