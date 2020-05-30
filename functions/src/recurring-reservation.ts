@@ -80,7 +80,7 @@ export const saveAllRecurringChanges = functions
 
       await query
         .once('child_added')
-        .then((snapshot) => void snapshot.ref.update({ ...reservation }));
+        .then((snapshot) => snapshot.ref.update({ ...reservation }));
 
       // Update the date with +1 week
       reservation.startTime = new Date(

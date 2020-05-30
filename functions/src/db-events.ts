@@ -56,6 +56,7 @@ async function isPlaceAvailable(reservation: Reservation, place: string) {
 
   const ref = admin.database().ref(`/reserved/${place}/${date}/`);
   const snapshot = await ref.once('value');
+
   if (hasTimeIntersection(snapshot.val(), placeReservation)) return false;
   else return true;
 }
@@ -63,9 +64,8 @@ async function isPlaceAvailable(reservation: Reservation, place: string) {
 async function isReservationAvailable(reservation: Reservation) {
   const usedPlaces = getUsedPlaces(reservation.place);
 
-  for (const place of usedPlaces) {
+  for (const place of usedPlaces)
     if ((await isPlaceAvailable(reservation, place)) === false) return false;
-  }
 
   return true;
 }
@@ -83,12 +83,25 @@ function reservePlace(reservation: Reservation) {
 
   const writes = [];
   for (const place of usedPlaces) {
-    console.log('PLACE: ', place);
     writes.push(
       admin
         .database()
         .ref(`/reserved/${place}/${date}/`)
-        .update({ ...placeReservation })
+        .once('value')
+        .then((snapshot) => {
+          const updatedObject: ReservedPlace = { ...placeReservation };
+
+          if (Object.keys(snapshot.val()))
+            // Filter out every old timestamp related to the reservation
+            for (const key of Object.keys(snapshot.val()))
+              if (snapshot.val()[key] !== reservation.id)
+                updatedObject[key] = snapshot.val()[key];
+
+          return admin
+            .database()
+            .ref(`/reserved/${place}/${date}`)
+            .set({ ...updatedObject });
+        })
     );
   }
 
@@ -184,9 +197,7 @@ export const onReservationEdited = functions
     const oldReservation = convertSnapshotToReservation(snapshot.before);
     // Re-reserves place only if changed
     if (isTimeOrPlaceModified(reservation, oldReservation))
-      return removePlaceReservation(oldReservation).then(() =>
-        reservePlace(reservation)
-      );
+      return reservePlace(reservation);
 
     return;
   });
