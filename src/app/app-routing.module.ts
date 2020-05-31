@@ -28,8 +28,8 @@ const appRoutes: Routes = [
       import('./reservation/reservation.module').then(
         (m) => m.ReservationModule
       ),
-    // canActivate: [AngularFireAuthGuard],
-    // data: { authGuardPipe: redirectUnauthorizedToLogin },
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin },
   },
   {
     path: 'admin',
