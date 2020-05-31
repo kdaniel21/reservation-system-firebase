@@ -3,7 +3,9 @@
     <!-- LOADING SPINNER -->
     <app-loading-spinner *ngIf="loading"></app-loading-spinner>
     <!-- CARD TITLE-->
-    <mat-card-title>Messaging: {{ contact.topic }} - {{ contact.name }}</mat-card-title>
+    <mat-card-title
+      >Messaging: {{ contact.topic }} - {{ contact.name }}</mat-card-title
+    >
     <!-- CARD CONTENT -->
     <mat-card-content *ngIf="contact && !loading" id="main-card-content">
       <!-- MESSAGES -->
@@ -20,7 +22,7 @@
         </mat-card>
       </div>
       <!-- REPLY FORM -->
-      <form [formGroup]="replyForm" (ngSubmit)="onReply()" >
+      <form [formGroup]="replyForm" (ngSubmit)="onReply()">
         <mat-form-field>
           <mat-label>Reply</mat-label>
           <textarea

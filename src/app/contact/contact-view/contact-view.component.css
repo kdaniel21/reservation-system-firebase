@@ -17,9 +17,11 @@ mat-form-field {
 .messages {
   height: 40vh;
   max-height: 40vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 0.5rem;
 }
 .messages mat-card {
   margin-bottom: 0.5rem;
@@ -31,4 +33,11 @@ mat-form-field {
   background-color: #4bb543;
   color: white;
   margin-right: 0.5rem;
+}
+
+/* STYLING FOR FIREFOX */
+@-moz-document url-prefix() {
+  .messages {
+    flex-direction: column!important;
+  }
 }
