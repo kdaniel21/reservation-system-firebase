@@ -11,7 +11,7 @@ import { AppState } from 'src/app/store/app.reducer';
 import { ReservationEditService } from './reservation-edit.service';
 import * as ReservationActions from '../store/reservation.actions';
 import { ReservationService } from '../reservation.service';
-import { switchMap, map, take } from 'rxjs/operators';
+import { switchMap, map, take, withLatestFrom } from 'rxjs/operators';
 import { Reservation } from '../reservation.model';
 
 @Injectable()
@@ -32,8 +32,9 @@ export class ReservationEditResolver implements Resolve<Reservation | null> {
     if (mode !== 'edit' || !route.queryParams.id) {
       return this.store.select('auth').pipe(
         take(1),
-        map((authState) => {
-          const startDate = new Date();
+        withLatestFrom(this.store.select('reservation')),
+        map(([authState, resState]) => {
+          const startDate = resState.currentWeekStartingDate || new Date();
           startDate.setHours(new Date().getHours() + 1, 0, 0, 0);
 
           return new Reservation(
