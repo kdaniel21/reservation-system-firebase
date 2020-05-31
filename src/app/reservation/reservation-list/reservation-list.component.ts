@@ -41,6 +41,7 @@ export class ReservationListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.storeSub = this.store.select('reservation').subscribe((resState) => {
+      this.loading = resState.loading;
       if (!resState.currentWeekStartingDate) {
         this.startingDayOfWeek = this.resService.getFirstDayOfWeek(new Date());
         this.store.dispatch(

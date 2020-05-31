@@ -1,31 +1,34 @@
 <div class="container">
   <!-- INFORMATION ABOUT THE DATE -->
-  <div id="info" class="mat-h3" fxLayout="row">
-    <div id="filter" fxFlex="33">
-      <app-reservation-list-filter></app-reservation-list-filter>
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <div *ngIf="!loading">
+    <div id="info" class="mat-h3" fxLayout="row">
+      <div id="filter" fxFlex="33">
+        <app-reservation-list-filter></app-reservation-list-filter>
+      </div>
+      <div id="week-info" fxFlex="33">
+        <div>
+          {{ this.resService.calculateWeeksAway(this.startingDayOfWeek) }}
+        </div>
+        <div>
+          {{
+            this.startingDayOfWeek.getFullYear() +
+              '. ' +
+              this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
+          }}
+        </div>
+      </div>
+      <div fxFlex="33" id="repeating-btn"></div>
     </div>
-    <div id="week-info" fxFlex="33">
-      <div>
-        {{ this.resService.calculateWeeksAway(this.startingDayOfWeek) }}
-      </div>
-      <div>
-        {{
-          this.startingDayOfWeek.getFullYear() +
-            '. ' +
-            this.startingDayOfWeek.toLocaleString('default', { month: 'long' })
-        }}
-      </div>
-    </div>
-    <div fxFlex="33" id="repeating-btn"></div>
-  </div>
-  <div id="calendar">
-    <div *ngFor="let day of daysOfWeek; let i = index" class="days">
-      <div class="day-header">
-        <div class="mat-h4" style="color: gray;">{{ day }}</div>
-        <div class="mat-display-1">{{ this.calculateDate(i) }}</div>
-      </div>
-      <div class="day-content">
-        <app-reservation-dayview [day]="i + 1"></app-reservation-dayview>
+    <div id="calendar">
+      <div *ngFor="let day of daysOfWeek; let i = index" class="days">
+        <div class="day-header">
+          <div class="mat-h4" style="color: gray;">{{ day }}</div>
+          <div class="mat-display-1">{{ this.calculateDate(i) }}</div>
+        </div>
+        <div class="day-content">
+          <app-reservation-dayview [day]="i + 1"></app-reservation-dayview>
+        </div>
       </div>
     </div>
   </div>

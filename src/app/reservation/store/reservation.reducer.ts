@@ -6,6 +6,7 @@ const initialState = {
   currentWeekReservations: null,
   editedReservation: null,
   filter: { table: true, court: true },
+  loading: false,
 };
 
 export interface State {
@@ -13,6 +14,7 @@ export interface State {
   currentWeekReservations: Reservation[];
   editedReservation: Reservation;
   filter: { table: boolean; court: boolean };
+  loading: boolean;
 }
 
 export function reservationReducer(
@@ -23,6 +25,7 @@ export function reservationReducer(
     case ReservationActions.SET_WEEK:
       return {
         ...state,
+        loading: false,
         currentWeekReservations: [...action.payload],
       };
 
@@ -35,15 +38,21 @@ export function reservationReducer(
     case ReservationActions.TOGGLE_FILTER:
       const filter = { ...state.filter };
       filter[action.payload] = !filter[action.payload];
-      console.log(filter);
       return {
         ...state,
         filter,
       };
 
+    case ReservationActions.SET_LOADING:
+      return {
+        ...state,
+        loading: action.payload,
+      };
+
     case ReservationActions.START_EDIT:
       return {
         ...state,
+        loading: false,
         editedReservation: action.payload,
       };
 
@@ -57,6 +66,7 @@ export function reservationReducer(
 
       return {
         ...state,
+        loading: false,
         currentWeekReservations: [...reservations],
       };
 
@@ -69,6 +79,7 @@ export function reservationReducer(
     case ReservationActions.CREATE:
       return {
         ...state,
+        loading: false,
         currentWeekReservations: [
           ...state.currentWeekReservations,
           action.payload,
@@ -78,6 +89,7 @@ export function reservationReducer(
     case ReservationActions.DELETE:
       return {
         ...state,
+        loading: false,
         currentWeekReservations: [...state.currentWeekReservations].filter(
           (res) => res.id !== action.payload
         ),

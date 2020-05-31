@@ -27,6 +27,8 @@ export class ReservationEditResolver implements Resolve<Reservation | null> {
   ): Observable<Reservation | null> | Promise<Reservation | null> {
     const mode = route.queryParams.mode;
 
+    this.store.dispatch(new ReservationActions.SetLoading(true));
+
     if (mode !== 'edit' || !route.queryParams.id) {
       return this.store.select('auth').pipe(
         take(1),
@@ -36,7 +38,7 @@ export class ReservationEditResolver implements Resolve<Reservation | null> {
 
           return new Reservation(
             null,
-            authState.user ? authState.user.uid :null,
+            authState.user ? authState.user.uid : null,
             new Date(),
             authState.user ? authState.user.name + ' - ' : null,
             startDate,

@@ -7,6 +7,7 @@ export const SET_WEEK_START = '[Reservation] Set Week Start Date';
 export const NEXT_WEEK = '[Reservation] Switch To Next Week';
 export const PREVIOUS_WEEK = '[Reservation] Switch To Previous Week';
 export const TOGGLE_FILTER = '[Reservation] Toggle Filter';
+export const SET_LOADING = '[Reservation] Set Loading';
 // EDIT RESERVATION
 export const START_EDIT = '[Reservation] Start Edit Reservation';
 export const SUBMIT_EDIT = '[Reservation] Submit Edited Reservation';
@@ -49,6 +50,12 @@ export class ToggleFilter implements Action {
   readonly type = TOGGLE_FILTER;
 
   constructor(public payload: string) {} // name of the filter (table or court)
+}
+
+export class SetLoading implements Action {
+  readonly type = SET_LOADING;
+
+  constructor(public payload: boolean) {}
 }
 
 // Edit Reservation
@@ -119,6 +126,7 @@ export type ReservationActions =
   | NextWeek
   | PreviousWeek
   | ToggleFilter
+  | SetLoading
   | StartEdit
   | SubmitEdit
   | SubmitEditRecurring

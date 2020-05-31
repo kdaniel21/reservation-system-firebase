@@ -23,6 +23,24 @@ export class ReservationEffects {
     private resEditService: ReservationEditService
   ) {}
 
+  // Start loading
+  @Effect()
+  startLoading = this.actions$.pipe(
+    ofType(
+      ReservationActions.SET_WEEK_START,
+      ReservationActions.NEXT_WEEK,
+      ReservationActions.PREVIOUS_WEEK,
+      ReservationActions.SUBMIT_EDIT,
+      ReservationActions.SUBMIT_EDIT_RECURRING,
+      ReservationActions.SUBMIT_EDIT,
+      ReservationActions.SUBMIT_EDIT_RECURRING,
+      ReservationActions.START_CREATE,
+      ReservationActions.START_CREATE_RECURRING,
+      ReservationActions.START_DELETE_RECURRING
+    ),
+    map(() => new ReservationActions.SetLoading(true))
+  );
+
   // Gets data from the server if new week is set
   @Effect()
   getWeekData = this.actions$.pipe(

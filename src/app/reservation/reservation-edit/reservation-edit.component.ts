@@ -42,8 +42,8 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
     if (mode === 'edit') this.editMode = true;
 
     this.route.data.subscribe((routeData) => {
+      this.store.dispatch(new ReservationActions.SetLoading(false));
       const res = routeData.res;
-      console.log('RES: ', res);
       this.editedItem = new Reservation(
         res.id,
         res.createdBy,
