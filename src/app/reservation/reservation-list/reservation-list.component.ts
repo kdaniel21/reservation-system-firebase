@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.reducer';
 import { Subscription } from 'rxjs';
@@ -29,8 +30,14 @@ export class ReservationListComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<AppState>,
-    public resService: ReservationService
+    public resService: ReservationService,
+    public ngZone: NgZone,
+    public router: Router
   ) {}
+
+  onNew() {
+    this.ngZone.run(() => this.router.navigateByUrl('/calendar/edit?mode=new'));
+  }
 
   ngOnInit() {
     this.storeSub = this.store.select('reservation').subscribe((resState) => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Reservation } from '../reservation.model';
 import { AppState } from 'src/app/store/app.reducer';
@@ -9,6 +9,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TimeAvailabilityValidator } from './validator/availability.validator';
 import { take } from 'rxjs/operators';
 import { ReservationEditService } from './reservation-edit.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reservation-edit',
@@ -17,6 +18,7 @@ import { ReservationEditService } from './reservation-edit.service';
 })
 export class ReservationEditComponent implements OnInit, OnDestroy {
   loading: boolean;
+  loadingSub: Subscription;
   editMode = false;
   editedItem: Reservation;
   editForm: FormGroup;
@@ -32,6 +34,10 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.loadingSub = this.store
+      .select('reservation')
+      .subscribe((resState) => (this.loading = resState.loading));
+
     const mode = this.route.snapshot.queryParams.mode;
     if (mode === 'edit') this.editMode = true;
 
@@ -189,5 +195,6 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.store.dispatch(new ReservationActions.CancelEdit());
+    this.loadingSub.unsubscribe();
   }
 }

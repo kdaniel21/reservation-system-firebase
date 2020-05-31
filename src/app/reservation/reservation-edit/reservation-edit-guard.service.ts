@@ -24,9 +24,7 @@ export class ReservationEditGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    if (route.queryParams['mode'] === 'new') {
-      return true;
-    }
+    if (route.queryParams['mode'] !== 'edit' && !route.queryParams.id) return true;
 
     const isAdmin: Observable<boolean> = this.afAuth.authState.pipe(
       switchMap((user) => user.getIdTokenResult()),

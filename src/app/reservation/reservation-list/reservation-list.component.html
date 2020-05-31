@@ -16,8 +16,7 @@
         }}
       </div>
     </div>
-    <div fxFlex="33" id="repeating-btn">
-    </div>
+    <div fxFlex="33" id="repeating-btn"></div>
   </div>
   <div id="calendar">
     <div *ngFor="let day of daysOfWeek; let i = index" class="days">
@@ -54,7 +53,7 @@
       color="primary"
       style="margin-right: 10px;"
       aria-label="Add New Reservation"
-      [routerLink]="['/calendar/edit']"
+      [routerLink]="['edit']"
       [queryParams]="{ mode: 'new' }"
     >
       <span class="material-icons">add</span>
