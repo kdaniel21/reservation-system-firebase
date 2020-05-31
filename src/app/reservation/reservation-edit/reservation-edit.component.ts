@@ -7,7 +7,6 @@ import * as ReservationActions from '../store/reservation.actions';
 import { ReservationService } from '../reservation.service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TimeAvailabilityValidator } from './validator/availability.validator';
-import { take } from 'rxjs/operators';
 import { ReservationEditService } from './reservation-edit.service';
 import { Subscription } from 'rxjs';
 
@@ -127,7 +126,6 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
     const firstDayOfWeek = this.resService.getFirstDayOfWeek(
       this.editedItem.startTime
     );
-    this.store.dispatch(new ReservationActions.SetWeekStart(firstDayOfWeek));
 
     let isRecurring = !!this.editedItem.recurringId;
 
@@ -141,6 +139,9 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
         else isRecurring = false;
       });
     }
+
+    this.store.dispatch(new ReservationActions.SetWeekStart(firstDayOfWeek));
+
     // if the reservation is not recurring or the user does not want to edit all
     if (!isRecurring && this.editMode)
       action = new ReservationActions.SubmitEdit({
@@ -153,20 +154,16 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
       action = new ReservationActions.StartCreateRecurring(this.editedItem);
     else if (!this.editMode && !values.details.repeat) action = new ReservationActions.StartCreate(this.editedItem);
 
-    console.log('DISPATCHED', action);
     this.store.dispatch(action);
 
     this.router.navigate(['/calendar/view']);
   }
 
   async onDeleteReservation() {
-    this.editedItem.deleted = true;
-
     // Navigate to the week on which the reservation is
     const firstDayOfWeek = this.resService.getFirstDayOfWeek(
       this.editedItem.startTime
     );
-    this.store.dispatch(new ReservationActions.SetWeekStart(firstDayOfWeek));
 
     let isRecurring = !!this.editedItem.recurringId;
 
@@ -179,6 +176,9 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
         else isRecurring = false;
       });
     }
+
+    this.store.dispatch(new ReservationActions.SetWeekStart(firstDayOfWeek));
+    this.editedItem.deleted = true;
 
     if (!isRecurring)
       action = new ReservationActions.SubmitEdit({
