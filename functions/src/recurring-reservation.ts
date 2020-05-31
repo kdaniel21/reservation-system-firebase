@@ -1,6 +1,9 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { formatDateToString, getFirstDayOfWeek } from './helperFunctions/date-functions';
+import {
+  formatDateToString,
+  getFirstDayOfWeek,
+} from './helperFunctions/date-functions';
 
 export const createRecurringReservation = functions
   .region('europe-west3')
@@ -71,7 +74,7 @@ export const saveAllRecurringChanges = functions
       const date = reservation.startTime;
       const formattedStartOfWeek = formatDateToString(getFirstDayOfWeek(date));
 
-      // Create in the DB
+      // Modify in the DB
       const query = admin
         .database()
         .ref(`/calendar/${year}/${formattedStartOfWeek}/`)
@@ -79,8 +82,16 @@ export const saveAllRecurringChanges = functions
         .equalTo(recurringId);
 
       await query
-        .once('child_added')
-        .then((snapshot) => snapshot.ref.update({ ...reservation }));
+        .once('value')
+        .then((snapshot) => {
+          const key = Object.keys(snapshot.val())[0];
+          if (!snapshot.exists() || snapshot.val().key.recurringId !== recurringId) {
+            return null;
+          }
+
+          return snapshot.child(key).ref.update({ ...reservation });
+        })
+        .catch((err) => console.log('ERROR: ', err));
 
       // Update the date with +1 week
       reservation.startTime = new Date(
@@ -117,9 +128,10 @@ export const deleteRecurringReservation = functions
         .orderByChild('recurringId')
         .equalTo(recurringId);
 
-      await ref
-        .once('child_added')
-        .then((snapshot) => void snapshot.ref.remove());
+      await ref.once('child_added').then((snapshot) => {
+        if (!snapshot.exists()) return;
+        return snapshot.ref.remove();
+      });
 
       startDate.setDate(startDate.getDate() + 7);
     }

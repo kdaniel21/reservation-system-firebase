@@ -91,7 +91,7 @@ function reservePlace(reservation: Reservation) {
         .then((snapshot) => {
           const updatedObject: ReservedPlace = { ...placeReservation };
 
-          if (Object.keys(snapshot.val()))
+          if (snapshot.val() && Object.keys(snapshot.val()))
             // Filter out every old timestamp related to the reservation
             for (const key of Object.keys(snapshot.val()))
               if (snapshot.val()[key] !== reservation.id)
@@ -201,3 +201,10 @@ export const onReservationEdited = functions
 
     return;
   });
+
+// Fires only on recurring reservations, single reservations cannot be deleted
+export const onReservationDeleted = functions.region('europe-west3').database.ref('/calendar/{year}/{week}/{reservationId}').onDelete(async (snapshot, context) => {
+  const reservation = convertSnapshotToReservation(snapshot);
+
+  return removePlaceReservation(reservation);
+})
