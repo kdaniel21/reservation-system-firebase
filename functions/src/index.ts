@@ -1,5 +1,5 @@
-import { onNewReservation, onReservationEdited } from './db-events';
-export { onNewReservation, onReservationEdited };
+import { onNewReservation, onReservationEdited, onReservationDeleted } from './db-events';
+export { onNewReservation, onReservationEdited, onReservationDeleted };
 
 import { sendInvitationEmail, sendEmail } from './email-sender';
 export { sendInvitationEmail, sendEmail };
