@@ -3,10 +3,10 @@
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
   <div *ngIf="!loading">
     <div id="info" class="mat-h3" fxLayout="row">
-      <div id="filter" fxFlex="33">
+      <div id="filter" fxFlex.gt-xs="33" fxFlex>
         <app-reservation-list-filter></app-reservation-list-filter>
       </div>
-      <div id="week-info" fxFlex="33">
+      <div id="week-info" fxFlex.gt-xs="33" fxFlex>
         <div>
           {{ this.resService.calculateWeeksAway(this.startingDayOfWeek) }}
         </div>
@@ -18,7 +18,6 @@
           }}
         </div>
       </div>
-      <div fxFlex="33" id="repeating-btn"></div>
     </div>
     <div id="calendar">
       <div *ngFor="let day of daysOfWeek; let i = index" class="days">
