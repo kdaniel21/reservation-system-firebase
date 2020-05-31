@@ -9,10 +9,10 @@
   max-width: 71rem;
   padding: auto;
   margin: auto;
-  /* background-color: red; */
 }
 #week-info {
   text-align: center;
+  padding-top: 2.5%;
 }
 #filter {
   text-align: left;
