@@ -34,7 +34,13 @@ export class ReservationEditResolver implements Resolve<Reservation | null> {
         take(1),
         withLatestFrom(this.store.select('reservation')),
         map(([authState, resState]) => {
-          const startDate = resState.currentWeekStartingDate || new Date();
+          let startDate = new Date();
+          // If not current week selected, start at the start of that week
+          if (
+            resState.currentWeekStartingDate &&
+            resState.currentWeekStartingDate > new Date()
+          )
+            startDate = resState.currentWeekStartingDate;
           startDate.setHours(new Date().getHours() + 1, 0, 0, 0);
 
           return new Reservation(
