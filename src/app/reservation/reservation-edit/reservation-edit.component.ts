@@ -97,8 +97,6 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
   }
 
   async onSubmitForm() {
-    this.loading = true;
-
     const values = this.editForm.value;
 
     // Store original start date, to later check if the week was changed
@@ -143,7 +141,6 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
         else isRecurring = false;
       });
     }
-
     // if the reservation is not recurring or the user does not want to edit all
     if (!isRecurring && this.editMode)
       action = new ReservationActions.SubmitEdit({
@@ -154,8 +151,9 @@ export class ReservationEditComponent implements OnInit, OnDestroy {
     // if new reservation is created
     if (!this.editMode && values.details.repeat)
       action = new ReservationActions.StartCreateRecurring(this.editedItem);
-    else action = new ReservationActions.StartCreate(this.editedItem);
+    else if (!this.editMode && !values.details.repeat) action = new ReservationActions.StartCreate(this.editedItem);
 
+    console.log('DISPATCHED', action);
     this.store.dispatch(action);
 
     this.router.navigate(['/calendar/view']);
